@@ -51,7 +51,7 @@ Die Provinz Bozen bereitet eine öffentliche Vergabe für eine zentrale BIM-Plat
 Die Provinz wird voraussichtlich an einen großen oder mittleren Anbieter vergeben — Catenda, ACCA usBIM, oder Trimble Connect sind die wahrscheinlichsten Kandidaten. Sovereign AEC sollte nicht versuchen, in dieser Vergabe zu gewinnen. **Stattdessen:** sich als komplementäre Open-Source-Schicht positionieren, die auf der gewählten Plattform draufsitzen oder daneben laufen kann.
 
 Das passt zu zwei Pfaden:
-1. **Komplementär-Pilot** auf einem Teilprojekt (Raulassen) parallel zum Hauptvergabe-Lauf — zeigt, was zusätzlich möglich ist
+1. **Komplementär-Pilot** auf einem Teilprojekt (Building) parallel zum Hauptvergabe-Lauf — zeigt, was zusätzlich möglich ist
 2. **Spezial-Layer** für vertrauliche/sensible Workflows, die die zentrale Plattform aus Vergabe-rechtlichen Gründen nicht abdecken kann (Bid-Verschlüsselung, Lebenszyklus-Doku jenseits der Bauphase, lokal-redundante Backups)
 
 ---
@@ -439,7 +439,7 @@ In Italien / Provinz Bozen muss die Sovereign-AEC-Botschaft in italienischen Sta
 - Nicht „lifecycle documentation" — „BIM Dossier (UNI 11337-9) e Digital Building Logbook (EPBD 2024/1275)"
 - Nicht „BIM Manager" — „BIM Manager PA, BIM Coordinator PA, CDE Manager"
 
-### 9.2 Raulassen-Pilot konkret
+### 9.2 Building-Pilot konkret
 
 - **Sponsor finden**: NOI Techpark als neutraler Host, Eurac als wissenschaftlicher Sparring-Partner. Diese beiden sind die Türöffner — nicht direkt die Provinzverwaltung.
 - **Bilingual von Tag 1**: DE und IT. Englisch optional dritte Sprache.

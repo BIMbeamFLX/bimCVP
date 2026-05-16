@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Raulassen Pilot — IFC Ingest v0.2
+Building Pilot — IFC Ingest v0.2
 
 Uploads each IFC from inventory.csv to a Blossom server, then publishes
 a kind:1063 NIP-94 file-metadata event to one or more Nostr relays
@@ -12,7 +12,7 @@ Dependencies:
 Usage:
     export RELAYS="ws://localhost:8080,wss://relay.damus.io"
     export BLOSSOM_URL="http://localhost:3000"
-    export PROJECT_GUID="raulassen-pilot-2026"
+    export PROJECT_GUID="building-pilot-2026"
     python ingest.py <nsec-hex>
 """
 
@@ -39,8 +39,8 @@ RELAYS = [
     if r.strip()
 ]
 BLOSSOM_URL = os.environ.get("BLOSSOM_URL", "http://localhost:3000").rstrip("/")
-PROJECT_GUID = os.environ.get("PROJECT_GUID", "raulassen-pilot-2026")
-PROJECT_REF = f"raulassen-pilot:{PROJECT_GUID}"
+PROJECT_GUID = os.environ.get("PROJECT_GUID", "building-pilot-2026")
+PROJECT_REF = f"building-pilot:{PROJECT_GUID}"
 BCF_VERSION = "0.1"
 
 
@@ -115,7 +115,7 @@ def build_event(
         ["ifc-project", meta["ifc_project_guid"]],
         ["filename", path.name],
         ["bcf-version", BCF_VERSION],
-        ["client", "raulassen-ingest/0.0.2"],
+        ["client", "building-ingest/0.0.2"],
     ]
 
     content = json.dumps(

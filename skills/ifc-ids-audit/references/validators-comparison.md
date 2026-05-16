@@ -115,7 +115,7 @@ There are five mainstream IDS-1.0-compatible validators. Different strengths.
 
 ## Combinations that work well
 
-**Bimbeam-Standard für Raulassen-artige Projekte:**
+**Bimbeam-Standard für Building-artige Projekte:**
 - **ifctester** für Auto-Audit bei jedem Re-Export (5 Sek, in CI)
 - **Bonsai** für visuelle Inspektion einzelner Failures
 - **buildingSMART IDS Audit Tool** für die finale Übergabe-Validierung (Badge im Lieferschein)

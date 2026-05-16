@@ -213,7 +213,7 @@ Update the IFC versions table to add IFC 5 alpha as "released, alpha" and IFC 4.
 
 ## 10. Bottom line for the pilot
 
-**Nothing in our chosen Standards Profile becomes obsolete.** IFC 4.3.2.0, Reference View 1.2, BCF 3.0, IDS 1.0, OpenCDE 1.1+1.0 stay correct for the Raulassen pilot.
+**Nothing in our chosen Standards Profile becomes obsolete.** IFC 4.3.2.0, Reference View 1.2, BCF 3.0, IDS 1.0, OpenCDE 1.1+1.0 stay correct for the Building pilot.
 
 **One important new context emerges:** IFC 5 alpha with USD + JSON + component-based architecture is now public. Our Nostr-event architecture aligns with this direction. This is a strategic tailwind, not a course change.
 

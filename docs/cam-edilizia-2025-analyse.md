@@ -213,7 +213,7 @@ Alle parameterized replaceable wo Sinn macht, immutabel wo Point-in-Time wichtig
 
 ### Pilot-Strategie
 
-- **Raulassen wird CAM-Konformitäts-Test.** Wenn der Pilot zeigen kann, dass Sovereign-AEC-Workflows die CAM-Sektionen 2.1.3, 2.3.16, 2.3.17 automatisch erfüllen, ist das die stärkste Pitch-Story für die Provinz Bozen, die wir uns wünschen können.
+- **Building wird CAM-Konformitäts-Test.** Wenn der Pilot zeigen kann, dass Sovereign-AEC-Workflows die CAM-Sektionen 2.1.3, 2.3.16, 2.3.17 automatisch erfüllen, ist das die stärkste Pitch-Story für die Provinz Bozen, die wir uns wünschen können.
 - Decostruzione-Plan als ein konkreter Demo-Output des Gebäudebuch-Generators v1.
 - LCA-Indikatoren als Pflichtfelder in unseren PDT-Events.
 
@@ -235,7 +235,7 @@ Neue Wiki-Seiten mit hoher Priorität:
 
 Vor CAM Edilizia 2025: „Sovereign AEC kann Gebäudebücher generieren, das wäre nice-to-have."
 
-Nach CAM Edilizia 2025: „Sovereign AEC ist die einfachste Compliance-Maschine für CAM-Pflicht-Anforderungen in italienischer öffentlicher Bauvergabe. Wer Raulassen pilotiert, erfüllt Sektionen 2.1.3, 2.3.16, 2.3.17 automatisch."
+Nach CAM Edilizia 2025: „Sovereign AEC ist die einfachste Compliance-Maschine für CAM-Pflicht-Anforderungen in italienischer öffentlicher Bauvergabe. Wer Building pilotiert, erfüllt Sektionen 2.1.3, 2.3.16, 2.3.17 automatisch."
 
 Das ist eine andere Tonlage.
 

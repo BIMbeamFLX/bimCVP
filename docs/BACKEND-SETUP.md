@@ -482,7 +482,7 @@ cat > DSFA.md <<'EOF'
 Felix Hitthaler, [Adresse], hitthaler@bimbeam.at
 
 ## 2. Zweck der Verarbeitung
-Koordinations- und Dokumentationsdaten eines Bauprojekts (Pilot Raulassen).
+Koordinations- und Dokumentationsdaten eines Bauprojekts (Pilot Building).
 
 ## 3. Datenkategorien
 - pubkey (npub) — pseudonyme Identität, kein Echtname obligat

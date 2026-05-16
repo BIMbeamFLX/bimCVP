@@ -4,7 +4,7 @@
 
 Signed coordination events, platform-neutral storage, fully built on open buildingSMART standards.
 
-**Status.** Pilot phase, May 2026. First real project: Raulassen (Provincia di Bolzano), anonymised here. Not production-grade — pilot loads and demos only.
+**Status.** Pilot phase, May 2026. First real project: Building (Provincia di Bolzano), anonymised here. Not production-grade — pilot loads and demos only.
 
 **License.** MIT. Use, adapt, redistribute freely.
 
@@ -89,14 +89,14 @@ pip install -r requirements.txt
 # Place IFCs in ../ifc/, adjust inventory.csv
 export RELAYS="ws://localhost:7777"
 export BLOSSOM_URL="http://localhost:3000"
-export PROJECT_GUID="raulassen-pilot-2026"
+export PROJECT_GUID="building-pilot-2026"
 python ingest.py <nsec-hex>
 
 # Verify
 python verify.py <npub>
 ```
 
-Details: [`docs/raulassen-pilot-build-plan.md`](docs/raulassen-pilot-build-plan.md).
+Details: [`docs/building-pilot-build-plan.md`](docs/building-pilot-build-plan.md).
 
 ---
 
@@ -120,7 +120,7 @@ Strategy and background:
 - [`docs/BRAND.md`](docs/BRAND.md) — Gemeinwert / BIM CVP brand identity
 - [`docs/STANDARDS-PROFILE.md`](docs/STANDARDS-PROFILE.md) — exact standard versions and DACH reasoning
 - [`docs/KIND-REGISTRY.md`](docs/KIND-REGISTRY.md) — Nostr event kinds and tag conventions
-- [`docs/raulassen-pilot-build-plan.md`](docs/raulassen-pilot-build-plan.md) — six phases for the first real pilot
+- [`docs/building-pilot-build-plan.md`](docs/building-pilot-build-plan.md) — six phases for the first real pilot
 - [`docs/gebaeudebuch-generator-scope.md`](docs/gebaeudebuch-generator-scope.md) — scope for the automatic building logbook
 - [`docs/cde-research.md`](docs/cde-research.md) — market analysis and competitive landscape
 - [`docs/cam-edilizia-2025-analyse.md`](docs/cam-edilizia-2025-analyse.md) — Italian mandatory sustainability criteria

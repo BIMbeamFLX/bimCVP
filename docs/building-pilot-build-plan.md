@@ -1,4 +1,4 @@
-# Raulassen Pilot — Build Plan
+# Building Pilot — Build Plan
 
 **Premisse.** Wir haben echte IFCs von Revit, ArchiCAD und Allplan eines komplettierten Projekts. Damit lässt sich der gesamte Sovereign-AEC-Stack mit Realdaten instrumentieren — kein Demo-Mock, sondern Projekt-Replay. Die Multi-Tool-Konstellation ist nicht Komplikation, sondern das wertvollste Demo-Asset: openBIM-Interoperabilität, das buildingSMART seit zwanzig Jahren verspricht, gelebt in einem signierten Workflow.
 
@@ -9,7 +9,7 @@
 ## Phase 0 — Foundation (Tag 1–5)
 
 ### Datenkatalog
-Inventur aller Raulassen-IFCs:
+Inventur aller Building-IFCs:
 
 - Pro Datei: Authoring-Tool, IFC-Schema (IFC2x3 / IFC4 / IFC4.3), Größe, `IfcProject`-GUID, Entity-Count, Stand
 - Klassifikation: Architektur / Tragwerk / MEP / Sonderdisziplinen
@@ -53,7 +53,7 @@ tags: [
 
 Plus **kind:30904** BCF-File-Reference (replaceable), das auf das NIP-94-Event verweist und IfcProject + IfcSpatialStructure ergänzt.
 
-**Deliverable.** Python-Skript `ingest.py` (IfcOpenShell + nostr-tools). Relay enthält für jeden Raulassen-IFC ein vollständiges Provenance-Bundle.
+**Deliverable.** Python-Skript `ingest.py` (IfcOpenShell + nostr-tools). Relay enthält für jeden Building-IFC ein vollständiges Provenance-Bundle.
 
 ---
 
@@ -94,11 +94,11 @@ Zwei Pfade je nach Datenlage:
 
 ## Phase 5 — Gebäudebuch v1 (Woche 5–6)
 
-Generator aus `gebaeudebuch-generator-scope.md` läuft gegen den Raulassen-Event-Korpus:
+Generator aus `gebaeudebuch-generator-scope.md` läuft gegen den Building-Event-Korpus:
 
-- Filter: alle Events mit a-Tag auf Raulassen-Project
+- Filter: alle Events mit a-Tag auf Building-Project
 - Render in HTML, 6 Kapitel
-- „Drucken als PDF" → `raulassen-gebaeudebuch.pdf`
+- „Drucken als PDF" → `building-gebaeudebuch.pdf`
 - Jeder Satz auf signiertes Quell-Event zurückführbar (e-Tag-Liste im Anhang)
 
 ---
@@ -132,7 +132,7 @@ Generator aus `gebaeudebuch-generator-scope.md` läuft gegen den Raulassen-Event
 
 - **Multi-Tool-IFC-Interop-Demo** — allein SE-pitchable
 - **NIP-Draft-Material** — nach 6 Wochen weiß man genau, welche Tags fehlen, welche Kinds sich bewähren; Spec schreibt sich quasi selbst
-- **AdlerHort-Synergie** — Raulassen-IFCs als Training-Material; doppelter Hebel
+- **AdlerHort-Synergie** — Building-IFCs als Training-Material; doppelter Hebel
 - **Bauherrenstack-Vorlauf** — Gebäudebuch ist gleichzeitig erster Bauherrenstack-Use-Case
 - **Provinz-Bozen-Türöffner** — fertige Demo + DSFA + Open-Source-Lizenz = wenig Reibung
 
@@ -143,13 +143,13 @@ Generator aus `gebaeudebuch-generator-scope.md` läuft gegen den Raulassen-Event
 1. **Synthetic-Cast oder Real-Stakeholder?** Empfehlung: Synthetic für Sprint, Real für Pitch danach.
 2. **Public oder Private Relay?** Empfehlung: privates strfry für Vollddaten + öffentliches Demo-Replay anonymisiert.
 3. **Storage:** Google Drive oder lokaler Blossom? Empfehlung: A jetzt, B parallel.
-4. **Repo-Struktur:** Mono-Repo `raulassen-pilot/` mit Sub-Folder pro Phase, MIT, Conventional Commits.
+4. **Repo-Struktur:** Mono-Repo `building-pilot/` mit Sub-Folder pro Phase, MIT, Conventional Commits.
 
 ---
 
 ## Sofortige nächste Schritte (heute/morgen)
 
-1. **Repo aufsetzen.** `raulassen-pilot/` auf GitHub, README mit dieser Phasen-Übersicht.
+1. **Repo aufsetzen.** `building-pilot/` auf GitHub, README mit dieser Phasen-Übersicht.
 2. **IFC-Inventur in `inventory.csv`.** Pro Datei: Tool, Schema, Größe, IfcProject-GUID, Pfad.
 3. **Erste Validierung.** Ein IFC pro Tool durch IfcOpenShell schicken, Schema-Version + Health-Check.
 4. **Privacy-Entscheidung.** Synthetic oder Real?

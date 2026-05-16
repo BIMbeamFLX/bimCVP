@@ -1,7 +1,7 @@
 # ──────────────────────────────────────────────────────────────────────────────
 #  Bulk_Classify_IFC_NoInputs.py — VARIANTE A (keine Dynamo-Inputs noetig)
 #
-#  Bimbeam — Raulassen HKLS — IFC Klassifizierungs-Automat
+#  Bimbeam — Building HKLS — IFC Klassifizierungs-Automat
 #  Engine: CPython3
 #
 #  Zwei-Stufige Klassifikation:
@@ -27,9 +27,9 @@
 # ║  KONFIG                                                                    ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
-MAPPING_CSV = r"G:\projekte\raulassenClaude\Rohrmassen\IDS\linear-to-ifc-mapping.csv"
-FAMILY_CSV  = r"G:\projekte\raulassenClaude\Rohrmassen\IDS\family-to-ifc-mapping.csv"
-LOG_CSV     = r"G:\projekte\raulassenClaude\Rohrmassen\IDS\classify_log.csv"
+MAPPING_CSV = r"G:\projekte\buildingClaude\Rohrmassen\IDS\linear-to-ifc-mapping.csv"
+FAMILY_CSV  = r"G:\projekte\buildingClaude\Rohrmassen\IDS\family-to-ifc-mapping.csv"
+LOG_CSV     = r"G:\projekte\buildingClaude\Rohrmassen\IDS\classify_log.csv"
 DRY_RUN     = True   # True = nichts schreiben, nur loggen
                      # False = tatsaechlich klassifizieren
 

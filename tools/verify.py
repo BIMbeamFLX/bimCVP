@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Raulassen Pilot — Verify Read-Back
+Building Pilot — Verify Read-Back
 
 Subscribes to relay(s), prints all kind:1063 events authored by the
 given npub. Confirms that ingest.py actually pushed events through.

@@ -137,10 +137,10 @@ Per PRINCIPLES section 4 (Public ledger, private conversation): every signed pub
 Usage example on a `kind:30970` Approval event:
 
 ```
-["a", "30902:<pubkey>:raulassen-2026"]
+["a", "30902:<pubkey>:building-2026"]
 ["e", "<topic-event-id>"]
 ["bcf-status", "Closed"]
-["white-noise-group", "mls-grp-raulassen-hkls-bauteam"]
+["white-noise-group", "mls-grp-building-hkls-bauteam"]
 ["bitcredit-note", "bcr:bn1...subleistung-EG-HKLS"]
 ["ots", "<base64 timestamp proof>"]
 ```
@@ -186,7 +186,7 @@ The Approval is publicly signed and auditable. The pre-discussion remains in the
 
 ## Path to NIP
 
-1. **Run through phases 0–6 of the Raulassen pilot** (see `raulassen-pilot-build-plan.md`).
+1. **Run through phases 0–6 of the Building pilot** (see `building-pilot-build-plan.md`).
 2. **Review the event corpus** — which tags were actually used, which were dead, which were missing.
 3. **Run schema validation** over the gathered material, mark inconsistencies.
 4. **Write the NIP draft** with real events as test vectors.
