@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wiki — Gemeinwert</title>
+  <meta name="description" content="Knowledge base for the buildingSMART standards used by Gemeinwert. IFC, BCF, IDS, openCDE, bSDD, ISO 19650 explained, with mapping to signed events." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-hub topbar__inner">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../en/#what">What it is</a>
+      <a href="../en/#try">Tools</a>
+      <a href="./" class="active">Wiki</a>
+      <a href="../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-hub" data-screen-label="Wiki intro">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; wiki</p>
+    <div class="hub-intro">
+      <h1>buildingSMART wiki &mdash; <em>plain language</em>.</h1>
+      <p>
+        Explanations of IFC, BCF, IDS, openCDE, bSDD, ISO 19650 and the surrounding standards,
+        with focus on the Swiss default profile and adapters for Germany, Austria and Italy.
+      </p>
+      <p>
+        Every page follows the same pattern: what it is, which versions, what the fields mean,
+        mapping to signed events, practice notes, sources.
+      </p>
+    </div>
+  </section>
+
+  <!-- MODEL -->
+  <section class="wrap-hub hub-sec" data-screen-label="Model">
+    <p class="hub-sec__eyebrow">Model</p>
+    <h2 class="hub-sec__title">Describing the data</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="modell/ifc.html" data-status="live">
+        <h3>IFC</h3>
+        <p>Industry Foundation Classes &mdash; the data model for buildings. Versions, layers, core entities.</p>
+        <span class="hub-card__meta">4.3.2.0 · ISO 16739-1:2024</span>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>IFC layers</h3>
+        <p>Resource / Core / Interoperability / Domain layer in detail.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Core entities</h3>
+        <p>IfcRoot, IfcProject, IfcRelDefinesByProperties, IfcRelContainedInSpatialStructure.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Property + Quantity Sets</h3>
+        <p>Pset_*, Qto_*, IfcRelDefinesByProperties, N-to-N relationships.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>MVDs</h3>
+        <p>Reference View 1.2, Alignment Based View 1.0, IFC4Precast.</p>
+        <span class="hub-card__meta">RV 1.2 Final · AbV 1.0 in Review</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- COORDINATION -->
+  <section class="wrap-hub hub-sec" data-screen-label="Coordination">
+    <p class="hub-sec__eyebrow">Coordination</p>
+    <h2 class="hub-sec__title">Talking about issues in the model</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="../was-ist-bcf.html" data-status="live">
+        <h3>BCF</h3>
+        <p>BIM Collaboration Format &mdash; how planners exchange issues, comments and viewpoints.</p>
+        <span class="hub-card__meta">XML 3.0 · API 3.0</span>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>BCF-XML</h3>
+        <p>Container structure, markup.bcf, viewpoint.bcfv, snapshot.png.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>BCF-API</h3>
+        <p>REST 2.1 + 3.0, per-entity authorization, topic / comment resources.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>openCDE initiative</h3>
+        <p>Foundation API 1.1, Documents API 1.0, Dictionary API.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section class="wrap-hub hub-sec" data-screen-label="Requirements">
+    <p class="hub-sec__eyebrow">Requirements</p>
+    <h2 class="hub-sec__title">What must be delivered</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="anforderungen/ids.html" data-status="live">
+        <h3>IDS</h3>
+        <p>Information Delivery Specification &mdash; machine-checkable requirements with IFC binding.</p>
+        <span class="hub-card__meta">1.0 Final · 01.06.2024</span>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>LOIN</h3>
+        <p>Level of Information Need per EN 17412-1 / SN EN 17412-1.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>PIR / EIR / AIR / OIR</h3>
+        <p>ISO 19650 requirements hierarchy. Who writes what, who signs what.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>IDM</h3>
+        <p>Information Delivery Manual, process description. EN ISO 29481-1:2010.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="wrap-hub hub-sec" data-screen-label="Process">
+    <p class="hub-sec__eyebrow">Process</p>
+    <h2 class="hub-sec__title">Lifecycle and roles</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="prozess/iso-19650.html" data-status="live">
+        <h3>ISO 19650</h3>
+        <p>Information management across the full life cycle. Parts 1&ndash;5 explained.</p>
+        <span class="hub-card__meta">Final · DACH default frame</span>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>WIP / Shared / Published / Archive</h3>
+        <p>The four canonical container states per ISO 19650.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>BIM roles</h3>
+        <p>Appointing Party, Lead Appointed Party, Task Team Manager, CDE Manager.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>RBAC + ABAC</h3>
+        <p>Two-layer permissions model. BCF-API per-entity authorization.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- CLASSIFICATION -->
+  <section class="wrap-hub hub-sec" data-screen-label="Classification">
+    <p class="hub-sec__eyebrow">Classification</p>
+    <h2 class="hub-sec__title">Terms and dictionaries</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>bSDD</h3>
+        <p>buildingSMART Data Dictionary &mdash; classes, properties, URIs, multilingual.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>bSDD URIs</h3>
+        <p>How the identifier service is built and how we reference it.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Classification systems</h3>
+        <p>Uniclass, OmniClass, ETIM, eBKP-H &mdash; and when which one.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- REGIONAL -->
+  <section class="wrap-hub hub-sec" data-screen-label="Regional">
+    <p class="hub-sec__eyebrow">Regional</p>
+    <h2 class="hub-sec__title">DACH + Italy</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>DACH comparison</h3>
+        <p>CH / DE / AT in short: who has what, where the advantage sits.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Switzerland</h3>
+        <p>KBOB, SIA, buildingSMART Switzerland, BIM-Abwicklungsmodell, AIM, BIM2FM.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Germany</h3>
+        <p>BIM Deutschland, DIN EN ISO 19650, VDI 2552, AIA/BAP templates.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Austria</h3>
+        <p>ÖNORM A 6241-1:2025, A 6241-2, ASFINAG, ÖBB.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Italy</h3>
+        <p>UNI 11337, ACDat, Capitolato informativo, DM 312/2021.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- LIFECYCLE -->
+  <section class="wrap-hub hub-sec" data-screen-label="Lifecycle">
+    <p class="hub-sec__eyebrow">Lifecycle</p>
+    <h2 class="hub-sec__title">From model to operation</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>AIM</h3>
+        <p>Asset Information Model &mdash; what remains after handover.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>BIM2FM</h3>
+        <p>Swiss data field catalogue for handover into operation.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Building logbook</h3>
+        <p>EPBD recast Art. 19, mandatory from 2026.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Digital Product Passport</h3>
+        <p>ESPR (EU 2024/1781), mandatory for construction products from 2027.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- MAPPING -->
+  <section class="wrap-hub hub-sec" data-screen-label="Mapping">
+    <p class="hub-sec__eyebrow">Mapping</p>
+    <h2 class="hub-sec__title">Standards as signed events</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Why signed events</h3>
+        <p>Which missing layer the protocol closes for openBIM workflows.</p>
+      </a>
+      <a class="hub-card" href="nostr-mapping/kind-mapping.html" data-status="live">
+        <h3>Kind mapping</h3>
+        <p>Which standard maps to which event kind &mdash; complete overview.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>Tag mapping</h3>
+        <p>Which standard field maps to which event tag.</p>
+      </a>
+      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+        <h3>BCF in detail</h3>
+        <p>BCF topic, comment, viewpoint as signed events &mdash; full mapping.</p>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap-hub" style="border-top: 1px solid var(--line); padding-top: 32px; padding-bottom: 48px; margin-top: 32px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+    <span style="font-size:13px; color:var(--dim);">
+      Wiki &middot; part of <a href="../en/" style="color:var(--muted);">gemeinwert.com</a> &middot; MIT licence &middot; CC&nbsp;BY 4.0
+    </span>
+    <span style="font-size:12px; color:var(--dim); font-family:var(--font-mono); letter-spacing:0.1em;">
+      <a href="../en/" style="color:var(--muted);">EN</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../de/" style="color:var(--muted);">DE</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../it/" style="color:var(--muted);">IT</a>
+    </span>
+  </div>
+</footer>
+
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

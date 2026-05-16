@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Standards-to-Events Mapping — Gemeinwert Wiki</title>
+  <meta name="description" content="How each buildingSMART and ISO standard maps onto signed events. Complete overview with example JSON per event kind." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+  <style>
+    .kind {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      background: var(--gold-soft);
+      padding: 2px 8px;
+      margin-left: 8px;
+      border: 1px solid var(--gold-line);
+    }
+    .standard-ref {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--blue);
+      margin-left: 6px;
+    }
+    .wrap-art-wide { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  </style>
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art-wide topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; mapping &nbsp;/&nbsp; standards-to-events</p>
+
+    <header class="art-head">
+      <h1>Standards-to-Events Mapping</h1>
+      <p class="art-lede">
+        How each buildingSMART and ISO standard is mapped onto signed events.
+        Complete overview with example JSON per event kind, sorted by layer.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>Standards stay untouched &mdash; we wrap the exchange in signed events. IFC files stay IFC, BCF topics stay BCF, IDS specs stay IDS. The event layer carries identity, availability and chaining.</p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#overview">Overview table</a></li>
+          <li><a href="#identity">Identity &mdash; profiles, groups, roles, badges</a></li>
+          <li><a href="#model">Model &mdash; IFC and file metadata</a></li>
+          <li><a href="#coordination">Coordination &mdash; BCF, approvals</a></li>
+          <li><a href="#requirements">Requirements &mdash; IDS, LOIN, PIR, room book</a></li>
+          <li><a href="#lifecycle">Lifecycle &mdash; site diary, maintenance, deconstruction, LCA</a></li>
+          <li><a href="#products">Products &mdash; PDT, telemetry</a></li>
+          <li><a href="#economy">Economy &mdash; zaps, bounties</a></li>
+          <li><a href="#conventions">Global conventions</a></li>
+        </ul>
+      </div>
+
+      <h2 id="overview">Overview table</h2>
+
+      <table>
+        <thead><tr><th>Kind</th><th>Name</th><th>Standard</th><th>Repl.</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Profile</td><td>NIP-01</td><td>—</td></tr>
+          <tr><td><code>1063</code></td><td>File metadata</td><td>NIP-94</td><td>—</td></tr>
+          <tr><td><code>1170</code></td><td>BCF comment</td><td>BCF 3.0</td><td>—</td></tr>
+          <tr><td><code>1171</code></td><td>BCF audit</td><td>BCF API 3.0</td><td>—</td></tr>
+          <tr><td><code>1172</code></td><td>BCF reaction</td><td>—</td><td>—</td></tr>
+          <tr><td><code>1180</code></td><td>IDS validation result</td><td>IDS 1.0</td><td>—</td></tr>
+          <tr><td><code>1190</code></td><td>Sustainability snapshot</td><td>Level(s) / CAM</td><td>—</td></tr>
+          <tr><td><code>1230</code></td><td>HVAC telemetry</td><td>BACnet / ESG</td><td>—</td></tr>
+          <tr><td><code>9007</code> / <code>9000</code></td><td>NIP-29 group create / add-user</td><td>NIP-29</td><td>—</td></tr>
+          <tr><td><code>9735</code></td><td>Zap receipt</td><td>NIP-57</td><td>—</td></tr>
+          <tr><td><code>30009</code></td><td>Badge award</td><td>NIP-58</td><td>par. repl.</td></tr>
+          <tr><td><code>30023</code></td><td>Long-form</td><td>NIP-23</td><td>par. repl.</td></tr>
+          <tr><td><code>30810</code></td><td>IDS specification</td><td>IDS 1.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30811</code></td><td>LOIN definition</td><td>EN 17412-1</td><td>par. repl.</td></tr>
+          <tr><td><code>30850</code></td><td>Product Data Template (PDT)</td><td>ISO 23387</td><td>par. repl.</td></tr>
+          <tr><td><code>30880</code></td><td>PIR &mdash; client requirements</td><td>ISO 19650-1</td><td>par. repl.</td></tr>
+          <tr><td><code>30881</code></td><td>Room-book entry</td><td>DIN 18205</td><td>par. repl.</td></tr>
+          <tr><td><code>30900</code></td><td>BCF topic</td><td>BCF 3.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30901</code></td><td>BCF viewpoint</td><td>BCF 3.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30902</code></td><td>BCF project</td><td>BCF 3.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30903</code></td><td>Document reference</td><td>BCF 3.0 + openCDE</td><td>par. repl.</td></tr>
+          <tr><td><code>30904</code></td><td>IFC file reference</td><td>IFC 4.3.2.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30930</code></td><td>Document record</td><td>openCDE Docs 1.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30940</code></td><td>LCA study</td><td>EN 15804 / 15978</td><td>par. repl.</td></tr>
+          <tr><td><code>30941</code></td><td>LCC study</td><td>EN 16627</td><td>par. repl.</td></tr>
+          <tr><td><code>30942</code></td><td>Level(s) indicator set</td><td>EU Level(s)</td><td>par. repl.</td></tr>
+          <tr><td><code>30960</code></td><td>Site-diary entry</td><td>OTS-anchored</td><td>par. repl.</td></tr>
+          <tr><td><code>30962</code></td><td>Maintenance cycle</td><td>CAM 2.3.16</td><td>par. repl.</td></tr>
+          <tr><td><code>30970</code></td><td>Approval</td><td>ISO 19650</td><td>par. repl.</td></tr>
+          <tr><td><code>30971</code></td><td>Deconstruction-plan approval</td><td>CAM 2.3.17 / UNI PdR 75</td><td>par. repl.</td></tr>
+        </tbody>
+      </table>
+
+      <p>&ldquo;par. repl.&rdquo; = parameterised replaceable (NIP-01 convention): the current version per <code>(pubkey, kind, d-tag)</code> is authoritative, history is reconstructed via separate audit events (<code>kind:1171</code>).</p>
+
+      <!-- IDENTITY -->
+      <h2 id="identity">Identity &mdash; profiles, groups, roles, badges</h2>
+
+      <h3>Profile <span class="kind">kind:0</span> <span class="standard-ref">NIP-01</span></h3>
+      <p>Standard profile. We extend with BIM-specific fields in the JSON content (discipline, nip05).</p>
+
+      <h3>NIP-29 group <span class="kind">kind:9007 / 9000</span> <span class="standard-ref">NIP-29</span></h3>
+      <p>Project workspace as a private group. Group-create (9007) opens it, add-user (9000) invites members.</p>
+
+      <h3>BCF project <span class="kind">kind:30902</span> <span class="standard-ref">BCF 3.0 + ISO 19650</span></h3>
+      <p>Project metadata plus member list with two-axis role assignment (discipline + authority).</p>
+
+      <pre>{
+  "kind": 30902,
+  "tags": [
+    ["d", "pilot-2026"],
+    ["title", "Pilot project"],
+    ["bcf-version", "3.0"],
+    ["iso19650-state", "Shared"],
+    ["h", "&lt;nip29-group-id&gt;"],
+    // members: [pubkey, relay, IFC discipline, ISO 19650 authority]
+    ["p", "&lt;owner-hex&gt;", "", "client",             "appointing-party"],
+    ["p", "&lt;arch-hex&gt;",  "", "architect",          "lead-appointed"],
+    ["p", "&lt;coord-hex&gt;", "", "coordinator",        "info-manager"],
+    ["p", "&lt;struc-hex&gt;", "", "structuralEngineer", "appointed"],
+    ["p", "&lt;mep-hex&gt;",   "", "mepEngineer",        "appointed"],
+    // BCF project extensions
+    ["bcf-status-list",   "Open,InProgress,Review,Resolved,Closed"],
+    ["bcf-type-list",     "Clash,Issue,RFI,Information,Decision"],
+    ["bcf-priority-list", "Low,Normal,High,Critical"],
+    ["bcf-stage-list",    "LP3,LP4,LP5,LP6,LP7,LP8"]
+  ],
+  "content": "{...project description...}"
+}</pre>
+
+      <div class="map-note">
+        Italian UNI 11337-7 mapping: <code>appointing-party</code> = Committente,
+        <code>info-manager</code> = BIM Manager, <code>appointed</code> = BIM Specialist,
+        <code>cde-admin</code> = CDE Manager. Both labels can sit side by side in the UI.
+      </div>
+
+      <h3>Badge award <span class="kind">kind:30009</span> <span class="standard-ref">NIP-58</span></h3>
+      <p>Role attestation by professional chambers. The badge attests &ldquo;this npub is a verified architect of the chamber X&rdquo;.</p>
+
+      <!-- MODEL -->
+      <h2 id="model">Model &mdash; IFC and file metadata</h2>
+
+      <h3>NIP-94 file metadata <span class="kind">kind:1063</span> <span class="standard-ref">NIP-94</span></h3>
+      <p>Generic file provenance. For every IFC, every snapshot, every document on Blossom.</p>
+
+      <pre>{
+  "kind": 1063,
+  "tags": [
+    ["url",  "https://blossom.example/8f3e..."],
+    ["m",    "application/x-step"],
+    ["x",    "&lt;sha256&gt;"],
+    ["size", "42850432"],
+    ["schema",         "IFC4X3_ADD2"],
+    ["mvd",            "ReferenceView"],
+    ["authoring-tool", "Revit 2026"],
+    ["discipline",     "mep"],
+    ["a",              "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["ifc-project",    "0aB1cD2eF3gH4iJ5kL6mN7"],
+    ["filename",       "MEP_Pilot_V03.ifc"]
+  ],
+  "content": "{\"ifc_project_name\":\"Pilot\",\"entity_count\":18432}"
+}</pre>
+
+      <h3>IFC file reference <span class="kind">kind:30904</span> <span class="standard-ref">BCF file-ref + IFC 4.3</span></h3>
+      <p>Replaceable wrapper around the NIP-94 event. Carries the current IFC version per discipline + phase.</p>
+
+      <pre>{
+  "kind": 30904,
+  "tags": [
+    ["d", "pilot-arc-2026"],
+    ["e", "&lt;nip94-event-id&gt;", "", "file"],
+    ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["discipline",     "architecture"],
+    ["schema",         "IFC4X3_ADD2"],
+    ["mvd",            "ReferenceView"],
+    ["ifc-project",    "0aB1cD2eF3gH4iJ5kL6mN7"],
+    ["iso19650-state", "Shared"],
+    ["revision",       "V03"],
+    ["date",           "2026-05-13"],
+    ["ots",            "&lt;opentimestamps-proof&gt;"]
+  ]
+}</pre>
+
+      <!-- COORDINATION -->
+      <h2 id="coordination">Coordination &mdash; BCF, approvals</h2>
+
+      <h3>BCF topic <span class="kind">kind:30900</span> <span class="standard-ref">BCF 3.0 markup.bcf</span></h3>
+      <p>Issue / topic with all BCF 3.0 mandatory fields plus extension tags. Replaceable &mdash; the current status is overwritten by re-publishing the same d-tag.</p>
+
+      <pre>{
+  "kind": 30900,
+  "tags": [
+    ["d", "topic-001-duct-vs-girder-axis-4"],
+    ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["bcf-version",  "3.0"],
+    ["bcf-status",   "Open"],
+    ["bcf-type",     "Clash"],
+    ["bcf-priority", "High"],
+    ["bcf-stage",    "LP4"],
+    ["bcf-due",      "1749600000"],
+    ["bcf-server-assigned-id", "P-2026-042"],
+    ["t", "HVAC"],
+    ["t", "Structure"],
+    ["p", "&lt;mep-hex&gt;",   "", "assignee"],
+    ["p", "&lt;struc-hex&gt;", "", "consulted"],
+    ["ifc",      "0aB1cD2eF3gH4iJ5kL6mN7"],
+    ["ifc-file", "&lt;kind-30904-arc-id&gt;"],
+    ["ifc-file", "&lt;kind-30904-mep-id&gt;"],
+    ["viewpoint","&lt;kind-30901-id&gt;"],
+    ["snapshot", "https://blossom.example/abc123.png", "sha256:abc123..."]
+  ],
+  "content": "{\"title\":\"Duct crosses main girder axis 4/B\",...}"
+}</pre>
+
+      <h3>BCF viewpoint <span class="kind">kind:30901</span> <span class="standard-ref">BCF 3.0 visinfo.bcfv</span></h3>
+      <p>Camera, component list, visibility. Replaceable, because viewpoints can be improved after creation.</p>
+
+      <h3>BCF comment <span class="kind">kind:1170</span> <span class="standard-ref">BCF 3.0 comment</span></h3>
+      <p>Reply to a topic. Immutable &mdash; edits are handled via delete + republish.</p>
+
+      <pre>{
+  "kind": 1170,
+  "pubkey": "&lt;struc-hex&gt;",
+  "tags": [
+    ["e", "&lt;topic-event-id&gt;", "", "root"],
+    ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["p", "&lt;mep-hex&gt;"],
+    ["viewpoint", "&lt;kind-30901-id&gt;"]
+  ],
+  "content": "{\"text\":\"Girder HEB400 cannot be lowered...\"}"
+}</pre>
+
+      <h3>BCF audit <span class="kind">kind:1171</span> <span class="standard-ref">BCF API 3.0 topic events</span></h3>
+      <p>Every field change on a topic produces an immutable audit record.</p>
+
+      <pre>{
+  "kind": 1171,
+  "tags": [
+    ["e", "&lt;topic-event-id&gt;"],
+    ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["audit-field", "bcf-status"],
+    ["audit-from",  "Open"],
+    ["audit-to",    "InProgress"],
+    ["bcf-action",  "update"]
+  ]
+}</pre>
+
+      <h3>Approval <span class="kind">kind:30970</span> <span class="standard-ref">ISO 19650 gate</span></h3>
+      <p>Single-sig or Frostr multi-sig for formal release (phase end, state transition to Published).</p>
+
+      <pre>{
+  "kind": 30970,
+  "tags": [
+    ["d", "approval-lp4-shared-to-published-2026-05-15"],
+    ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["approval-type", "PhaseGate"],
+    ["target-state",  "Published"],
+    ["target-stage",  "LP4"],
+    ["e", "&lt;arc-kind-30904-id&gt;", "", "file"],
+    ["e", "&lt;tw-kind-30904-id&gt;",  "", "file"],
+    ["e", "&lt;mep-kind-30904-id&gt;", "", "file"],
+    ["signers",    "&lt;owner-hex&gt;,&lt;coord-hex&gt;,&lt;arch-hex&gt;"],
+    ["sig-policy", "3-of-3"],
+    ["ots",        "&lt;opentimestamps-proof&gt;"]
+  ]
+}</pre>
+
+      <!-- REQUIREMENTS -->
+      <h2 id="requirements">Requirements &mdash; IDS, LOIN, PIR, room book</h2>
+
+      <h3>IDS specification <span class="kind">kind:30810</span> <span class="standard-ref">IDS 1.0</span></h3>
+      <p>Machine-readable information requirements. Small specs carry inline XML in content; large ones reference a Blossom URL.</p>
+
+      <h3>IDS validation result <span class="kind">kind:1180</span> <span class="standard-ref">IDS 1.0 audit</span></h3>
+      <p>Result of an IFC validation against an IDS spec, signed by the validator tool.</p>
+
+      <pre>{
+  "kind": 1180,
+  "pubkey": "&lt;validator-hex&gt;",
+  "tags": [
+    ["e", "&lt;ids-spec-event-id&gt;",  "", "spec"],
+    ["e", "&lt;ifc-30904-event-id&gt;", "", "model"],
+    ["result",           "pass-with-warnings"],
+    ["applicable-count", "150"],
+    ["passed-count",     "147"],
+    ["failed-count",     "3"],
+    ["x",                "&lt;sha256-of-report&gt;"],
+    ["report-url",       "https://blossom.example/report-xyz.json"]
+  ],
+  "content": "{\"summary\":\"147/150 walls compliant, 3 violations on FireRating\"}"
+}</pre>
+
+      <h3>LOIN definition <span class="kind">kind:30811</span> <span class="standard-ref">EN 17412-1</span></h3>
+      <p>Granularity definition per information item. Geometry + alphanumeric + documentation.</p>
+
+      <h3>PIR / client requirements <span class="kind">kind:30880</span> <span class="standard-ref">ISO 19650-1 / DIN 18205</span></h3>
+      <p>Strategic requirements from the client. Replaceable, because requirements are refined until endorsed.</p>
+
+      <h3>Room-book entry <span class="kind">kind:30881</span> <span class="standard-ref">DIN 18205</span></h3>
+      <p>One room with target values. One event per room.</p>
+
+      <!-- LIFECYCLE -->
+      <h2 id="lifecycle">Lifecycle &mdash; site diary, maintenance, deconstruction, LCA</h2>
+
+      <h3>Site-diary entry <span class="kind">kind:30960</span> <span class="standard-ref">OTS-anchored</span></h3>
+      <p>Daily site entry. Signed. Anchored on the timechain via OpenTimestamps.</p>
+
+      <pre>{
+  "kind": 30960,
+  "pubkey": "&lt;site-manager-hex&gt;",
+  "tags": [
+    ["d", "pilot-2026-05-14"],
+    ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
+    ["date", "2026-05-14"],
+    ["weather", "sunny, 18°C"],
+    ["headcount", "14"],
+    ["ots", "&lt;opentimestamps-proof&gt;"]
+  ],
+  "content": "{\"activities\":[\"...\"],\"deliveries\":[...],\"incidents\":[]}"
+}</pre>
+
+      <h3>Maintenance cycle <span class="kind">kind:30962</span> <span class="standard-ref">CAM 2.3.16</span></h3>
+      <p>Maintenance event on equipment. Replaceable, because each cycle supersedes the previous.</p>
+
+      <h3>LCA study <span class="kind">kind:30940</span> <span class="standard-ref">EN 15804 / 15978</span></h3>
+      <p>Life-cycle assessment study. With <code>lca-source</code> tag (<code>model</code>/<code>verified</code>/<code>measured</code>) we separate modelled estimates from real measurement.</p>
+
+      <h3>Deconstruction-plan approval <span class="kind">kind:30971</span> <span class="standard-ref">CAM 2.3.17 / UNI PdR 75</span></h3>
+      <p>Approval of the end-of-life plan. Links PDT events with reuse classification. 70% reuse quota as a mandatory target for Italian public construction.</p>
+
+      <h3>Sustainability snapshot <span class="kind">kind:1190</span> <span class="standard-ref">Level(s) / CAM</span></h3>
+      <p>Point-in-time snapshot of a single indicator. Immutable, because it captures one moment.</p>
+
+      <!-- PRODUCTS -->
+      <h2 id="products">Products &mdash; PDT, telemetry</h2>
+
+      <h3>Product Data Template (PDT) <span class="kind">kind:30850</span> <span class="standard-ref">ISO 23387 + CAM extension</span></h3>
+      <p>Manufacturer-signed component data with EPD reference, dismount method, reuse classification.</p>
+
+      <pre>{
+  "kind": 30850,
+  "pubkey": "&lt;manufacturer-hex&gt;",
+  "tags": [
+    ["d", "pdt-clay-block-hlz-365-type-a"],
+    ["classification-uri", "https://identifier.buildingsmart.org/uri/.../IfcWall"],
+    ["product-category",   "Clay block"],
+    ["manufacturer",       "Wienerberger AG"],
+    ["epd-uri",            "https://epditaly.it/epd/wienerberger-hlz365-2025"],
+    ["epd-source",         "verified"],
+    ["reuse-class",        "recycle"],
+    ["dismount-method",    "dry mortaring, easily separable"],
+    ["lang", "de"], ["lang", "it"]
+  ]
+}</pre>
+
+      <h3>HVAC telemetry <span class="kind">kind:1230</span> <span class="standard-ref">BACnet / sensor</span></h3>
+      <p>Sensor data point from building operation. Immutable, point-in-time. In operation continuously; low frequency on a public relay, high frequency on a private one.</p>
+
+      <!-- ECONOMY -->
+      <h2 id="economy">Economy &mdash; zaps, bounties</h2>
+
+      <h3>Zap receipt <span class="kind">kind:9735</span> <span class="standard-ref">NIP-57</span></h3>
+      <p>Lightning payment to a topic or validation result. A bridge service publishes on receipt of payment.</p>
+
+      <h3>DVM workflow (NIP-90)</h3>
+      <p>No dedicated kind range &mdash; planning and validation services run on <code>kind:5301-5310</code> (jobs) and <code>kind:6301-6310</code> (results) in the NIP-90 range.</p>
+
+      <!-- CONVENTIONS -->
+      <h2 id="conventions">Global conventions</h2>
+
+      <h3>Honesty tags</h3>
+      <p>Every sustainability value carries a source label &mdash; we separate modelled estimates from third-party verified data and real measurement:</p>
+
+      <table>
+        <thead><tr><th>Tag</th><th>Values</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>epd-source</code></td><td><code>model</code> / <code>verified</code> / <code>measured</code></td><td>EPD source</td></tr>
+          <tr><td><code>lca-source</code></td><td><code>model</code> / <code>verified</code> / <code>measured</code></td><td>LCA calculation basis</td></tr>
+          <tr><td><code>co2-source</code></td><td><code>model</code> / <code>verified</code> / <code>measured</code></td><td>CO2 value source</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Project-reference convention</h3>
+      <p>Every project-related event carries an <code>a</code> tag of the form <code>30902:&lt;owner-pubkey&gt;:&lt;project-d-tag&gt;</code>. This makes the event discoverable and filterable at project scope.</p>
+
+      <h3>Language tags</h3>
+      <p>Multilingual content (DE/IT/EN) is marked by repeated <code>lang</code> tags and stored in the content JSON as a map: <code>{"name":{"de":"...","it":"..."}}</code>. Default language is DE for DACH projects, IT for Italian public contracts.</p>
+
+      <h3>State-transition rights</h3>
+      <p>State-tag changes (<code>iso19650-state</code>) are not free write rights. A transition requires a corresponding <code>kind:30970</code> approval. This is not enforced at the relay layer but validated client-side.</p>
+
+      <h3>OTS anchor</h3>
+      <p>Security-critical events (site diary, approvals, final model versions) carry an <code>ots</code> tag with a base64-encoded OpenTimestamps proof. The content is thus immutably anchored to the Bitcoin timechain at the moment of creation.</p>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../modell/ifc.html">IFC</a> &mdash; the data model referenced by kind:30904</li>
+          <li><a href="../anforderungen/ids.html">IDS</a> &mdash; the spec that becomes kind:30810</li>
+          <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; the process frame for state tags and roles</li>
+          <li><a href="../../en/standards.html">Standards profile</a> &mdash; pinned versions</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="../../en/standards.html">Standards profile &mdash; the versions we commit to</a></li>
+        <li>Kind registry &mdash; complete tag and kind list (in dev/docs)</li>
+        <li>BCF-NIP research &mdash; deeper BCF mapping analysis</li>
+        <li>CAM Edilizia 2025 &mdash; Italian sustainability mandate</li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Mapping &middot; Standards-to-Events</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

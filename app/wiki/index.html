@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>buildingSMART-Wiki — Sovereign AEC</title>
+  <meta name="description" content="Wissens-Sammlung zu buildingSMART-Standards für DACH, Italien und Schweizer Praxis. IFC, BCF, IDS, openCDE, bSDD, ISO 19650 erklärt, mit Mapping auf signierte Nostr-Ereignisse." />
+  <style>
+    :root {
+      --bg: #0f1419; --panel: #1a2027; --line: #2a3440;
+      --ink: #e8e8e8; --muted: #8a9aab;
+      --accent: #f4c430; --accent-2: #5b9bd5;
+      --ok: #4ade80; --warn: #f87171; --plan: #a78bfa;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      margin: 0; background: var(--bg); color: var(--ink);
+      line-height: 1.6;
+    }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 20, 25, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav .brand { font-family: Georgia, serif; font-size: 1.1rem; color: var(--accent); }
+    .nav .brand a { color: inherit; text-decoration: none; }
+    .nav .links a {
+      color: var(--muted); text-decoration: none;
+      margin-left: 1.25rem; font-size: .85rem;
+    }
+    .nav .links a:hover { color: var(--ink); }
+    main { max-width: 1180px; margin: 0 auto; padding: 3rem 1.5rem; }
+    .intro { max-width: 760px; margin-bottom: 4rem; }
+    .intro h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      line-height: 1.15; margin: 0 0 1rem;
+    }
+    .intro h1 em { font-style: normal; color: var(--accent); }
+    .intro p { font-size: 1.1rem; color: var(--muted); margin: 0 0 1rem; }
+    .eyebrow {
+      color: var(--accent); font-size: .75rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      margin: 2rem 0 .25rem;
+    }
+    .section-title {
+      font-family: Georgia, serif; font-size: 1.5rem;
+      margin: 0 0 1.5rem; color: var(--ink);
+    }
+    .cards {
+      display: grid; gap: .75rem;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      margin-bottom: 3rem;
+    }
+    .card {
+      display: block;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1rem 1.25rem;
+      text-decoration: none; color: inherit;
+      transition: border-color .15s, transform .1s;
+      position: relative;
+    }
+    .card:hover { border-color: var(--accent-2); transform: translateY(-1px); }
+    .card h3 {
+      font-family: Georgia, serif; font-size: 1.05rem;
+      margin: 0 0 .35rem; color: var(--ink);
+    }
+    .card p {
+      margin: 0; color: var(--muted);
+      font-size: .9rem; line-height: 1.45;
+    }
+    .card .meta {
+      display: block; margin-top: .5rem;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: .72rem; color: var(--accent-2);
+    }
+    .badge {
+      position: absolute;
+      top: .65rem; right: .75rem;
+      font-size: .65rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .15rem .5rem; border-radius: 3px;
+      font-weight: 600;
+    }
+    .badge.draft {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--warn);
+      border: 1px solid rgba(248, 113, 113, 0.4);
+    }
+    .badge.ready {
+      background: rgba(74, 222, 128, 0.15);
+      color: var(--ok);
+      border: 1px solid rgba(74, 222, 128, 0.4);
+    }
+    footer {
+      padding: 2rem 1.5rem 3rem;
+      text-align: center; color: var(--muted);
+      font-size: .85rem; border-top: 1px solid var(--line);
+    }
+    footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand"><a href="../index.html">Sovereign AEC</a></div>
+  <div class="links">
+    <a href="../index.html">Sammlung</a>
+    <a href="index.html">Wiki</a>
+    <a href="https://github.com">GitHub</a>
+  </div>
+</nav>
+
+<main>
+
+  <section class="intro">
+    <h1>buildingSMART-Wiki — <em>DACH + Italien</em>.</h1>
+    <p>Erklärungen zu IFC, BCF, IDS, openCDE, bSDD, ISO 19650 und allen umgebenden Standards, mit Fokus auf das Schweizer Default-Profil und Adapter für Deutschland, Österreich und Italien.</p>
+    <p>Jede Seite folgt demselben Muster: Was ist es. Welche Versionen. Was bedeuten die Felder. Mapping auf signierte Nostr-Ereignisse. Praxis-Hinweise. Quellen. So baust du auf einem stabilen Standards-Fundament eine eigene Implementierung — ob mit Sovereign-AEC oder einem anderen Stack.</p>
+  </section>
+
+  <!-- MODELL -->
+  <p class="eyebrow">Modell</p>
+  <h2 class="section-title">Daten beschreiben</h2>
+  <div class="cards">
+    <a class="card" href="modell/ifc.html">
+      <h3>IFC</h3>
+      <p>Industry Foundation Classes — das Datenmodell für Bauwerke. Übersicht, Versionen, Struktur.</p>
+      <span class="meta">4.3.2.0 (ISO 16739-1:2024) · Final</span>
+      <span class="badge ready">live</span>
+    </a>
+    <a class="card" href="modell/ifc-schichten.html" onclick="alert('in Arbeit'); return false;">
+      <h3>IFC-Schichten</h3>
+      <p>Resource / Core / Interoperability / Domain Layer im Detail.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="modell/ifc-entities.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Kern-Entitäten</h3>
+      <p>IfcRoot, IfcProject, IfcRelDefinesByProperties, IfcRelContainedInSpatialStructure, …</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="modell/property-sets.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Property + Quantity Sets</h3>
+      <p>Pset_*, Qto_*, IfcRelDefinesByProperties, N:N-Beziehungen.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="modell/mvds.html" onclick="alert('in Arbeit'); return false;">
+      <h3>MVDs (Model View Definitions)</h3>
+      <p>Reference View 1.2, Alignment Based View 1.0, IFC4Precast etc.</p>
+      <span class="meta">RV 1.2 Final · AbV 1.0 in Review</span>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- KOORDINATION -->
+  <p class="eyebrow">Koordination</p>
+  <h2 class="section-title">Über Probleme im Modell sprechen</h2>
+  <div class="cards">
+    <a class="card" href="../was-ist-bcf.html">
+      <h3>BCF</h3>
+      <p>BIM Collaboration Format — wie Planer Issues, Comments und Viewpoints austauschen.</p>
+      <span class="meta">XML 3.0 (18.06.2021) · API 3.0 (17.06.2021)</span>
+      <span class="badge ready">live</span>
+    </a>
+    <a class="card" href="koordination/bcf-xml.html" onclick="alert('in Arbeit'); return false;">
+      <h3>BCF-XML</h3>
+      <p>Container-Struktur, markup.bcf, viewpoint.bcfv, snapshot.png, Project Extensions.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="koordination/bcf-api.html" onclick="alert('in Arbeit'); return false;">
+      <h3>BCF-API</h3>
+      <p>REST 2.1 + 3.0, per-entity authorization, Topic/Comment/Viewpoint-Ressourcen.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="koordination/opencde.html" onclick="alert('in Arbeit'); return false;">
+      <h3>openCDE-Initiative</h3>
+      <p>Foundation API 1.1, Documents API 1.0 (21.12.2023), Dictionary API.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- ANFORDERUNGEN -->
+  <p class="eyebrow">Anforderungen</p>
+  <h2 class="section-title">Was geliefert werden muss</h2>
+  <div class="cards">
+    <a class="card" href="anforderungen/ids.html">
+      <h3>IDS</h3>
+      <p>Information Delivery Specification — maschinenlesbare Informations-Anforderungen mit IFC-Bindung.</p>
+      <span class="meta">1.0 Final (01.06.2024)</span>
+      <span class="badge ready">live</span>
+    </a>
+    <a class="card" href="anforderungen/loin.html" onclick="alert('in Arbeit'); return false;">
+      <h3>LOIN</h3>
+      <p>Level of Information Need nach EN 17412-1 / SN EN 17412-1.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="anforderungen/pir-eir-air.html" onclick="alert('in Arbeit'); return false;">
+      <h3>PIR / EIR / AIR / OIR</h3>
+      <p>ISO-19650-Anforderungshierarchie. Wer schreibt was, wer signiert was.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="anforderungen/idm.html" onclick="alert('in Arbeit'); return false;">
+      <h3>IDM</h3>
+      <p>Information Delivery Manual, Prozessbeschreibung. EN ISO 29481-1:2010.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- PROZESS -->
+  <p class="eyebrow">Prozess</p>
+  <h2 class="section-title">Lifecycle und Rollen</h2>
+  <div class="cards">
+    <a class="card" href="prozess/iso-19650.html">
+      <h3>ISO 19650</h3>
+      <p>Information Management für die gesamte Lebenszeit. Teile 1–5 erklärt.</p>
+      <span class="meta">Final · DACH-Default-Prozessrahmen</span>
+      <span class="badge ready">live</span>
+    </a>
+    <a class="card" href="prozess/lifecycle-states.html" onclick="alert('in Arbeit'); return false;">
+      <h3>WIP / Shared / Published / Archive</h3>
+      <p>Die vier kanonischen Container-Zustände nach ISO 19650.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="prozess/bim-rollen.html" onclick="alert('in Arbeit'); return false;">
+      <h3>BIM-Rollen</h3>
+      <p>Appointing Party, Lead Appointed Party, Task Team Manager, CDE-Manager.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="prozess/rbac-abac.html" onclick="alert('in Arbeit'); return false;">
+      <h3>RBAC + ABAC</h3>
+      <p>Zweischichtiges Rechtemodell. BCF-API per-entity authorization.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- KLASSIFIKATION -->
+  <p class="eyebrow">Klassifikation</p>
+  <h2 class="section-title">Begriffe und Wörterbücher</h2>
+  <div class="cards">
+    <a class="card" href="klassifikation/bsdd.html" onclick="alert('in Arbeit'); return false;">
+      <h3>bSDD</h3>
+      <p>buildingSMART Data Dictionary — Klassen, Properties, URIs, Mehrsprachigkeit.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="klassifikation/uri-system.html" onclick="alert('in Arbeit'); return false;">
+      <h3>bSDD-URIs</h3>
+      <p>Wie der Identifier-Service aufgebaut ist und wie wir ihn referenzieren.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="klassifikation/klassifikationssysteme.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Klassifikationssysteme</h3>
+      <p>Uniclass, OmniClass, ETIM, eBKP-H — und wann welches.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- REGIONAL -->
+  <p class="eyebrow">Regional</p>
+  <h2 class="section-title">DACH + Italien</h2>
+  <div class="cards">
+    <a class="card" href="regional/dach-vergleich.html" onclick="alert('in Arbeit'); return false;">
+      <h3>DACH-Vergleich</h3>
+      <p>CH / DE / AT kompakt: wer hat was, wo liegt der Vorteil.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="regional/ch-sia-kbob.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Schweiz</h3>
+      <p>KBOB, SIA, buildingSMART Switzerland, BIM-Abwicklungsmodell, AIM, BIM2FM.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="regional/de-din-vdi.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Deutschland</h3>
+      <p>BIM Deutschland, DIN EN ISO 19650, VDI 2552, AIA/BAP-Vorlagen.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="regional/at-oenorm.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Österreich</h3>
+      <p>ÖNORM A 6241-1:2025, A 6241-2, ASFINAG, ÖBB, buildingSMART Austria.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="regional/it-uni-11337.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Italien</h3>
+      <p>UNI 11337, ACDat, Capitolato informativo, DM 312/2021, buildingSMART Italia.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- LIFECYCLE -->
+  <p class="eyebrow">Lifecycle</p>
+  <h2 class="section-title">Vom Modell zum Betrieb</h2>
+  <div class="cards">
+    <a class="card" href="lifecycle/aim.html" onclick="alert('in Arbeit'); return false;">
+      <h3>AIM</h3>
+      <p>Asset Information Model — was bleibt nach der Übergabe.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="lifecycle/bim2fm.html" onclick="alert('in Arbeit'); return false;">
+      <h3>BIM2FM</h3>
+      <p>Schweizer Datenfeldkatalog für die Übergabe in den Betrieb.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="lifecycle/gebaeudebuch.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Gebäudebuch / Building Logbook</h3>
+      <p>EPBD-Recast Art. 19, Pflicht ab 2026.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="lifecycle/dpp.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Digital Product Passport</h3>
+      <p>ESPR (EU 2024/1781), Pflicht für Bauprodukte ab 2027.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+  <!-- NOSTR-MAPPING -->
+  <p class="eyebrow">Nostr-Mapping</p>
+  <h2 class="section-title">Standards auf signierte Ereignisse</h2>
+  <div class="cards">
+    <a class="card" href="nostr-mapping/warum-nostr.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Warum Nostr</h3>
+      <p>Welche fehlende Schicht das Protokoll für openBIM-Workflows schließt.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="nostr-mapping/kind-mapping.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Kind-Mapping</h3>
+      <p>Welcher Standard auf welchen Nostr-Event-Kind — komplette Übersicht.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="nostr-mapping/tag-mapping.html" onclick="alert('in Arbeit'); return false;">
+      <h3>Tag-Mapping</h3>
+      <p>Welches Standard-Feld auf welchen Event-Tag.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+    <a class="card" href="nostr-mapping/bcf-on-nostr.html" onclick="alert('in Arbeit'); return false;">
+      <h3>BCF konkret</h3>
+      <p>BCF-Topic, Comment, Viewpoint als signierte Ereignisse — vollständiges Mapping.</p>
+      <span class="badge draft">in arbeit</span>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  buildingSMART-Wiki · Teil der Sovereign-AEC-Sammlung · Open Source MIT ·
+  <a href="../index.html">zurück zur Sammlung</a>
+</footer>
+
+</body>
+</html>

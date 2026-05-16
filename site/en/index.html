@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gemeinwert — Open ground for building records</title>
+  <meta name="description" content="Gemeinwert keeps the records of a building signed, portable and readable for as long as the building stands. An open layer for everyone who plans, builds or owns one. MIT-licensed." />
+  <meta property="og:title" content="Gemeinwert — Open ground for building records" />
+  <meta property="og:description" content="Buildings last fifty years. Software platforms don't. Gemeinwert keeps the records you make signed, portable, and yours." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="../assets/og-image.png" />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <style>
+    /* ============================================================
+       Simpler landing — overrides the denser primitives from site.css.
+       No grid overlay, no mono uppercase chrome, sentence case throughout.
+       ============================================================ */
+    body::before { display: none; }
+    body { line-height: 1.65; }
+
+    .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; height: 64px; }
+    .topbar__inner { gap: 32px; }
+    .brand__word { font-size: 19px; }
+    .topbar .nav { margin-left: auto; }
+    .topbar .nav a {
+      font-family: var(--font-body);
+      font-size: 15px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--ink-2);
+    }
+    .topbar .nav a:hover { color: var(--gold); }
+    .topbar__meta { display: none; }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    .hero2 { padding: 88px 0 56px; }
+    .hero2 h1 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      margin: 0 0 24px;
+      font-weight: 400;
+      text-wrap: balance;
+    }
+    .hero2 h1 em { font-style: italic; color: var(--gold); }
+    .hero2 .lede {
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      margin: 0 0 32px;
+      max-width: 60ch;
+    }
+    .hero2 .cta-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+
+    /* Section pattern */
+    .sec2 { padding: 56px 0; border-top: 1px solid var(--line); }
+    .sec2 h2 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin: 0 0 24px;
+      font-weight: 400;
+    }
+    .sec2 p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--ink-2);
+      margin: 0 0 18px;
+      max-width: 64ch;
+      text-wrap: pretty;
+    }
+    .sec2 p:last-child { margin-bottom: 0; }
+    .sec2 strong { color: var(--ink); font-weight: 600; }
+    .sec2 em { color: var(--gold); font-style: italic; }
+
+    /* Sentence-case button variant */
+    .btn-soft {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 44px;
+      padding: 0 22px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0;
+      text-transform: none;
+      border: 1px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 150ms, color 150ms, border-color 150ms;
+      text-decoration: none;
+    }
+    .btn-soft:hover { background: var(--ink); color: var(--bg); }
+    .btn-soft.primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #1a1208;
+    }
+    .btn-soft.primary:hover { background: var(--gold-ember); border-color: var(--gold-ember); }
+    .btn-soft.ghost {
+      border-color: var(--line-strong);
+      color: var(--ink-2);
+    }
+    .btn-soft.ghost:hover { background: transparent; color: var(--gold); border-color: var(--gold); }
+    .btn-soft .arrow { transition: transform 150ms; }
+    .btn-soft:hover .arrow { transform: translateX(3px); }
+
+    /* Audiences — editorial blocks, no card chrome */
+    .aud2 { display: flex; flex-direction: column; gap: 0; }
+    .aud2 > article {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+    .aud2 > article:first-child { border-top: none; padding-top: 0; }
+    .aud2 h3 {
+      font-family: var(--font-display);
+      font-size: 21px;
+      line-height: 1.2;
+      letter-spacing: -0.005em;
+      color: var(--gold);
+      font-weight: 400;
+      margin: 0 0 8px;
+    }
+    .aud2 p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 64ch;
+    }
+
+    /* Tools — flat list */
+    .tools2 { display: flex; flex-direction: column; }
+    .tools2 a {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+      align-items: baseline;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 150ms;
+    }
+    .tools2 a:first-child { border-top: none; padding-top: 4px; }
+    .tools2 a:last-child { border-bottom: 1px solid var(--line); }
+    .tools2 .name {
+      font-family: var(--font-display);
+      font-size: 19px;
+      letter-spacing: -0.005em;
+      margin-bottom: 4px;
+    }
+    .tools2 .desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 60ch;
+    }
+    .tools2 .arr {
+      color: var(--dim);
+      font-size: 18px;
+      transition: transform 150ms, color 150ms;
+    }
+    .tools2 a:hover { color: var(--gold); }
+    .tools2 a:hover .arr { color: var(--gold); transform: translateX(4px); }
+    .tools2 .soon {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--dim);
+      margin-left: 8px;
+      letter-spacing: 0.04em;
+    }
+    .tools2 .roadmap-note {
+      font-size: 14px;
+      color: var(--muted);
+      padding: 18px 0 0;
+      margin-top: 12px;
+      border-top: 1px dashed var(--line);
+      font-style: italic;
+    }
+
+    /* Read more — two-column links */
+    .more ul { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 32px; }
+    .more li { padding: 6px 0; break-inside: avoid; }
+    .more a { color: var(--ink-2); font-size: 15px; }
+    .more a:hover { color: var(--gold); }
+    @media (max-width: 600px) { .more ul { columns: 1; } }
+
+    /* Footer */
+    .ftr { padding: 48px 0 64px; border-top: 1px solid var(--line); }
+    .ftr__row {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .ftr .text { font-size: 13px; color: var(--dim); }
+    .ftr .text a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+    .ftr .text a:hover { color: var(--gold); text-decoration-color: var(--gold); }
+    .lang-switch a {
+      padding: 6px 12px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+    }
+    .lang-switch { font-family: var(--font-mono); }
+
+    /* Mobile tightening */
+    @media (max-width: 720px) {
+      .hero2 { padding: 56px 0 40px; }
+      .sec2 { padding: 40px 0; }
+    }
+
+    /* ============================================================
+       INTRO ANIMATION
+       Plays once per session. Builds the mark like a construction
+       drawing: scaffold first (dim nodes + beams), then the signed
+       record (gold G + Waage), then the page underneath reveals.
+       ============================================================ */
+    .splash {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      animation: splash-out 0.6s ease 2.0s forwards;
+    }
+    @keyframes splash-out {
+      to { opacity: 0; visibility: hidden; pointer-events: none; }
+    }
+    .splash__svg {
+      width: 280px;
+      height: auto;
+      max-width: 70vw;
+    }
+
+    /* Beams: staggered fade-in (scaffold rising) */
+    .splash__beam {
+      opacity: 0;
+      animation: dim-in 0.32s ease-out forwards;
+    }
+    @keyframes dim-in { to { opacity: 1; } }
+    .splash__beam:nth-child(1) { animation-delay: 0.00s; }
+    .splash__beam:nth-child(2) { animation-delay: 0.07s; }
+    .splash__beam:nth-child(3) { animation-delay: 0.14s; }
+    .splash__beam:nth-child(4) { animation-delay: 0.21s; }
+    .splash__beam:nth-child(5) { animation-delay: 0.28s; }
+    .splash__beam:nth-child(6) { animation-delay: 0.35s; }
+    .splash__beam:nth-child(7) { animation-delay: 0.42s; }
+    .splash__beam:nth-child(8) { animation-delay: 1.20s; } /* plumb string drops last */
+
+    /* Nodes: scale-pop in sequence */
+    .splash__node {
+      opacity: 0;
+      transform: scale(0);
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: node-pop 0.32s cubic-bezier(0.34, 1.4, 0.5, 1) forwards;
+    }
+    @keyframes node-pop {
+      0%   { opacity: 0; transform: scale(0); }
+      60%  { opacity: 1; transform: scale(1.35); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .splash__node:nth-child(1) { animation-delay: 0.06s; }
+    .splash__node:nth-child(2) { animation-delay: 0.13s; }
+    .splash__node:nth-child(3) { animation-delay: 0.20s; }
+    .splash__node:nth-child(4) { animation-delay: 0.27s; }
+    .splash__node:nth-child(5) { animation-delay: 0.34s; }
+    .splash__node:nth-child(6) { animation-delay: 0.41s; }
+    .splash__node:nth-child(7) { animation-delay: 0.48s; }
+    .splash__node:nth-child(8) { animation-delay: 0.55s; }
+    /* plumb bob: pulses in last, after the gold settles */
+    .splash__node.bob { animation-delay: 1.55s; }
+
+    /* Gold G fades in over the scaffold */
+    .splash__g {
+      opacity: 0;
+      animation: gold-fade 0.5s ease-out 0.85s forwards;
+    }
+    @keyframes gold-fade { to { opacity: 0.78; } }
+
+    /* Bar slides down from above into Waage position */
+    .splash__bar {
+      opacity: 0;
+      transform: translateY(-12px);
+      transform-box: fill-box;
+      animation: bar-in 0.4s ease-out 1.10s forwards;
+    }
+    @keyframes bar-in { to { opacity: 0.78; transform: translateY(0); } }
+
+    /* Triangle drops from above the bar to its hanging position */
+    .splash__tri {
+      opacity: 0;
+      transform: translateY(-32px);
+      transform-box: fill-box;
+      animation: tri-drop 0.5s cubic-bezier(0.5, 0, 0.25, 1) 1.30s forwards;
+    }
+    @keyframes tri-drop { to { opacity: 0.78; transform: translateY(0); } }
+
+    /* Page chrome fades in synchronised with splash dismissal */
+    body:not(.no-splash) > header,
+    body:not(.no-splash) > main,
+    body:not(.no-splash) > footer {
+      opacity: 0;
+      animation: page-in 0.7s ease-out 2.20s forwards;
+    }
+    @keyframes page-in { to { opacity: 1; } }
+
+    /* Subsequent visits in the same session: no splash, no fade */
+    body.no-splash .splash { display: none !important; }
+    body.no-splash > header,
+    body.no-splash > main,
+    body.no-splash > footer {
+      opacity: 1;
+      animation: none;
+    }
+
+    /* Respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .splash { display: none; }
+      body > header, body > main, body > footer { opacity: 1; animation: none; }
+      .splash__beam, .splash__node, .splash__g, .splash__bar, .splash__tri { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== INTRO SPLASH ===================== -->
+<div class="splash" id="splash" aria-hidden="true">
+  <svg class="splash__svg" viewBox="0 0 240 290" aria-hidden="true">
+    <g class="splash__beams" stroke="#3f4d5b" stroke-width="1.5" stroke-linecap="square" fill="none">
+      <line class="splash__beam" x1="55"  y1="50"  x2="185" y2="50"  />
+      <line class="splash__beam" x1="185" y1="50"  x2="188" y2="122" />
+      <line class="splash__beam" x1="188" y1="122" x2="130" y2="122" />
+      <line class="splash__beam" x1="130" y1="122" x2="188" y2="134" />
+      <line class="splash__beam" x1="188" y1="134" x2="185" y2="180" />
+      <line class="splash__beam" x1="185" y1="180" x2="55"  y2="180" />
+      <line class="splash__beam" x1="55"  y1="180" x2="55"  y2="50"  />
+      <line class="splash__beam" x1="120" y1="180" x2="120" y2="242" />
+    </g>
+    <g class="splash__nodes" fill="#3f4d5b">
+      <circle class="splash__node" cx="55"  cy="50"  r="3" />
+      <circle class="splash__node" cx="185" cy="50"  r="3" />
+      <circle class="splash__node" cx="188" cy="122" r="3" />
+      <circle class="splash__node" cx="130" cy="122" r="3" />
+      <circle class="splash__node" cx="188" cy="134" r="3" />
+      <circle class="splash__node" cx="185" cy="180" r="3" />
+      <circle class="splash__node" cx="55"  cy="180" r="3" />
+      <circle class="splash__node" cx="120" cy="180" r="3" />
+      <circle class="splash__node bob" cx="120" cy="242" r="5" />
+    </g>
+    <g fill="#f4c430">
+      <text class="splash__g" x="120" y="180"
+            font-family="'Helvetica Neue', Helvetica, 'Arial Black', Arial, sans-serif"
+            font-weight="700" font-size="180" text-anchor="middle"
+            style="letter-spacing:-0.04em;">G</text>
+      <rect class="splash__bar" x="82" y="196" width="76" height="6" />
+      <polygon class="splash__tri" points="108,202 132,202 120,242" />
+    </g>
+  </svg>
+</div>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap topbar__inner">
+    <a class="brand" href="./" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#what">What it is</a>
+      <a href="#try">Tools</a>
+      <a href="standards.html">Standards</a>
+      <a href="../was-ist-bcf.html">Wiki</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero2" data-screen-label="Hero">
+    <div class="wrap">
+      <h1>Buildings last fifty years.<br />Software platforms <em>don&rsquo;t</em>.</h1>
+      <p class="lede">
+        Every building creates thousands of drawings, decisions and notes. Today most
+        of that lives inside vendor platforms with quarterly subscriptions. Gemeinwert
+        keeps the same records signed, portable, and readable for as long as the
+        building stands &mdash; with no platform in the middle.
+      </p>
+      <div class="cta-row">
+        <a class="btn-soft primary" href="#try">Try a tool <span class="arrow">&rarr;</span></a>
+        <a class="btn-soft ghost" href="../das-plattform-problem.html">Read why we&rsquo;re building it</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT IT IS -->
+  <section class="sec2" id="what" data-screen-label="What it is">
+    <div class="wrap">
+      <h2>What it is, in plain words.</h2>
+      <p>
+        Gemeinwert isn&rsquo;t a platform. It&rsquo;s a thin, open way for everyone
+        working on a building &mdash; architects, engineers, clients, contractors
+        &mdash; to share the records they already make. Coordination topics,
+        requirements, daily site logs, drawing approvals. The kinds of things that,
+        in a normal project, end up scattered across five different vendor portals.
+      </p>
+      <p>
+        Every record is <strong>signed</strong> by the person who made it, so you can
+        prove who said what and when, years later, without anyone&rsquo;s permission.
+        The data lives where <em>you</em> choose: on your own server, in your office,
+        or with a provider you pick. Switching providers is a config change, not a
+        rescue mission.
+      </p>
+      <p>
+        We don&rsquo;t replace IFC, BCF, IDS or any other building standard.
+        We use them, untouched. If Gemeinwert ever disappears, your records still open
+        in any tool that reads the standards.
+      </p>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="sec2" data-screen-label="Who it's for">
+    <div class="wrap">
+      <h2>Who it&rsquo;s for.</h2>
+      <div class="aud2">
+        <article>
+          <h3>Owners and public clients</h3>
+          <p>
+            You&rsquo;re paying for a building that will outlive any software subscription.
+            We give you records that read on any tool, in any future, without trusting
+            whoever owns the platform this year.
+          </p>
+        </article>
+        <article>
+          <h3>Architects and planners</h3>
+          <p>
+            You coordinate in Revit, Archicad, Allplan and a dozen plug-ins already.
+            We make it possible to share BCF topics and IDS requirements directly with
+            the people you work with &mdash; no portal between you.
+          </p>
+        </article>
+        <article>
+          <h3>Developers and integrators</h3>
+          <p>
+            MIT-licensed, plain HTML, no framework. Read the kind registry, build a tool
+            on top, or fork the whole thing. The work is heading toward open standards
+            drafts you can implement.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRY -->
+  <section class="sec2" id="try" data-screen-label="Try">
+    <div class="wrap">
+      <h2>What you can try today.</h2>
+      <div class="tools2">
+        <a href="../character.html">
+          <div>
+            <div class="name">Create your character</div>
+            <div class="desc">A friendly first step. Make a cryptographic identity and pick a role from the buildingSMART role list.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
+        <a href="../admin.html">
+          <div>
+            <div class="name">Project admin</div>
+            <div class="desc">Open a project and invite people with roles. Membership is a signed event you can audit.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
+        <a href="../keys.html">
+          <div>
+            <div class="name">Keys, the classical way</div>
+            <div class="desc">Sober key management for people who&rsquo;d rather skip the RPG onboarding.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
+        <a href="../was-ist-bcf.html">
+          <div>
+            <div class="name">What is BCF?</div>
+            <div class="desc">A short read about the standard planners use to flag issues in a 3D model. Ten minutes.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
+        <div class="roadmap-note">
+          More lands each week &mdash; the BCF Quickform, the site diary, the IFC viewer. Pilot status. Rough edges are real.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section class="sec2" data-screen-label="Who">
+    <div class="wrap">
+      <h2>Who&rsquo;s making it.</h2>
+      <p>
+        A small open-source project led by <strong>Bimbeam</strong>. MIT-licensed code,
+        CC&nbsp;BY 4.0 content &mdash; the working bits are meant to become open standards drafts,
+        published the same way IFC and BCF were.
+      </p>
+    </div>
+  </section>
+
+  <!-- READ MORE -->
+  <section class="sec2 more" data-screen-label="Read more">
+    <div class="wrap">
+      <h2>Read more.</h2>
+      <ul>
+        <li><a href="../das-plattform-problem.html">The platform problem &mdash; long read</a></li>
+        <li><a href="standards.html">The standards we follow</a></li>
+        <li><a href="../was-ist-bcf.html">What is BCF?</a></li>
+        <li><a href="../wiki/">The wiki</a></li>
+        <li><a href="index-technical.html">The dense / technical view</a></li>
+        <li><a href="https://github.com" target="_blank" rel="noopener">GitHub repo</a></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ftr" data-screen-label="Footer">
+  <div class="wrap">
+    <div class="ftr__row">
+      <div class="text">
+        gemeinwert &middot; est. 2026 &middot; MIT license &middot; <a href="mailto:info@bimbeam.at">info@bimbeam.at</a>
+      </div>
+      <div class="lang-switch">
+        <a href="../en/" class="active">EN</a>
+        <a href="../de/">DE</a>
+        <a href="../it/">IT</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Tweaks panel stays available via the host toolbar toggle but starts hidden. -->
+<aside class="tweaks" id="tweaks" role="dialog" aria-label="Tweaks">
+  <div class="tweaks__head">
+    <h5>Tweaks</h5>
+    <button class="tweaks__close" id="tweaks-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="tweaks__body">
+    <div class="tweak-row">
+      <label>Motto</label>
+      <div class="tweak-row__controls">
+        <button data-group="motto" data-value="en">EN</button>
+        <button data-group="motto" data-value="de">DE</button>
+        <button data-group="motto" data-value="it">IT</button>
+        <button data-group="motto" data-value="short">Signed.</button>
+      </div>
+    </div>
+    <div class="tweak-row">
+      <label>Accent</label>
+      <div class="tweak-row__controls">
+        <button data-group="accent" data-value="gold"><span class="swatch" style="background:#f4c430"></span>Gold</button>
+        <button data-group="accent" data-value="blue"><span class="swatch" style="background:#5b9bd5"></span>Blue</button>
+        <button data-group="accent" data-value="cyan"><span class="swatch" style="background:#00d4ff"></span>Cyan</button>
+        <button data-group="accent" data-value="orange"><span class="swatch" style="background:#ff5a1f"></span>Orange</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  // Show intro animation only on the first visit of this session.
+  (function () {
+    var k = 'gemeinwert-splash-seen';
+    try {
+      if (sessionStorage.getItem(k)) {
+        document.body.classList.add('no-splash');
+      } else {
+        sessionStorage.setItem(k, '1');
+        // Clean the splash out of the DOM after it has fully faded.
+        setTimeout(function () {
+          var s = document.getElementById('splash');
+          if (s && s.parentNode) s.parentNode.removeChild(s);
+        }, 3000);
+      }
+    } catch (e) { /* sessionStorage disabled — splash will simply play every time */ }
+  })();
+</script>
+<script src="../assets/nodebg.js"></script>
+<script src="../assets/tweaks.js"></script>
+</body>
+</html>

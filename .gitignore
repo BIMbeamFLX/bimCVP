@@ -1,0 +1,182 @@
+# Sovereign AEC — .gitignore
+
+# ============================================================
+# Secrets (NIE committen)
+# ============================================================
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/lnbits/.env
+backend/strfry/.env
+backend/blossom/.env
+*.nsec
+*-nsec.txt
+*.key
+*.pem
+
+# Erlaubte Beispiel-Dateien
+!.env.example
+!**/.env.example
+
+# ============================================================
+# Echtdaten (vertraulich, Projekt-spezifisch)
+# ============================================================
+ifc/*
+!ifc/.gitkeep
+ifc-data/
+real-data/
+
+# ============================================================
+# Docker Volumes / persistente Daten
+# ============================================================
+backend/strfry/data/
+backend/blossom/data/
+backend/lnbits/data/
+backend/caddy/data/
+backend/caddy/config/
+backend/phoenixd/data/
+**/postgres-data/
+**/sqlite-data/
+
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================================
+# Node / JavaScript
+# ============================================================
+node_modules/
+.npm/
+.yarn/
+yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+package-lock.json.bak
+
+# ============================================================
+# Build-Output
+# ============================================================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.astro/
+*.tsbuildinfo
+
+# ============================================================
+# IDE / Editor
+# ============================================================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.factorypath
+.sublime-workspace
+.sublime-project
+*.iml
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+.Trashes
+
+# ============================================================
+# Logs
+# ============================================================
+*.log
+logs/
+saec-backup.log
+
+# ============================================================
+# Backups
+# ============================================================
+~/saec-backups/
+*.bak
+*.backup
+*.tmp
+*.temp
+*~
+
+# ============================================================
+# Output / Generated
+# ============================================================
+output/
+outputs/
+generated/
+*.generated.md
+gebaeudebuch-*.pdf
+!docs/gebaeudebuch-generator-scope.md
+
+# ============================================================
+# Test data (außer expliziter Test-Vektoren)
+# ============================================================
+test-data/
+fixtures/runtime/
+
+# ============================================================
+# Compiled / Cache
+# ============================================================
+*.cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# ============================================================
+# CI / Deployment
+# ============================================================
+.vercel/
+.netlify/
+deploy/
+
+# ============================================================
+# Spezifisch Sovereign AEC
+# ============================================================
+# AdlerHort-Daten (separates Projekt, sollte nie hier liegen)
+adlerhort-data/
+
+# Lokale Test-Tribes / Demo-Daten
+demo-tribe-*/
+test-tribe-*/
+
+# Lokale OTS-Proofs (Cache)
+ots-cache/
+*.ots

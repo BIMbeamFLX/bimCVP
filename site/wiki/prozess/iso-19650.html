@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ISO 19650 — Gemeinwert Wiki</title>
+  <meta name="description" content="ISO 19650 — the international standard series for information management in construction. Container states, requirements hierarchy, BIM roles, DACH adapters." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; process &nbsp;/&nbsp; iso 19650</p>
+
+    <header class="art-head">
+      <h1>ISO 19650 &mdash; information management in construction</h1>
+      <p class="art-lede">
+        The international standard series that governs how construction-project information is
+        managed across the full life cycle. Defines the four container states
+        (WIP / Shared / Published / Archive), the hierarchy of requirements documents
+        (PIR / EIR / AIR / OIR) and the essential BIM roles.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>ISO 19650 is the common process frame in which all BIM standards (IFC, BCF, IDS, openCDE) are embedded &mdash; whoever does not understand the frame cannot build a serious CDE.</p>
+      </div>
+
+      <h2>The parts of the standard</h2>
+
+      <table>
+        <thead>
+          <tr><th>Part</th><th>Content</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ISO 19650-1</td><td>Fundamental concepts, terms, principles</td><td>Final 2018, EN / SN adoptions active</td></tr>
+          <tr><td>ISO 19650-2</td><td>Delivery phase (planning + construction)</td><td>Final 2018</td></tr>
+          <tr><td>ISO 19650-3</td><td>Operational phase</td><td>Final 2020</td></tr>
+          <tr><td>ISO 19650-4</td><td>Information exchange</td><td>Final 2022</td></tr>
+          <tr><td>ISO 19650-5</td><td>Security perspective (highly sensitive assets)</td><td>Final 2020</td></tr>
+          <tr><td>ISO 19650-6</td><td>Health and safety</td><td>2024</td></tr>
+        </tbody>
+      </table>
+
+      <p>National adoptions:</p>
+      <ul>
+        <li><strong>DIN EN ISO 19650</strong> (Germany) &mdash; direct EN adoption</li>
+        <li><strong>SN EN ISO 19650</strong> (Switzerland) &mdash; Swiss adoption with KBOB orientation aid for Part 1</li>
+        <li><strong>ÖNORM EN ISO 19650</strong> (Austria) &mdash; complemented by the ÖNORM A 6241 family</li>
+        <li><strong>UNI EN ISO 19650</strong> (Italy) &mdash; complemented by the UNI 11337 family</li>
+        <li><strong>BS EN ISO 19650</strong> (UK) &mdash; direct successor of the PAS 1192 series</li>
+      </ul>
+
+      <h2>The four container states</h2>
+
+      <p>The core of the standard for every CDE: every information container (model, document, datasheet) lives at every moment in exactly one of four states.</p>
+
+      <div class="state-flow">
+        <div class="state-box">
+          <div class="state-box__name">WIP</div>
+          <div class="state-box__desc">Work In Progress &mdash; author is working, no one else sees it</div>
+        </div>
+        <div class="state-box">
+          <div class="state-box__name">Shared</div>
+          <div class="state-box__desc">Visible to defined team members, not yet final</div>
+        </div>
+        <div class="state-box">
+          <div class="state-box__name">Published</div>
+          <div class="state-box__desc">Released by an approver, authoritative project version</div>
+        </div>
+        <div class="state-box">
+          <div class="state-box__name">Archive</div>
+          <div class="state-box__desc">Completed, immutable, historical reference</div>
+        </div>
+      </div>
+
+      <p>The transition between states is <strong>not free</strong>. Every transition requires a release right. Whoever may write WIP is not automatically allowed to push to Shared. Whoever may push to Shared is not automatically allowed to push to Published.</p>
+
+      <p>Practical consequence for a CDE: <strong>state transitions are separate permissions, not implied by write rights.</strong></p>
+
+      <h2>The requirements hierarchy</h2>
+
+      <p>ISO 19650-1 defines four levels of information requirements. They run from strategic (top) to operational (bottom):</p>
+
+      <table>
+        <thead>
+          <tr><th>Acronym</th><th>Full form</th><th>Who writes it</th><th>What it is about</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>OIR</strong></td>
+            <td>Organisational Information Requirements</td>
+            <td>Organisation / asset owner</td>
+            <td>What information the organisation needs across projects, beyond a single one</td>
+          </tr>
+          <tr>
+            <td><strong>AIR</strong></td>
+            <td>Asset Information Requirements</td>
+            <td>Asset manager / FM lead</td>
+            <td>What information is needed for the long-term operation of this asset</td>
+          </tr>
+          <tr>
+            <td><strong>PIR</strong></td>
+            <td>Project Information Requirements</td>
+            <td>Project owner / client</td>
+            <td>What information must be produced for project delivery</td>
+          </tr>
+          <tr>
+            <td><strong>EIR</strong></td>
+            <td>Exchange Information Requirements</td>
+            <td>Project / BIM manager on behalf of the client</td>
+            <td>What information is delivered, when, and to whom</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>OIR and AIR are organisation- and asset-specific and can be <em>reused</em> across multiple projects. PIR and EIR are project-specific.</p>
+
+      <h2>The answer hierarchy</h2>
+
+      <p>Every requirements level is answered by an information set or a plan:</p>
+
+      <table>
+        <thead>
+          <tr><th>Answer</th><th>For which requirement</th><th>What it is</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>OIM (Organisational Information Model)</td>
+            <td>OIR</td>
+            <td>Asset-spanning information collection of the organisation</td>
+          </tr>
+          <tr>
+            <td>AIM (Asset Information Model)</td>
+            <td>AIR</td>
+            <td>Asset-specific operations information model. After handover, the living model.</td>
+          </tr>
+          <tr>
+            <td>PIM (Project Information Model)</td>
+            <td>PIR</td>
+            <td>The project information model during planning and construction. Migrates into the AIM after completion.</td>
+          </tr>
+          <tr>
+            <td>BEP (BIM Execution Plan) / BAP</td>
+            <td>EIR</td>
+            <td>Plan for how the contractor implements the EIR requirements technically and organisationally</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Key roles</h2>
+
+      <p>ISO 19650 defines a clear role model that is used contractually:</p>
+
+      <table>
+        <thead>
+          <tr><th>Role</th><th>Meaning</th><th>Who fills it in practice</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Appointing Party</strong></td>
+            <td>Client, owner, asset owner. Defines the information requirements.</td>
+            <td>Public authority, municipality, owner, investor</td>
+          </tr>
+          <tr>
+            <td><strong>Lead Appointed Party</strong></td>
+            <td>Main contractor for the information delivery. Coordinates all sub-suppliers.</td>
+            <td>Lead designer, general contractor, lead office</td>
+          </tr>
+          <tr>
+            <td><strong>Appointed Party</strong></td>
+            <td>Specialist contractor. Delivers its share of the PIM and PIM data.</td>
+            <td>Architecture office, structural engineer, HVAC office, single specialists</td>
+          </tr>
+          <tr>
+            <td><strong>Task Team Manager</strong></td>
+            <td>Lead of a specialist team within an Appointed Party.</td>
+            <td>Project lead inside a single office</td>
+          </tr>
+          <tr>
+            <td><strong>Information Manager</strong></td>
+            <td>Responsible for the overall information strategy.</td>
+            <td>On behalf of the Appointing Party</td>
+          </tr>
+          <tr>
+            <td><strong>Project Information Manager</strong></td>
+            <td>Project-specific information coordination.</td>
+            <td>On behalf of the Lead Appointed Party &mdash; BIM coordinator</td>
+          </tr>
+          <tr>
+            <td><strong>Task Information Manager</strong></td>
+            <td>Discipline-specific information responsibility.</td>
+            <td>Inside the Appointed Party</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Mapping to Italian UNI 11337</h2>
+
+      <table>
+        <thead>
+          <tr><th>ISO 19650</th><th>UNI 11337-7</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Appointing Party</td><td>Committente</td></tr>
+          <tr><td>Information Manager</td><td>BIM Manager (client side)</td></tr>
+          <tr><td>Project Information Manager</td><td>BIM Coordinator</td></tr>
+          <tr><td>Task Information Manager</td><td>BIM Specialist</td></tr>
+          <tr><td>CDE / ACDat administration</td><td>CDE Manager</td></tr>
+        </tbody>
+      </table>
+
+      <p>Substantively almost identical, terminologically different. For CH/IT projects: carry both terms in parallel in contracts and the wiki glossary.</p>
+
+      <h2>Mapping to German terms</h2>
+
+      <table>
+        <thead>
+          <tr><th>ISO 19650</th><th>German term (BIM Deutschland / VDI 2552)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Appointing Party</td><td>Auftraggeber / Bauherr / Informationsbesteller</td></tr>
+          <tr><td>Lead Appointed Party</td><td>Generalplaner / Hauptauftragnehmer</td></tr>
+          <tr><td>Appointed Party</td><td>Fachplaner / Nachauftragnehmer</td></tr>
+          <tr><td>Information Manager</td><td>BIM-Manager auf Auftraggeberseite</td></tr>
+          <tr><td>Project Information Manager</td><td>BIM-Koordinator</td></tr>
+          <tr><td>EIR</td><td>AIA &mdash; Auftraggeber-Informations-Anforderungen</td></tr>
+          <tr><td>BEP</td><td>BAP &mdash; BIM-Abwicklungsplan</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Mapping to signed events</h2>
+
+      <p>In the Gemeinwert stack, ISO 19650 concepts land on the following structures:</p>
+
+      <pre># Container states as a tag
+["iso19650-state", "WIP"]        # or "Shared", "Published", "Archive"
+
+# Roles in the project event kind:30902
+["p", "&lt;pubkey&gt;", "&lt;relay&gt;", "&lt;discipline&gt;", "&lt;authority&gt;"]
+
+# Requirement levels as their own event kinds
+kind:30880  PIR Specification    (client requirements)
+kind:30810  EIR / IDS Spec       (technical delivery requirement)
+kind:30883  AIR Specification    (operations requirements)
+
+# Answer models
+kind:30904  PIM / IFC file reference
+kind:30930  Document record (BEP/BAP plus all other docs)
+
+# State transitions as audit events
+kind:1171   Audit event with audit-field "iso19650-state"</pre>
+
+      <h2>Swiss default profile</h2>
+
+      <p>Of the three DACH countries, Switzerland currently provides the <strong>operationally most directly usable artefacts</strong> for ISO 19650 workflows:</p>
+
+      <ul>
+        <li><strong>KBOB contract annexes</strong> &bdquo;Anwendung der Methode BIM&ldquo; &mdash; directly referenceable in contracts</li>
+        <li><strong>KBOB orientation aid SN EN ISO 19650 Part 1</strong> &mdash; pragmatic introduction for public clients</li>
+        <li><strong>BIM-Abwicklungsmodell</strong> &mdash; sorted by SIA service phases, with examples</li>
+        <li><strong>LOIN basics and applications</strong> per SN EN 17412-1, newly published in early 2026</li>
+        <li><strong>AIM fundamentals + BIM2FM data field catalogue</strong> &mdash; the handover layer</li>
+        <li><strong>buildingSMART Switzerland glossary</strong> &mdash; terminological discipline</li>
+      </ul>
+
+      <p>Gemeinwert uses the Swiss profile as the default workflow template. DE, AT and IT adapters overlay when needed. SIA 2051 was withdrawn at the end of 2024 &mdash; the Swiss anchor shifts to the SN EN ISO 19650 family plus KBOB.</p>
+
+      <h2>Typical mistakes</h2>
+
+      <ul>
+        <li><strong>State without governance</strong> &mdash; containers have state tags but no one decides who may push to Published when. Result: everything stays WIP or everything is immediately Published.</li>
+        <li><strong>EIR without IDS</strong> &mdash; requirements live in an EIR PDF but are never machine-checkable. Delivery quality not measurable.</li>
+        <li><strong>BAP / BEP too late</strong> &mdash; the BIM execution plan is written after project start. Agreements no longer negotiable.</li>
+        <li><strong>Role &ne; responsibility</strong> &mdash; the Information Manager has the title but no decision authority. Breaks the whole process.</li>
+        <li><strong>AIM not commissioned</strong> &mdash; the project ends at Published PIM. The owner gets no structured handover into the AIM. FM is then manual reconstruction.</li>
+      </ul>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../anforderungen/ids.html">What is IDS?</a> &mdash; the machine-checkable EIR layer</li>
+          <li><a href="../modell/ifc.html">What is IFC?</a> &mdash; the data model that circulates in ISO 19650</li>
+          <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; standards-to-events overview</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.iso.org/standard/68078.html" target="_blank" rel="noopener">ISO 19650-1:2018</a></li>
+        <li><a href="https://www.iso.org/standard/68080.html" target="_blank" rel="noopener">ISO 19650-2:2018</a></li>
+        <li><a href="https://www.iso.org/standard/75676.html" target="_blank" rel="noopener">ISO 19650-3:2020</a></li>
+        <li><a href="https://www.kbob.admin.ch/" target="_blank" rel="noopener">KBOB &mdash; BIM contract annexes</a></li>
+        <li><a href="https://bauen-digital.ch/" target="_blank" rel="noopener">Bauen digital Schweiz / buildingSMART Switzerland</a></li>
+        <li><a href="https://www.bimdeutschland.de/" target="_blank" rel="noopener">BIM Deutschland</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Process &middot; ISO 19650</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

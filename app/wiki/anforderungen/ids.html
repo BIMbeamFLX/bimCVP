@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IDS — Sovereign AEC Wiki</title>
+  <meta name="description" content="Information Delivery Specification 1.0 — der buildingSMART-Standard für maschinenlesbare Informationsanforderungen an IFC-Modelle. Seit Juni 2024 final." />
+  <style>
+    :root {
+      --bg: #0f1419; --panel: #1a2027; --line: #2a3440;
+      --ink: #e8e8e8; --muted: #8a9aab;
+      --accent: #f4c430; --accent-2: #5b9bd5;
+      --ok: #4ade80; --warn: #f87171;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      margin: 0; background: var(--bg); color: var(--ink);
+      line-height: 1.7;
+    }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 20, 25, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav .brand { font-family: Georgia, serif; font-size: 1.1rem; color: var(--accent); }
+    .nav .brand a { color: inherit; text-decoration: none; }
+    .nav a { color: var(--muted); text-decoration: none; margin-left: 1.25rem; font-size: .85rem; }
+    article { max-width: 780px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .crumb { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+    .crumb a { color: var(--muted); }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      line-height: 1.15; margin: 0 0 1rem;
+    }
+    .lede {
+      font-size: 1.15rem; color: var(--muted);
+      margin: 0 0 2rem; padding-bottom: 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .tldr {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem; margin: 2rem 0;
+      font-size: .95rem;
+    }
+    .tldr strong {
+      display: block; color: var(--accent);
+      font-family: Georgia, serif; letter-spacing: .03em;
+      margin-bottom: .5rem; text-transform: uppercase;
+      font-size: .75rem;
+    }
+    h2 {
+      font-family: Georgia, serif; font-size: 1.5rem;
+      margin: 2.5rem 0 1rem;
+    }
+    h3 {
+      font-family: Georgia, serif; font-size: 1.15rem;
+      margin: 2rem 0 .5rem; color: var(--accent);
+    }
+    p { margin: 1rem 0; font-size: 1.05rem; }
+    code, pre {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: .85rem;
+    }
+    code {
+      background: var(--panel); padding: 0 .3rem;
+      border-radius: 3px; color: var(--accent-2);
+    }
+    pre {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1rem 1.25rem;
+      overflow-x: auto; line-height: 1.45;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      margin: 1.5rem 0; font-size: .9rem;
+    }
+    th, td {
+      text-align: left; padding: .6rem .75rem;
+      border-bottom: 1px solid var(--line);
+    }
+    th { color: var(--accent); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    td code { font-size: .8rem; }
+    .next {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1.25rem 1.5rem; margin: 3rem 0 0;
+    }
+    .next h3 { margin-top: 0; }
+    .next a { color: var(--accent-2); text-decoration: none; }
+    .next a:hover { color: var(--accent); }
+    footer {
+      max-width: 780px; margin: 0 auto;
+      padding: 2rem 1.5rem; color: var(--muted);
+      font-size: .85rem; border-top: 1px solid var(--line);
+    }
+    a { color: var(--accent-2); }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin: .35rem 0; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand"><a href="../../index.html">Sovereign AEC</a></div>
+  <div>
+    <a href="../../index.html">Sammlung</a>
+    <a href="../index.html">Wiki</a>
+  </div>
+</nav>
+
+<article>
+
+  <p class="crumb"><a href="../../index.html">Sammlung</a> · <a href="../index.html">Wiki</a> · Anforderungen · IDS</p>
+
+  <h1>IDS — Information Delivery Specification</h1>
+  <p class="lede">Der buildingSMART-Standard für maschinenlesbare Informationsanforderungen an IFC-Modelle. Seit 1. Juni 2024 als Version 1.0 offiziell final. Ersetzt informelle EIR-PDFs durch eine prüffähige Spezifikation, gegen die ein IFC-Modell automatisiert validiert werden kann.</p>
+
+  <div class="tldr">
+    <strong>In einem Satz</strong>
+    IDS macht die Frage „welche Information muss im Modell drin sein und in welcher Form?" maschinenprüfbar.
+  </div>
+
+  <h2>Warum es das gibt</h2>
+
+  <p>In klassischen BIM-Workflows beschreibt der Auftraggeber seine Informationsanforderungen in einem EIR oder AIA — als PDF, mit Tabellen, Listen, Beispielen. Der Auftragnehmer liefert ein IFC-Modell. Ob dieses Modell die Anforderungen <em>tatsächlich erfüllt</em>, prüft am Ende ein Mensch mit Stichproben. Oder gar nicht.</p>
+
+  <p>IDS dreht das um: die Anforderung wird selbst zu einer Datei, die ein Prüfer-Tool gegen ein IFC-Modell automatisiert läuft. Pass oder Fail kommt mit konkreten Hinweisen, welche Eigenschaft an welchem Bauteil fehlt oder falsche Werte hat.</p>
+
+  <p>Praktische Konsequenz: EIR/AIA bleiben als juristischer Vertragstext. Die <em>technische Anforderungs-Definition</em> wandert in eine versionierbare, prüffähige IDS-Datei.</p>
+
+  <h2>Versions-Status</h2>
+
+  <table>
+    <thead>
+      <tr><th>Version</th><th>Veröffentlichung</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>IDS 1.0</code></td>
+        <td>1. Juni 2024</td>
+        <td><strong>Final, offizieller buildingSMART-Standard</strong></td>
+      </tr>
+      <tr>
+        <td>Versionen vor 1.0 (Beta)</td>
+        <td>2022–2024</td>
+        <td>Nicht offiziell, in Diskussion entstanden, nicht produktiv verwenden</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Es ist der erste Final-Standard in dieser Domäne. Vorher gab es nur informelle XML-Schemas oder proprietäre Lösungen (Solibri-Regeln, BIMQ, Plannerly-Templates).</p>
+
+  <h2>Was IDS prüfen kann</h2>
+
+  <p>IDS adressiert die <strong>alphanumerische</strong> Schicht eines IFC-Modells. Geometrie-Anforderungen bleiben Aufgabe von MVDs und LOIN. Konkret kann IDS Anforderungen formulieren an:</p>
+
+  <ul>
+    <li><strong>Entitätstypen</strong> — z. B. „Es muss <code>IfcWall</code>-Instanzen geben"</li>
+    <li><strong>Eigenschaften (Properties)</strong> — z. B. „Jede Wand muss <code>Pset_WallCommon.FireRating</code> tragen"</li>
+    <li><strong>Werte</strong> — z. B. „mit Werten aus der Liste REI30 / REI60 / REI90"</li>
+    <li><strong>Mengen (Quantities)</strong> — z. B. „<code>Qto_WallBaseQuantities.GrossArea</code> ist Pflicht und größer 0"</li>
+    <li><strong>Materialien</strong> — z. B. „Material aus Liste {Mauerwerk, Beton, Stahl} zugewiesen"</li>
+    <li><strong>Klassifikationen</strong> — z. B. „eBKP-H-Code per <code>IfcRelAssociatesClassification</code> verknüpft"</li>
+    <li><strong><code>partOf</code>-Abhängigkeiten</strong> — z. B. „jedes Fenster ist Teil einer Wand"</li>
+  </ul>
+
+  <p>IDS hat also vier Bausteine, die in jeder Specification kombiniert werden: <em>Anwendbarkeit (Applicability)</em>, <em>Anforderung (Requirement)</em>, <em>Bezug auf IFC-Version</em> und <em>Kardinalität</em> (Pflicht, optional, verboten).</p>
+
+  <h2>Struktur einer IDS-Datei</h2>
+
+  <p>IDS-Dateien sind XML, mit einer klar definierten XSD-Schema-Datei. Wurzelelement ist <code>ids:ids</code>. Beispiel:</p>
+
+  <pre>&lt;ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ids:info&gt;
+    &lt;ids:title&gt;Brandschutz-Anforderungen Schule Raulassen&lt;/ids:title&gt;
+    &lt;ids:version&gt;1.0&lt;/ids:version&gt;
+    &lt;ids:author&gt;bauamt@bozen.it&lt;/ids:author&gt;
+    &lt;ids:date&gt;2026-04-15&lt;/ids:date&gt;
+    &lt;ids:description&gt;Pflichtanforderungen Phase Ausführungsplanung&lt;/ids:description&gt;
+    &lt;ids:purpose&gt;LP4&lt;/ids:purpose&gt;
+  &lt;/ids:info&gt;
+  &lt;ids:specifications&gt;
+    &lt;ids:specification ifcVersion="IFC4X3" name="Wände brauchen Brandschutz-Wert"&gt;
+      &lt;ids:applicability minOccurs="0" maxOccurs="unbounded"&gt;
+        &lt;ids:entity&gt;
+          &lt;ids:name&gt;&lt;ids:simpleValue&gt;IFCWALL&lt;/ids:simpleValue&gt;&lt;/ids:name&gt;
+        &lt;/ids:entity&gt;
+      &lt;/ids:applicability&gt;
+      &lt;ids:requirements&gt;
+        &lt;ids:property dataType="IFCLABEL" cardinality="required"&gt;
+          &lt;ids:propertySet&gt;
+            &lt;ids:simpleValue&gt;Pset_WallCommon&lt;/ids:simpleValue&gt;
+          &lt;/ids:propertySet&gt;
+          &lt;ids:baseName&gt;
+            &lt;ids:simpleValue&gt;FireRating&lt;/ids:simpleValue&gt;
+          &lt;/ids:baseName&gt;
+          &lt;ids:value&gt;
+            &lt;xs:restriction base="xs:string"&gt;
+              &lt;xs:enumeration value="REI30" /&gt;
+              &lt;xs:enumeration value="REI60" /&gt;
+              &lt;xs:enumeration value="REI90" /&gt;
+            &lt;/xs:restriction&gt;
+          &lt;/ids:value&gt;
+        &lt;/ids:property&gt;
+      &lt;/ids:requirements&gt;
+    &lt;/ids:specification&gt;
+  &lt;/ids:specifications&gt;
+&lt;/ids:ids&gt;</pre>
+
+  <p>Auf Deutsch: „Alle <code>IfcWall</code>-Instanzen müssen die Property <code>FireRating</code> im Set <code>Pset_WallCommon</code> haben, und der Wert muss einer von REI30, REI60, REI90 sein." Ein Prüfer-Tool lädt diese IDS-Datei plus ein IFC-Modell und zeigt sofort, welche Wände regelkonform sind und welche nicht.</p>
+
+  <h2>Bezug zu bSDD</h2>
+
+  <p>Property-Namen wie <code>Pset_WallCommon.FireRating</code> sind menschenlesbar — aber sprach- und version-abhängig. IDS-Specifications referenzieren oft zusätzlich eine bSDD-URI:</p>
+
+  <pre>&lt;ids:property dataType="IFCLABEL"
+              uri="https://identifier.buildingsmart.org/uri/buildingsmart/ifc/4.3/prop/FireRating"
+              cardinality="required"&gt;
+  ...
+&lt;/ids:property&gt;</pre>
+
+  <p>Die URI ist sprachneutral, eindeutig, versioniert und in mehreren Sprachen auflösbar. Genau dafür ist bSDD da.</p>
+
+  <h2>Bezug zu MVD, IDM, LOIN</h2>
+
+  <table>
+    <thead>
+      <tr><th>Standard</th><th>Adressiert</th><th>Beispiel-Frage</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>MVD</strong></td>
+        <td>welche Untermenge des IFC-Schemas verwendet wird</td>
+        <td>„Welche IFC-Entitäten und Properties sind in diesem Austausch erlaubt?"</td>
+      </tr>
+      <tr>
+        <td><strong>IDS</strong></td>
+        <td>welche Information faktisch im Modell <em>enthalten</em> sein muss</td>
+        <td>„Hat jede Wand einen Brandschutz-Wert?"</td>
+      </tr>
+      <tr>
+        <td><strong>IDM</strong></td>
+        <td>Prozess — wer, wann, im welchem Austausch-Schritt</td>
+        <td>„Wer liefert die Brandschutz-Daten in welcher Phase?"</td>
+      </tr>
+      <tr>
+        <td><strong>LOIN</strong> (EN 17412)</td>
+        <td>Granularität pro Information</td>
+        <td>„Wie detailliert muss die Brandschutz-Angabe sein? Nur Wert oder mit Nachweis-Dokument?"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Praktisch zusammenwirkend: IDM beschreibt den Prozess. LOIN definiert die Tiefe. MVD bestimmt den Schema-Footprint. IDS macht das prüfbar.</p>
+
+  <h2>Tool-Unterstützung (Stand 2026)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>IDS-Authoring</th><th>IDS-Prüfung gegen IFC</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Solibri Office</td><td>—</td><td>✓ IFC-Check</td></tr>
+      <tr><td>ArchiCAD</td><td>✓</td><td>—</td></tr>
+      <tr><td>ALLPLAN</td><td>✓</td><td>—</td></tr>
+      <tr><td>usBIM</td><td>✓</td><td>✓</td></tr>
+      <tr><td>BIMcollab Zoom</td><td>—</td><td>✓ IFC-Check</td></tr>
+      <tr><td>DESITE BIM</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Blumatica BIM</td><td>✓ IDS Editor</td><td>✓ IDS Validator</td></tr>
+      <tr><td>Plannerly</td><td>✓</td><td>—</td></tr>
+      <tr><td>BIM-Q</td><td>✓</td><td>(via Solibri-Bridge)</td></tr>
+    </tbody>
+  </table>
+
+  <p>Die Tool-Landschaft ist innerhalb von 18 Monaten nach IDS-Final stark gewachsen. Bei der Auswahl: <em>Authoring</em> und <em>Prüfung</em> trennen — viele Tools können nur das eine.</p>
+
+  <h2>Mapping auf signierte Nostr-Ereignisse</h2>
+
+  <p>Sovereign AEC modelliert IDS-Specs als parameterized replaceable Nostr-Events:</p>
+
+  <pre>kind:30810  IDS Specification (replaceable)
+  d: &lt;spec-guid&gt;
+  tags: [
+    ["title", "Brandschutz-Anforderungen Schule Raulassen"],
+    ["a", "&lt;projekt-ref&gt;"],
+    ["ids-version", "1.0"],
+    ["ifc-version", "IFC4X3"],
+    ["purpose", "LP4"],
+    ["author-pubkey", "&lt;auftraggeber-npub&gt;"],
+    ["x", "&lt;sha256-of-ids-xml&gt;"]
+  ]
+  content: das vollständige ids-XML (für kleine Specs)
+           oder Blossom-URL-Referenz (für große)</pre>
+
+  <p>Validation-Ergebnisse werden separat publisht:</p>
+
+  <pre>kind:1180  IDS Validation Result (immutabel)
+  tags: [
+    ["e", "&lt;ids-spec-event-id&gt;"],     # welche IDS
+    ["e", "&lt;ifc-file-event-id&gt;"],     # welches IFC
+    ["x", "&lt;report-sha256&gt;"],
+    ["result", "pass"],                  # pass / fail / warning
+    ["validator", "&lt;tool-npub&gt;"],
+    ["summary", "147/150 Wände konform, 3 Warnings"]
+  ]
+  content: Volltext-Report (JSON oder Blossom-URL)</pre>
+
+  <p>Die Validation kann von jedem akkreditierten Validator-DVM (Data Vending Machine) ausgeführt werden — siehe das Validation-NIP-Konzept im <code>SEC-YOLO-BIM_IDEA-collection</code>.</p>
+
+  <h2>Bezug zur italienischen UNI 11337</h2>
+
+  <p>Der italienische BIM-Vertragsrahmen verwendet ähnliche Konzepte mit anderen Namen:</p>
+
+  <table>
+    <thead>
+      <tr><th>buildingSMART / ISO</th><th>UNI 11337 (Italien)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>EIR (Exchange Information Requirements)</td><td>Capitolato Informativo (UNI 11337-4)</td></tr>
+      <tr><td>BEP (BIM Execution Plan)</td><td>Piano di Gestione Informativa</td></tr>
+      <tr><td>IDS (technische Prüfung)</td><td>ergänzt das Capitolato — formal nicht ersetzt, faktisch oft eingebettet</td></tr>
+    </tbody>
+  </table>
+
+  <p>Für italienische öffentliche Ausschreibungen (DM 312/2021) ist das Capitolato Informativo das verbindliche Dokument. IDS lässt sich als technische Prüfschicht beifügen.</p>
+
+  <div class="next">
+    <h3>Weiterlesen</h3>
+    <ul>
+      <li><a href="../modell/ifc.html">Was ist IFC?</a> — das Datenmodell, gegen das IDS prüft</li>
+      <li><a href="../koordination/bcf.html">Was ist BCF?</a> — wie Verstöße kommuniziert werden</li>
+      <li><a href="loin.html">Was ist LOIN?</a> — die Granularitäts-Achse, die IDS ergänzt</li>
+      <li><a href="pir-eir-air.html">PIR / EIR / AIR</a> — wie die Hierarchie der Anforderungs-Dokumente aufgebaut ist</li>
+    </ul>
+  </div>
+
+  <h2>Quellen</h2>
+  <ul>
+    <li><a href="https://www.buildingsmart.org/standards/bsi-standards/information-delivery-specification-ids/" target="_blank">buildingSMART IDS Standard-Seite</a></li>
+    <li><a href="https://github.com/buildingSMART/IDS" target="_blank">buildingSMART IDS Repository</a></li>
+    <li><a href="https://standards.buildingsmart.org/IDS/1.0/ids.xsd" target="_blank">IDS 1.0 XSD-Schema</a></li>
+    <li><a href="https://technical.buildingsmart.org/ids-software-implementations/" target="_blank">Liste IDS-fähiger Software</a></li>
+  </ul>
+
+</article>
+
+<footer>
+  Sovereign AEC Wiki · Anforderungen · IDS · <a href="../index.html">zurück zum Wiki-Hub</a>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Was ist BCF? — Sovereign AEC</title>
+  <meta name="description" content="BIM Collaboration Format — der buildingSMART-Standard, mit dem Planer über Probleme im Modell sprechen. Erklärt für jemanden, der noch nie ein BCF-Topic gesehen hat." />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2027;
+      --line: #2a3440;
+      --ink: #e8e8e8;
+      --muted: #8a9aab;
+      --accent: #f4c430;
+      --accent-2: #5b9bd5;
+      --ok: #4ade80;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 20, 25, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav .brand {
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .nav .links a {
+      color: var(--muted);
+      text-decoration: none;
+      margin-left: 1.25rem;
+      font-size: .85rem;
+    }
+    article {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+    .crumb {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 1.5rem;
+    }
+    .crumb a { color: var(--muted); }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      line-height: 1.15;
+      margin: 0 0 1rem;
+      color: var(--ink);
+    }
+    .lede {
+      font-size: 1.15rem;
+      color: var(--muted);
+      margin: 0 0 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .tldr {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 2rem 0;
+      font-size: .95rem;
+    }
+    .tldr strong {
+      display: block;
+      color: var(--accent);
+      font-family: Georgia, serif;
+      letter-spacing: .03em;
+      margin-bottom: .5rem;
+      text-transform: uppercase;
+      font-size: .75rem;
+    }
+    h2 {
+      font-family: Georgia, serif;
+      font-size: 1.5rem;
+      margin: 2.5rem 0 1rem;
+      color: var(--ink);
+    }
+    h3 {
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      margin: 2rem 0 .5rem;
+      color: var(--accent);
+    }
+    p { margin: 1rem 0; font-size: 1.05rem; }
+    .example {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .example .label {
+      color: var(--accent-2);
+      font-size: .75rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+    .example p { margin: .25rem 0; }
+    .example p strong { color: var(--accent); }
+    pre, code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: .85rem;
+    }
+    code { background: var(--panel); padding: 0 .3rem; border-radius: 3px; color: var(--accent-2); }
+    pre {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      line-height: 1.45;
+    }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin: .35rem 0; }
+    .next {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 3rem 0 0;
+    }
+    .next h3 { margin-top: 0; }
+    .next a {
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+    .next a:hover { color: var(--accent); }
+    footer {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      color: var(--muted);
+      font-size: .85rem;
+      border-top: 1px solid var(--line);
+    }
+    a { color: var(--accent-2); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand"><a href="index.html" style="color:inherit;text-decoration:none;">Sovereign AEC</a></div>
+  <div>
+    <a href="index.html#verstehen">Verstehen</a>
+    <a href="index.html#ausprobieren">Ausprobieren</a>
+    <a href="index.html#bauen">Bauen</a>
+  </div>
+</nav>
+
+<article>
+
+  <p class="crumb"><a href="index.html">Sammlung</a> · <a href="index.html#verstehen">Verstehen</a> · Was ist BCF?</p>
+
+  <h1>Was ist BCF?</h1>
+  <p class="lede">BCF — BIM Collaboration Format — ist der buildingSMART-Standard, mit dem Planer über Probleme im Modell sprechen. Wenn der HKLS-Planer eine Kollision mit dem Tragwerk findet, schreibt er kein E-Mail. Er erstellt ein BCF-Topic.</p>
+
+  <div class="tldr">
+    <strong>In einem Satz</strong>
+    BCF ist die offene, herstellerneutrale Sprache für „Wir haben hier ein Problem im Modell und müssen drüber reden".
+  </div>
+
+  <h2>Wozu braucht es das überhaupt?</h2>
+
+  <p>Ein modernes Bauprojekt hat mehrere Modelle in einem geteilten Raum: das Architektur-Modell, das Tragwerks-Modell, das HKLS-Modell, oft noch Elektro und Sanitär getrennt. Diese Modelle werden in unterschiedlichen Programmen erstellt — Revit, ArchiCAD, Allplan, Tekla — und über das offene Format IFC zusammengeführt.</p>
+
+  <p>Beim Zusammenführen tauchen Konflikte auf. Ein Lüftungskanal kreuzt einen Hauptträger. Eine Tür öffnet sich gegen eine Wand. Ein Heizkörper steht im Türbereich. Diese Konflikte müssen die Planer untereinander besprechen, eine Lösung finden, dokumentieren, wer was wann beschlossen hat.</p>
+
+  <p>Vor BCF lief das per E-Mail mit Screenshots. „Bitte schau mal in dein Modell, Achse 4/B, Decke EG, da kollidiert die Lüftung mit dem Träger." Und der Kollege musste raten, was genau wo gemeint war, wann das aufgenommen wurde, welcher Stand des Modells betroffen war.</p>
+
+  <p>BCF macht das maschinenlesbar. Jedes Topic enthält die exakten IFC-Element-IDs, die betroffen sind, einen Snapshot aus der Kamerasicht, und eine strukturierte Beschreibung mit Status, Verantwortlichem und Frist.</p>
+
+  <h2>Was steht in einem BCF-Topic?</h2>
+
+  <div class="example">
+    <div class="label">Beispiel-Topic</div>
+    <p><strong>Titel:</strong> Lüftungsleitung kreuzt Hauptträger Achse 4/B</p>
+    <p><strong>Status:</strong> Open</p>
+    <p><strong>Typ:</strong> Clash</p>
+    <p><strong>Priorität:</strong> High</p>
+    <p><strong>Zuständig:</strong> Heidi (HKLS)</p>
+    <p><strong>Frist:</strong> 11.06.2026</p>
+    <p><strong>Beschreibung:</strong> Im Bereich Decke EG bei Achse 4/B kollidiert Lüftung DN500 mit dem Hauptträger HEB400. Vorschlag a) Lüftung absenken um 350&nbsp;mm, b) Träger-Voute prüfen, c) Lüftung über Träger umlegen.</p>
+    <p><strong>Referenzierte IFC-Elemente:</strong> <code>0aB1cD2eF3gH4iJ5kL6mN7</code> (Träger), <code>2pQ8rS9tU3vW4xY5zA6bC7</code> (Lüftung)</p>
+    <p><strong>Snapshot:</strong> [Bild aus dem Modell]</p>
+  </div>
+
+  <p>Plus die Diskussion darunter: Kommentare von Tragwerksplanerin Sarah, von BIM-Koordinator Bob, Status-Wechsel im Audit-Trail. Alles in einem Daten-Container, der zwischen Solibri, BIMcollab, ACC, Trimble Connect — allen großen Tools — austauschbar ist.</p>
+
+  <h2>Welche Versionen gibt es?</h2>
+
+  <ul>
+    <li><strong>BCF-XML 2.1</strong> — die jahrelang dominante Version, immer noch weit verbreitet.</li>
+    <li><strong>BCF-XML 3.0</strong> — aktuell, seit 2021 final. Erweitert um <code>DocumentReferences</code>, <code>ServerAssignedId</code>, <code>ViewSetupHints</code>, <code>Coloring</code>, <code>Bitmaps</code>.</li>
+    <li><strong>BCF-API</strong> — die REST-API-Variante, Teil der openCDE-Initiative. Tools sprechen sie statt einer Datei-Übergabe.</li>
+  </ul>
+
+  <h2>Was sind die Container?</h2>
+
+  <p>BCF-XML wird als <code>.bcfzip</code> ausgeliefert — eine ZIP-Datei mit einer Ordner-Struktur. Pro Topic ein Ordner, darin <code>markup.bcf</code> (XML mit Metadaten), <code>viewpoint.bcfv</code> (Kamera + Komponenten-Sichtbarkeit), und <code>snapshot.png</code> (das Bild aus dem Modell).</p>
+
+  <pre>my-coordination.bcfzip
+├── bcf.version
+├── project.bcfp
+├── 8b1f7a9b-2c3d-4e5f-9c3b-4a5c1d6e4a2b/
+│   ├── markup.bcf
+│   ├── viewpoint.bcfv
+│   └── snapshot.png
+├── 7a9b2c3d-4e5f-9c3b-4a5c-1d6e4a2b8b1f/
+│   ├── markup.bcf
+│   ├── viewpoint.bcfv
+│   └── snapshot.png
+└── ...</pre>
+
+  <p>Jeder Topic-Ordner hat eine eindeutige GUID als Name. Das ist die ID, an der ein Topic im ganzen Projektleben verankert bleibt — auch wenn der Stand drei Mal aktualisiert wird.</p>
+
+  <h2>Was ist dann das Problem mit BCF heute?</h2>
+
+  <p>Das Format ist offen. Die Plattformen, auf denen es ausgetauscht wird, sind es nicht. BCF lebt in BIMcollab, in ACC Issues, in Solibri-Servern, in Trimble Connect. Jede dieser Plattformen hält die Topics gefangen — du kannst sie zwar als <code>.bcfzip</code> exportieren, aber die laufende Diskussion findet im Walled Garden statt.</p>
+
+  <p>Auch: Wenn ein Beteiligter ein Topic ändert, ist die alte Version oft weg. Audit-Trail vorhanden, aber nur innerhalb der Plattform. Bei Plattform-Wechsel: Daten-Rumpf bleibt, aber Provenance ist beschädigt.</p>
+
+  <h2>Wie wir BCF auf signierte Ereignisse abbilden</h2>
+
+  <p>Wir übernehmen das BCF-Datenmodell eins zu eins und legen es auf signierte Ereignisse. Jedes Topic ist ein replaceable Event mit der BCF-GUID als Identifier. Comments sind unveränderliche Events. Status-Wechsel produzieren einen Audit-Eintrag. Die <code>.bcfzip</code>-Datei kann jederzeit aus dem Event-Stream rekonstruiert werden.</p>
+
+  <p>Konkret: <code>kind:30900</code> für Topic, <code>kind:30901</code> für Viewpoint, <code>kind:1170</code> für Comment, <code>kind:1171</code> für Audit. Details im <a href="KIND-REGISTRY.md">Kind Registry</a>.</p>
+
+  <p>Vorteile gegenüber heutigen BCF-Plattformen:</p>
+  <ul>
+    <li><strong>Jede Aktion ist signiert</strong> — wer wann was getan hat, ist kryptographisch nachweisbar.</li>
+    <li><strong>Daten gehören dem Verfasser</strong> — sie liegen auf einem Server seiner Wahl, nicht im Account einer fremden Firma.</li>
+    <li><strong>Plattform-Wechsel ist trivial</strong> — anderen Relay als Mirror einrichten, fertig.</li>
+    <li><strong>Audit-Trail komplett</strong> — Status-History, Versionen, Konflikte alles im Stream lesbar.</li>
+    <li><strong>Round-Trip mit klassischen Tools</strong> — Export als <code>.bcfzip</code> für BIMcollab/Solibri jederzeit möglich.</li>
+  </ul>
+
+  <h2>Was du jetzt machen kannst</h2>
+
+  <p>Wenn du noch nie ein BCF-Topic gesehen hast, lade den <a href="https://github.com/buildingSMART/BCF-XML/tree/release_3_0/Test%20Cases" target="_blank">Beispiel-Datensatz von buildingSMART</a> herunter und öffne ihn in <a href="https://www.bimcollab.com/de/" target="_blank">BIMcollab Free</a> oder <a href="https://www.solibri.com/anywhere" target="_blank">Solibri Anywhere</a>. Beide Tools sind kostenlos und zeigen, was ein BCF-Workflow heute leisten kann.</p>
+
+  <p>Wenn du sehen willst, wie das auf signierten Ereignissen aussieht, probier den <a href="character.html">Charakter-Erschaffer</a> aus und melde dich für den Pilot.</p>
+
+  <div class="next">
+    <h3>Weiterlesen</h3>
+    <ul>
+      <li><a href="das-plattform-problem.html">Das Plattform-Problem</a> — warum die Daten heute nicht dir gehören</li>
+      <li><a href="#" onclick="alert('Bald'); return false;">Was ist IFC?</a> — das gemeinsame Datenmodell hinter den BCF-Topics</li>
+      <li><a href="KIND-REGISTRY.md">Kind Registry</a> — wie BCF auf signierte Ereignisse abgebildet wird (technisch)</li>
+      <li><a href="bcf-nostr-nip-research.md">BCF-NIP-Research</a> — die vollständige Spec-Vorlage</li>
+    </ul>
+  </div>
+
+</article>
+
+<footer>
+  Sovereign AEC · Wissensseite · <a href="index.html">zurück zur Sammlung</a>
+</footer>
+
+</body>
+</html>

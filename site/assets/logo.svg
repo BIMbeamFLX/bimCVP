@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 290" width="1080" height="290" aria-label="gemeinwert — BIM CVP — Common Value Protocol">
+  <title>gemeinwert — horizontal lockup</title>
+
+  
+  <g stroke="#3f4d5b" stroke-width="1.5" stroke-linecap="square" fill="none">
+    <line x1="75" y1="50" x2="205" y2="50"></line>
+    <line x1="205" y1="50" x2="208" y2="122"></line>
+    <line x1="208" y1="122" x2="150" y2="122"></line>
+    <line x1="150" y1="122" x2="208" y2="134"></line>
+    <line x1="208" y1="134" x2="205" y2="180"></line>
+    <line x1="205" y1="180" x2="75" y2="180"></line>
+    <line x1="75" y1="180" x2="75" y2="50"></line>
+    <line x1="140" y1="180" x2="140" y2="242"></line>
+  </g>
+  <g fill="#3f4d5b">
+    <circle cx="75" cy="50" r="3"></circle>
+    <circle cx="205" cy="50" r="3"></circle>
+    <circle cx="208" cy="122" r="3"></circle>
+    <circle cx="150" cy="122" r="3"></circle>
+    <circle cx="208" cy="134" r="3"></circle>
+    <circle cx="205" cy="180" r="3"></circle>
+    <circle cx="75" cy="180" r="3"></circle>
+    <circle cx="140" cy="180" r="3"></circle>
+    <circle cx="140" cy="242" r="5"></circle>
+  </g>
+  <g fill="#f4c430" fill-opacity="0.78">
+    <text x="140" y="180" font-family="&#39;Helvetica Neue&#39;, Helvetica, &#39;Arial Black&#39;, Arial, sans-serif" font-weight="700" font-size="180" text-anchor="middle" style="letter-spacing:-0.04em;">G</text>
+    <rect x="102" y="196" width="76" height="6"></rect>
+    <polygon points="128,202 152,202 140,242"></polygon>
+  </g>
+
+  
+  <line x1="290" y1="55" x2="290" y2="245" stroke="#3a4654" stroke-width="1.5"></line>
+
+  
+  <text x="336" y="155" font-family="&#39;Inter&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif" font-weight="600" font-size="100" fill="#e8e8e8" style="letter-spacing:-0.02em;">Gemeinwert<tspan fill="#f4c430">.</tspan></text>
+  <text x="336" y="230" font-family="&#39;Inter&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif" font-weight="600" font-size="68" fill="#e8e8e8" style="letter-spacing:-0.01em;">BIM<tspan dx="12" fill="#5b9bd5">CVP</tspan></text>
+  <text x="338" y="262" font-family="&#39;JetBrains Mono&#39;, ui-monospace, &#39;SF Mono&#39;, monospace" font-weight="500" font-size="17" fill="#8a9aab" style="letter-spacing:0.18em;">COMMON  VALUE  PROTOCOL</text>
+</svg>

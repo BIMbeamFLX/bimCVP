@@ -1,0 +1,45 @@
+family_pattern,IfcExportAs,IfcExportType,kommentar
+CHW-WL,IfcChiller,AIRCOOLED,Kaltwassersatz / Cooling Tower (Hauptkuehler, Standard-Revit-Family)
+CHW-WW,IfcChiller,WATERCOOLED,Wassergekuehlter Kaltwassersatz
+VKF,IfcDistributionChamberElement,NOTDEFINED,FBH-Verteilerschrank
+AHU Lufterwärmer,IfcCoil,HEATING,AHU Heizregister
+AHU Wärmetauscher,IfcHeatExchanger,PLATE,AHU Plattenwaermetauscher
+AHU Ventilator,IfcFan,CENTRIFUGALFORWARDCURVED,AHU Ventilator
+AHU Jalousiekammer,IfcDamper,BALANCINGDAMPER,AHU Jalousie-Klappe
+AHU Filter,IfcFilter,AIRPARTICLEFILTER,AHU Filter
+AHU Luftkühler,IfcCoil,COOLING,AHU Kuehlregister
+Panel Tempering Circuit,IfcSpaceHeater,PANELRADIATOR,FBH-Heizkreis
+HS_HR,IfcSpaceHeater,USERDEFINED,Heizkreis-Heizregister (Typ unklar)
+RU Teilnetzstart,IfcVirtualElement,NOTDEFINED,Linear Rohrunterbrechung Hilfselement
+SAS,IfcTank,WATERHEATER,Trinkwasserspeicher (falls Linear-Klassifikation fehlt)
+HZVT,IfcDistributionChamberElement,NOTDEFINED,Heizungs-Verteiler (Fallback wenn Linear-Klassifikation fehlt)
+KVT,IfcDistributionChamberElement,NOTDEFINED,Kaelte-Verteiler (Fallback)
+L_Segmentbogen,IfcDuctFitting,BEND,Lueftungskanal-Segmentbogen
+L_Bogen,IfcDuctFitting,BEND,Lueftungskanal-Bogen
+L_Stutzen,IfcDuctFitting,JUNCTION,Lueftungskanal-Stutzen
+L_Reduzierung,IfcDuctFitting,TRANSITION,Lueftungskanal-Reduzierung
+L_Übergang,IfcDuctFitting,TRANSITION,Lueftungskanal-Uebergang
+L_Verbinder,IfcDuctFitting,CONNECTOR,Lueftungskanal-Verbinder
+L_Doppelabzweig,IfcDuctFitting,JUNCTION,Lueftungskanal-Doppelabzweig
+L_Etage,IfcDuctFitting,JUNCTION,Lueftungskanal-Etagen-Anschluss
+L_Kombirahmen,IfcDuctFitting,TRANSITION,Lueftungs-Kombirahmen
+L_Bundkragen,IfcDuctFitting,TRANSITION,Lueftungs-Bundkragen
+L_Nippel,IfcDuctFitting,CONNECTOR,Lueftungs-Nippel
+L_Muffe,IfcDuctFitting,CONNECTOR,Lueftungs-Muffe
+L_Enddeckel,IfcDuctFitting,TRANSITION,Lueftungs-Endkappe
+L_Kreuzstueck,IfcDuctFitting,JUNCTION,Lueftungs-Kreuzstueck
+L_Abzweig,IfcDuctFitting,JUNCTION,Lueftungs-Abzweig
+LINEAR_Flansch,IfcPipeFitting,CONNECTOR,Rohrflansch
+LINEAR_Enddeckel,IfcPipeFitting,TRANSITION,Rohr-Enddeckel
+Ablaufbogen,IfcPipeFitting,BEND,Abwasser-Bogen
+Ablaufrinne,IfcSanitaryTerminal,SINK,Ablaufrinne (Dusche/Boden)
+Schacht,IfcDistributionChamberElement,MANHOLE,Schacht / Manhole
+Rohrtypen,IfcPipeSegment,NOTDEFINED,"Generischer Rohr-Type (Revit System Family)"
+Rohrdämmung,IfcCovering,USERDEFINED,Rohrdaemmung als IfcCovering Insulation
+Luftkanaldämmung,IfcCovering,USERDEFINED,Lueftungskanal-Daemmung als IfcCovering Insulation
+Rechteck,IfcDuctSegment,NOTDEFINED,Rechteckkanal-Type
+Rund,IfcDuctSegment,NOTDEFINED,Rundkanal-Type
+Oval,IfcDuctSegment,NOTDEFINED,Ovalkanal-Type
+GRI-EST,IfcAirTerminal,LOUVER,Griglia di Espulsione (Aussengitter Linear ITA-Kuerzel)
+ESP,IfcAirTerminal,LOUVER,Espulsione (Linear ITA-Kuerzel Aussengitter)
+RIP-GRI,IfcAirTerminal,GRILLE,Ripresa Griglia (Lueftungsgitter Ruecknahme)

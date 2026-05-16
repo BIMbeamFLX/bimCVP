@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Das Plattform-Problem — Sovereign AEC</title>
+  <meta name="description" content="Warum die Werkzeuge der ältesten Branche der Welt heute fünf Konzernen gehören — und was das für deine Daten bedeutet." />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2027;
+      --line: #2a3440;
+      --ink: #e8e8e8;
+      --muted: #8a9aab;
+      --accent: #f4c430;
+      --accent-2: #5b9bd5;
+      --warn: #f87171;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 20, 25, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav .brand {
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      margin-left: 1.25rem;
+      font-size: .85rem;
+    }
+    article {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+    .crumb { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+    .crumb a { color: var(--muted); }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      line-height: 1.15;
+      margin: 0 0 1rem;
+      color: var(--ink);
+    }
+    .lede {
+      font-size: 1.15rem;
+      color: var(--muted);
+      margin: 0 0 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .tldr {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 2rem 0;
+      font-size: .95rem;
+    }
+    .tldr strong {
+      display: block;
+      color: var(--accent);
+      font-family: Georgia, serif;
+      letter-spacing: .03em;
+      margin-bottom: .5rem;
+      text-transform: uppercase;
+      font-size: .75rem;
+    }
+    h2 {
+      font-family: Georgia, serif;
+      font-size: 1.5rem;
+      margin: 2.5rem 0 1rem;
+      color: var(--ink);
+    }
+    h3 {
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      margin: 2rem 0 .5rem;
+      color: var(--accent);
+    }
+    p { margin: 1rem 0; font-size: 1.05rem; }
+    .pain {
+      background: rgba(248, 113, 113, 0.08);
+      border-left: 3px solid var(--warn);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-size: .95rem;
+    }
+    .pain strong { color: var(--warn); font-family: Georgia, serif; }
+    .vendors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .75rem;
+      margin: 1.5rem 0;
+    }
+    .vendor {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: .9rem;
+    }
+    .vendor strong {
+      display: block;
+      color: var(--accent);
+      font-family: Georgia, serif;
+      margin-bottom: .25rem;
+    }
+    .vendor span { color: var(--muted); font-size: .85rem; }
+    code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      background: var(--panel);
+      padding: 0 .3rem;
+      border-radius: 3px;
+      color: var(--accent-2);
+      font-size: .85em;
+    }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin: .35rem 0; }
+    .next {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 3rem 0 0;
+    }
+    .next h3 { margin-top: 0; }
+    .next a { color: var(--accent-2); text-decoration: none; }
+    .next a:hover { color: var(--accent); }
+    footer {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      color: var(--muted);
+      font-size: .85rem;
+      border-top: 1px solid var(--line);
+    }
+    a { color: var(--accent-2); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand"><a href="index.html" style="color:inherit;text-decoration:none;">Sovereign AEC</a></div>
+  <div>
+    <a href="index.html#verstehen">Verstehen</a>
+    <a href="index.html#ausprobieren">Ausprobieren</a>
+    <a href="index.html#bauen">Bauen</a>
+  </div>
+</nav>
+
+<article>
+
+  <p class="crumb"><a href="index.html">Sammlung</a> · <a href="index.html#verstehen">Verstehen</a> · Das Plattform-Problem</p>
+
+  <h1>Das Plattform-Problem</h1>
+  <p class="lede">buildingSMART hat seit 1995 die offenen Datenformate für das Bauwesen entwickelt. Die Plattformen, auf denen diese Daten heute leben, sind alle proprietär. Dies erklärt, wie es dazu kam und was dabei für deine Daten herausspringt.</p>
+
+  <div class="tldr">
+    <strong>In einem Satz</strong>
+    Die Standards sind frei. Die Werkzeuge, mit denen sie ausgetauscht werden, gehören fünf US-Konzernen — und deine Daten gehören ihnen, solange du ihre Subscription bezahlst.
+  </div>
+
+  <h2>Wie es dazu kam</h2>
+
+  <p>In den 1990ern war BIM eine Idee: dass alle Beteiligten an einem Bauprojekt an einem gemeinsamen digitalen Modell arbeiten könnten. buildingSMART (damals IAI) wurde 1995 gegründet, um die offenen Datenformate dafür zu entwerfen — IFC für die Modelle, später BCF für die Koordinations-Themen, IDS für die Anforderungen.</p>
+
+  <p>Die Standards wurden offen entwickelt, ISO-zertifiziert, von Software-Herstellern unterstützt. So weit, so gut. Was die Standards aber nie definierten, war die <em>Plattform</em>, auf der diese Daten ausgetauscht werden. Datei-Übergabe per FTP, per E-Mail, per Cloud-Drive — das war den Marktteilnehmern überlassen.</p>
+
+  <p>Diese Lücke füllten in den 2010ern fünf große Software-Häuser. Cloud-basierte Common Data Environments (CDEs) wurden zum Standard-Workflow. Subscription-Modelle ersetzten Einmal-Lizenzen. Was als technische Lösung begann, wurde zum Geschäftsmodell.</p>
+
+  <h2>Die fünf Konzerne</h2>
+
+  <div class="vendors">
+    <div class="vendor">
+      <strong>Autodesk</strong>
+      <span>Revit, AutoCAD, Construction Cloud (ACC), BIM 360. Marktführer im Hochbau.</span>
+    </div>
+    <div class="vendor">
+      <strong>Bentley Systems</strong>
+      <span>MicroStation, ProjectWise, OpenBuildings. Stark im Infrastrukturbau.</span>
+    </div>
+    <div class="vendor">
+      <strong>Trimble</strong>
+      <span>Tekla, SketchUp, Trimble Connect. Verbreitet im Stahlbau und Vermessung.</span>
+    </div>
+    <div class="vendor">
+      <strong>Nemetschek Gruppe</strong>
+      <span>ArchiCAD, Allplan, Bluebeam, Solibri. Europäischer Bezug, deutsche Mutter.</span>
+    </div>
+    <div class="vendor">
+      <strong>Hexagon</strong>
+      <span>Leica, Smart3D, Build. Vermessung, Punktwolken, Anlagenbau.</span>
+    </div>
+  </div>
+
+  <p>Vier davon sind US-amerikanische Aktiengesellschaften. Nemetschek ist deutsche, börsennotierte AG. Alle fünf haben ähnliche Geschäftsmodelle: Subscription pro Sitz und Monat, Cloud-Speicher inklusive, Workflow-Lock-in als Feature.</p>
+
+  <h2>Was das konkret bedeutet</h2>
+
+  <div class="pain">
+    <strong>Schmerz Nr. 1 — Subscription-Mathematik</strong>
+    <p>Ein Planungsbüro mit zehn Beschäftigten bezahlt für Revit + ACC + ergänzende Tools mühelos 2 000–3 500 € pro Person pro Jahr. Bei jährlicher Preiserhöhung. Bei jährlicher Funktions-Reduzierung auf den günstigeren Tarifen.</p>
+  </div>
+
+  <div class="pain">
+    <strong>Schmerz Nr. 2 — Daten-Lock-in</strong>
+    <p>Du kannst deine Modelle als IFC exportieren — gut. Aber die laufende Koordination (BCF-Topics, Comments, Status-Wechsel, Versionierungs-Audit) lebt in der Plattform. Beim Plattform-Wechsel oder bei Subscription-Ende: Stille.</p>
+  </div>
+
+  <div class="pain">
+    <strong>Schmerz Nr. 3 — Projekt-Tod, Daten-Tod</strong>
+    <p>Bauwerke leben fünfzig bis hundert Jahre. Plattform-Subscriptions laufen quartalsweise. Wenn fünf Jahre nach Übergabe ein Schimmel-Schaden geklärt werden muss, ist die ursprüngliche Koordinations-Doku weg — Subscription längst gekündigt, Account-Inhaber im Ruhestand, Plattform-Logo hat dreimal gewechselt.</p>
+  </div>
+
+  <div class="pain">
+    <strong>Schmerz Nr. 4 — Mandanten-Wechsel</strong>
+    <p>Ein neuer Auftraggeber verlangt eine andere Plattform. Du migrierst Modelle, du importierst Topics in einem anderen Tool, du verlierst Provenance unterwegs. Drei Wochen Vollzeit-Arbeit, zwei pubertierende BIM-Manager im Stress, ein Bauherr, der nicht versteht, warum das überhaupt teuer ist.</p>
+  </div>
+
+  <div class="pain">
+    <strong>Schmerz Nr. 5 — Öffentliche Hand zahlt doppelt</strong>
+    <p>Wenn eine Gemeinde eine Schule baut, fließt Steuergeld in Subscription-Verträge mit Konzernen auf einem anderen Kontinent. Lokale Wirtschaft sieht nichts davon. Daten der öffentlichen Hand liegen auf Servern unter fremder Rechtsordnung — DSGVO-Schwächen inklusive.</p>
+  </div>
+
+  <h2>Warum buildingSMART das nicht löst</h2>
+
+  <p>buildingSMART macht Standards. Die Organisation hat weder Mandat noch Mittel, um eine Plattform zu bauen, auf der diese Standards ausgetauscht werden. Das wäre auch ein Interessenkonflikt — Mitglieder sind genau jene Konzerne, die heute die Plattformen besitzen.</p>
+
+  <p>Die <strong>openCDE-Initiative</strong> von buildingSMART hat versucht, eine standardisierte API für CDEs zu definieren — Foundation API, Documents API, Dictionary API, BCF API. Konzeptionell hervorragend. Praktisch wird sie von den großen Plattformen halbherzig implementiert, weil ihr Geschäftsmodell auf Lock-in beruht.</p>
+
+  <h2>Was die Lücke füllt</h2>
+
+  <p>Was fehlte, war eine Schicht, die folgende drei Eigenschaften gleichzeitig hatte:</p>
+  <ul>
+    <li><strong>Signiert</strong> — jede Aktion kryptographisch dem Urheber zuzuordnen, ohne zentralen Aussteller.</li>
+    <li><strong>Föderiert</strong> — Daten liegen, wo der Eigentümer sie haben will, nicht in einem fremden Cloud-Account.</li>
+    <li><strong>Standards-treu</strong> — IFC bleibt IFC, BCF bleibt BCF, kein Format-Lock-in.</li>
+  </ul>
+
+  <p>Diese drei Eigenschaften gleichzeitig hatten lange kein einzelnes Werkzeug. Die Kryptographie war reif, der Verteilte-Speicher-Stack war reif, die buildingSMART-Standards waren reif — aber niemand hatte die Stücke verbunden.</p>
+
+  <p>Seit etwa 2023 ist das anders. Ein kleines offenes Web-Protokoll für signierte Ereignis-Streams (Nostr) und ein passender Blob-Speicher-Standard (Blossom) liefern genau die fehlende Klebstoff-Schicht. Die buildingSMART-Standards bleiben unverändert obendrauf. Die Plattformen werden optional.</p>
+
+  <p>Das ist im Wesentlichen die Idee hinter <a href="index.html">dieser Sammlung</a>.</p>
+
+  <h2>Was das nicht ist</h2>
+
+  <p>Kein Kampf gegen die Konzerne. Wer Autodesk oder Nemetschek weiterhin verwenden will, kann das — IFC- und BCF-Export bleiben funktionstüchtig. Das hier ist eine Alternative für jene, die sie wollen, kein Ersatz für jene, die zufrieden sind.</p>
+
+  <p>Auch keine Beschwerde-Schrift. Die Geschäftsmodelle sind legitim, die Werkzeuge sind oft gut, viele Funktionen sind ausgereifte Produkt-Arbeit. Aber sie haben Geräusch-Effekte (Schmerzen Nr. 1–5), die für viele Anwender — vor allem in der öffentlichen Hand und in kleinen Planungsbüros — Existenz-relevant sind.</p>
+
+  <p>Es ist schlicht ein zweiter Weg, der mathematisch möglich geworden ist.</p>
+
+  <div class="next">
+    <h3>Weiterlesen</h3>
+    <ul>
+      <li><a href="was-ist-bcf.html">Was ist BCF?</a> — der Standard, mit dem Planer über Modelle reden</li>
+      <li><a href="PRINCIPLES.md">Design Principles</a> — wie wir die Schicht bauen</li>
+      <li><a href="character.html">Charakter erschaffen</a> — der erste praktische Schritt</li>
+    </ul>
+  </div>
+
+</article>
+
+<footer>
+  Sovereign AEC · Wissensseite · <a href="index.html">zurück zur Sammlung</a>
+</footer>
+
+</body>
+</html>

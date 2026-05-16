@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IFC — Sovereign AEC Wiki</title>
+  <meta name="description" content="Industry Foundation Classes — das Datenmodell für Bauwerke. Versionen, Schichten, Kern-Entitäten, Serialisierung. Mit Mapping auf signierte Nostr-Ereignisse." />
+  <style>
+    :root {
+      --bg: #0f1419; --panel: #1a2027; --line: #2a3440;
+      --ink: #e8e8e8; --muted: #8a9aab;
+      --accent: #f4c430; --accent-2: #5b9bd5;
+      --ok: #4ade80; --warn: #f87171;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      margin: 0; background: var(--bg); color: var(--ink);
+      line-height: 1.7;
+    }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 20, 25, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav .brand { font-family: Georgia, serif; font-size: 1.1rem; color: var(--accent); }
+    .nav .brand a { color: inherit; text-decoration: none; }
+    .nav a { color: var(--muted); text-decoration: none; margin-left: 1.25rem; font-size: .85rem; }
+    article { max-width: 780px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .crumb { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+    .crumb a { color: var(--muted); }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      line-height: 1.15; margin: 0 0 1rem;
+    }
+    .lede {
+      font-size: 1.15rem; color: var(--muted);
+      margin: 0 0 2rem; padding-bottom: 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .tldr {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem; margin: 2rem 0;
+      font-size: .95rem;
+    }
+    .tldr strong {
+      display: block; color: var(--accent);
+      font-family: Georgia, serif; letter-spacing: .03em;
+      margin-bottom: .5rem; text-transform: uppercase;
+      font-size: .75rem;
+    }
+    h2 {
+      font-family: Georgia, serif; font-size: 1.5rem;
+      margin: 2.5rem 0 1rem;
+    }
+    h3 {
+      font-family: Georgia, serif; font-size: 1.15rem;
+      margin: 2rem 0 .5rem; color: var(--accent);
+    }
+    p { margin: 1rem 0; font-size: 1.05rem; }
+    code, pre {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: .85rem;
+    }
+    code {
+      background: var(--panel); padding: 0 .3rem;
+      border-radius: 3px; color: var(--accent-2);
+    }
+    pre {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1rem 1.25rem;
+      overflow-x: auto; line-height: 1.45;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      margin: 1.5rem 0; font-size: .9rem;
+    }
+    th, td {
+      text-align: left; padding: .6rem .75rem;
+      border-bottom: 1px solid var(--line);
+    }
+    th { color: var(--accent); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    td code { font-size: .8rem; }
+    .next {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1.25rem 1.5rem; margin: 3rem 0 0;
+    }
+    .next h3 { margin-top: 0; }
+    .next a { color: var(--accent-2); text-decoration: none; }
+    .next a:hover { color: var(--accent); }
+    footer {
+      max-width: 780px; margin: 0 auto;
+      padding: 2rem 1.5rem; color: var(--muted);
+      font-size: .85rem; border-top: 1px solid var(--line);
+    }
+    a { color: var(--accent-2); }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin: .35rem 0; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand"><a href="../../index.html">Sovereign AEC</a></div>
+  <div>
+    <a href="../../index.html">Sammlung</a>
+    <a href="../index.html">Wiki</a>
+  </div>
+</nav>
+
+<article>
+
+  <p class="crumb"><a href="../../index.html">Sammlung</a> · <a href="../index.html">Wiki</a> · Modell · IFC</p>
+
+  <h1>IFC — Industry Foundation Classes</h1>
+  <p class="lede">Das offene Datenmodell für Bauwerke. Beschreibt Identität, Semantik, Eigenschaften und Beziehungen von Objekten — von Geometrie über Property-Sets bis zu Material- und Klassifikations-Verknüpfungen. Seit 2024 in Version 4.3.2.0 als ISO 16739-1:2024 offiziell standardisiert.</p>
+
+  <div class="tldr">
+    <strong>In einem Satz</strong>
+    IFC ist nicht eine Datei, sondern ein <em>strukturiertes Modell</em> aus tausenden definierten Entitäten und Beziehungen, das Bauwerke und Infrastrukturen herstellerneutral beschreibt.
+  </div>
+
+  <h2>Aktuelle Versionen</h2>
+
+  <table>
+    <thead>
+      <tr><th>Version</th><th>Veröffentlichung</th><th>Status</th><th>Wofür</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>IFC 4.3.2.0</code></td>
+        <td>April 2024</td>
+        <td>Final, ISO 16739-1:2024</td>
+        <td>Aktueller Zielstandard. Erstmals Gebäude <em>und</em> Infrastruktur (Brücken, Straße, Schiene, Tunnel, Häfen) in einem Schema.</td>
+      </tr>
+      <tr>
+        <td><code>IFC 4.0.2.1 (IFC4 ADD2 TC1)</code></td>
+        <td>Oktober 2017</td>
+        <td>Final, ISO 16739-1:2018</td>
+        <td>Stabiler Hochbau-Stand, breit implementiert. Für viele Hochbau-Workflows weiterhin Minimalziel.</td>
+      </tr>
+      <tr>
+        <td><code>IFC 2x3 TC1</code></td>
+        <td>Juli 2007</td>
+        <td>Final, Legacy</td>
+        <td>Bestand, Alt-FM, ältere Toolketten. Nur lesen, nicht mehr neu erzeugen.</td>
+      </tr>
+      <tr>
+        <td><code>IFC 4.1.0.0</code></td>
+        <td>Juni 2018</td>
+        <td>Zurückgezogen</td>
+        <td>Zwischenstand, war Basis für erste Infra-Domains. Heute nicht mehr Zielversion.</td>
+      </tr>
+      <tr>
+        <td><code>IFC 4.2.0.0</code></td>
+        <td>April 2019</td>
+        <td>Zurückgezogen</td>
+        <td>Zwischenstand auf dem Weg zu Infrastruktur-Erweiterungen.</td>
+      </tr>
+      <tr>
+        <td><code>IFC 4.4.x</code></td>
+        <td>—</td>
+        <td>Planungsphase</td>
+        <td>Beobachten, nicht ausschreiben.</td>
+      </tr>
+      <tr>
+        <td><code>IFC 5</code></td>
+        <td>—</td>
+        <td>In Entwicklung</td>
+        <td>Nächste Generation, bricht potenziell vieles. Nicht relevant für Produktiv-Einsatz.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Die öffentliche IFC-4.3.2.0-Dokumentation ist semantisch identisch zum ISO-Release, enthält aber zusätzliche Beispiele, Klarstellungen und Tippfehlerkorrekturen — also <em>kein anderer Schema-Stand</em>, sondern eine präzisere Dokumentationsschicht.</p>
+
+  <h2>Vier Schichten</h2>
+
+  <p>IFC ist nicht flach. buildingSMART organisiert das Schema in vier konzeptionelle Schichten, von generisch zu domänenspezifisch:</p>
+
+  <table>
+    <thead>
+      <tr><th>Schicht</th><th>Was drin ist</th><th>Beispiel-Entitäten</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Resource Layer</strong></td>
+        <td>Generische Bausteine: Geometrie, Materialien, Datums, Strings, Vektoren, Mathematik. Keine Bau-Semantik.</td>
+        <td><code>IfcCartesianPoint</code>, <code>IfcVector</code>, <code>IfcDate</code>, <code>IfcExtrudedAreaSolid</code></td>
+      </tr>
+      <tr>
+        <td><strong>Core Layer</strong></td>
+        <td>Kernsemantik: Identität, Beziehungen, Objekt-Typisierung. Alles oberhalb hat eine GlobalId.</td>
+        <td><code>IfcRoot</code>, <code>IfcProject</code>, <code>IfcObjectDefinition</code>, <code>IfcRelationship</code></td>
+      </tr>
+      <tr>
+        <td><strong>Interoperability Layer</strong></td>
+        <td>Gemeinsame Konstrukte mehrerer Domänen: Räume, Wände, Türen, Versorgungssysteme. Für Cross-Disziplin-Workflows.</td>
+        <td><code>IfcWall</code>, <code>IfcDoor</code>, <code>IfcSpace</code>, <code>IfcDistributionElement</code></td>
+      </tr>
+      <tr>
+        <td><strong>Domain Layer</strong></td>
+        <td>Domänenspezifische Entitäten: HKLS, Elektro, Strukturanalyse, Straßenbau, Schienen, Brücken.</td>
+        <td><code>IfcPump</code>, <code>IfcAlignment</code>, <code>IfcBridge</code>, <code>IfcRail</code>, <code>IfcRoad</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Die wichtigsten Kern-Entitäten</h2>
+
+  <p>Wer mit IFC arbeitet, sollte rund ein Dutzend Entitäten und Beziehungen blind kennen — damit Modell-Strukturen lesbar werden.</p>
+
+  <h3>Identität</h3>
+  <p><code>IfcRoot</code> ist die abstrakte Basis aller relevanten Objekte oberhalb des Resource Layer. Liefert vier Pflicht-Attribute: <code>GlobalId</code> (22-char compressed UUID), <code>OwnerHistory</code>, <code>Name</code>, <code>Description</code>. Die GlobalId ist <em>stabil über die gesamte Modell-Lebenszeit</em> — Werkzeuge dürfen sie nicht ohne Grund neu vergeben.</p>
+
+  <h3>Projekt + räumliche Struktur</h3>
+  <p><code>IfcProject</code> ist die Wurzel jedes Modells. Darunter:</p>
+  <ul>
+    <li><code>IfcSite</code> — Grundstück / Standort</li>
+    <li><code>IfcBuilding</code> — Gebäude (oder seit 4.3 <code>IfcFacility</code> / <code>IfcFacilityPart</code> für Infrastruktur)</li>
+    <li><code>IfcBuildingStorey</code> — Geschoss</li>
+    <li><code>IfcSpace</code> — Raum</li>
+  </ul>
+  <p>Verknüpft über <code>IfcRelAggregates</code> (Whole-Part-Beziehung).</p>
+
+  <h3>Zuordnung von Bauteilen</h3>
+  <ul>
+    <li><code>IfcRelContainedInSpatialStructure</code> — <strong>primäre</strong> räumliche Zuordnung (eine Wand ist in einem Geschoss enthalten). Bauteile haben genau eine primäre Zuordnung.</li>
+    <li><code>IfcRelReferencedInSpatialStructure</code> — <strong>sekundäre</strong> Referenz (eine Heizungsanlage referenziert ein Geschoss, ist aber nicht primär dort enthalten).</li>
+  </ul>
+
+  <h3>Typisierung</h3>
+  <p><code>IfcRelDefinesByType</code> verknüpft Typen mit Vorkommen (1-zu-N). Eine <code>IfcDoorType</code> definiert eine Tür-Sorte, dann werden viele <code>IfcDoor</code>-Instanzen davon abgeleitet. Saubere Wiederverwendung von Attributen.</p>
+
+  <h3>Eigenschaften</h3>
+  <p><code>IfcRelDefinesByProperties</code> verknüpft Property-Sets mit Objekten (N-zu-N). Ein <code>IfcPropertySet</code> kann an viele Objekte gebunden sein, ein Objekt kann viele Property-Sets tragen. Strukturierte Attribute laufen über <code>IfcPropertySet</code> + <code>IfcProperty</code>, Mengen über <code>IfcElementQuantity</code>.</p>
+
+  <p>Typische Property-Sets sind <code>Pset_WallCommon</code>, <code>Pset_DoorCommon</code>, <code>Pset_SpaceCommon</code>. Typische Quantity-Sets: <code>Qto_WallBaseQuantities</code>, <code>Qto_DoorBaseQuantities</code>.</p>
+
+  <h3>Systeme und Gruppen</h3>
+  <p><code>IfcSystem</code> bündelt Bauteile zu funktionalen Anlagen (HKLS-System, Elektro-System, Tragwerksystem). Zuordnung über <code>IfcRelAssignsToGroup</code>.</p>
+
+  <h3>Material und Klassifikation</h3>
+  <ul>
+    <li><code>IfcRelAssociatesMaterial</code> verknüpft Materialien mit Objekten</li>
+    <li><code>IfcRelAssociatesClassification</code> verknüpft Klassifikationssysteme (Uniclass, OmniClass, eBKP-H, ETIM)</li>
+  </ul>
+
+  <h3>Platzierung</h3>
+  <ul>
+    <li><code>IfcLocalPlacement</code> — relative Platzierung, klassisch für Hochbau (Wand sitzt relativ zur Geschossebene)</li>
+    <li><code>IfcLinearPlacement</code> — lineare Referenzierung, neu in 4.3, essentiell für Infrastruktur (Brücke relativ zu Alignment)</li>
+    <li><code>IfcAlignment</code> — Leitobjekt für lineare Werke wie Straße, Schiene, Brücke</li>
+  </ul>
+
+  <h2>Datei-Formate</h2>
+
+  <table>
+    <thead>
+      <tr><th>Endung</th><th>Format</th><th>Wofür</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>.ifc</code></td>
+        <td>STEP Physical File (SPF, text-basiert)</td>
+        <td>Standard. Höchste Tool-Kompatibilität, kompakteste Form unter den text-basierten Formaten. buildingSMART empfiehlt es als Default-Austauschformat.</td>
+      </tr>
+      <tr>
+        <td><code>.ifcXML</code></td>
+        <td>XML-Serialisierung</td>
+        <td>Lesbar mit XML-Tools, aber deutlich größer (typisch 3-5× SPF). Bei einfachen Skripten oder XSL-Transformationen sinnvoll.</td>
+      </tr>
+      <tr>
+        <td><code>.ifcZIP</code></td>
+        <td>ZIP-paketiertes SPF oder ifcXML</td>
+        <td>Kompakteste Variante für Transport. Innen liegt typischerweise eine <code>.ifc</code> oder <code>.ifcXML</code>.</td>
+      </tr>
+      <tr>
+        <td><code>.ttl</code> / <code>.rdf</code></td>
+        <td>ifcOWL — RDF/Turtle</td>
+        <td>Linked-Data-Pfad. Für Semantic-Web-Toolchain interessant, in Praxis dünn implementiert.</td>
+      </tr>
+      <tr>
+        <td>ifcJSON</td>
+        <td>JSON-Variante</td>
+        <td><strong>Aktuell provisional / candidate</strong> — nicht als finaler Austausch-Standard etabliert. Beobachten.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Was unterscheidet IFC4 und IFC4.3?</h2>
+
+  <p>Beide haben dieselben vier Schichten, dieselbe Kern-Entitäts-Logik. Der Unterschied ist nicht kosmetisch — IFC4.3 erweitert das Schema strukturell auf lineare Infrastruktur:</p>
+
+  <table>
+    <thead>
+      <tr><th>Thema</th><th>IFC4 / IFC4 ADD2 TC1</th><th>IFC4.3.2.0</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fokus</td>
+        <td>Gebäudeorientiert, sehr breit implementiert</td>
+        <td>Gebäude <em>und</em> lineare Infrastruktur in einem offiziellen ISO-Standard</td>
+      </tr>
+      <tr>
+        <td>Platzierung</td>
+        <td>Primär <code>IfcLocalPlacement</code></td>
+        <td>Zusätzlich <code>IfcLinearPlacement</code>, <code>IfcAxis2PlacementLinear</code>, Alignment-Geometrie nach ISO 19148</td>
+      </tr>
+      <tr>
+        <td>Räumliche Struktur</td>
+        <td>Building/Storey/Space-Hierarchie</td>
+        <td>Generalisierte <code>IfcFacility</code>/<code>IfcFacilityPart</code>-Logik für Gebäude, Brücke, Schiene, Straße</td>
+      </tr>
+      <tr>
+        <td>Standard-MVD</td>
+        <td>Reference View 1.2 (Final)</td>
+        <td>Reference View 1.2 weiter, plus Alignment Based View 1.0 (in Review)</td>
+      </tr>
+      <tr>
+        <td>Praxis-Empfehlung</td>
+        <td>Hochbau-Interoperabilitäts-Minimum</td>
+        <td>Strategisches Zielbild für gemischte Portfolios und Infrastruktur</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Beziehungs-Modell statt Baum</h2>
+
+  <p>Eine der häufigsten Fehlannahmen: IFC sei eine Baumstruktur. Das ist falsch. <strong>IFC ist ein gerichteter Beziehungs-Graph</strong>, in dem Bauteile, Räume, Typen, Eigenschaften und Materialien über Beziehungs-Entitäten verlinkt sind. Das hat Konsequenzen für jede CDE und jeden Importer:</p>
+
+  <ul>
+    <li>Properties dürfen <strong>nicht</strong> in eine einzelne Tabelle gepresst werden — Type-Properties und Occurrence-Properties müssen unterschieden bleiben.</li>
+    <li>Räumliche Zuordnung ist <strong>nicht doppelt</strong> — Primary und Secondary haben verschiedene Bedeutungen.</li>
+    <li>Klassifikation, Material und Mengen sind <strong>separate Beziehungs-Domänen</strong>, nicht Felder.</li>
+    <li>Eine GlobalId identifiziert ein Objekt eindeutig über alle Sichten hinweg — Werkzeuge dürfen sie zwischen Exporten nicht ohne Grund ändern. (Diese Disziplin ist die Voraussetzung für stabile BCF-Issues über mehrere Modell-Stände.)</li>
+  </ul>
+
+  <h2>Mapping auf signierte Nostr-Ereignisse</h2>
+
+  <p>Sovereign AEC behandelt IFC-Modelle nicht als Stream einzelner Entitäten, sondern als <strong>signierten Dateicontainer mit Metadaten-Event</strong>. Der Grund: Millionen IFC-Entitäten in Millionen Nostr-Events wären unbedienbar — und semantisch unnötig, weil IFC schon ein in sich vollständiges Modell-Format ist.</p>
+
+  <p>Pro IFC-Datei werden zwei Ereignisse erzeugt:</p>
+
+  <pre>kind:1063  NIP-94 File-Metadata
+  tags: [
+    ["url", "https://blossom.example/<sha256>"],
+    ["m", "application/x-step"],
+    ["x", "<sha256>"],
+    ["size", "<bytes>"],
+    ["schema", "IFC4X3_ADD2"],          # oder IFC4_ADD2_TC1, IFC2X3_TC1
+    ["mvd", "ReferenceView"],            # oder AlignmentBasedView, IFC4Precast
+    ["authoring-tool", "Revit"],         # oder ArchiCAD, Allplan, Tekla, …
+    ["discipline", "architecture"],      # mep, structural, electrical, civil, …
+    ["iso19650-state", "Shared"],        # WIP / Shared / Published / Archive
+    ["ifc-project", "<IfcProject-GUID>"],
+    ["a", "&lt;projekt-ref&gt;"]
+  ]
+  content: {ifc_project_name, entity_count, notes}
+
+kind:30904  BCF File Reference (parameterized replaceable)
+  d: <file-guid>
+  Verlinkt das NIP-94-Event und ergänzt projekt-spezifische Felder
+  (IfcSpatialStructureElement, Replacement-Stand, Stage)</pre>
+
+  <p>Die IFC-Datei selbst liegt auf Blossom oder einem anderen Storage-Adapter. Der Hash garantiert Integrität, die Signatur garantiert Herkunft.</p>
+
+  <h2>Praktische Stolperfallen</h2>
+
+  <ul>
+    <li><strong>GUID-Churn</strong> — wenn Authoring-Tools beim Re-Export GlobalIds ohne Grund neu vergeben, verlieren BCF-Issues und FM-Referenzen ihre Bauteil-Bezüge. Werkzeug-spezifische GUID-Stabilitätsregeln im BAP definieren, Nachtests vor Veröffentlichung.</li>
+    <li><strong>Type-vs-Occurrence-Drift</strong> — Properties werden gleichzeitig am Typ und am Vorkommen gesetzt, geraten dann in Konflikt. Im Modellierungsleitfaden klar trennen.</li>
+    <li><strong>Falsche räumliche Zuordnung</strong> — Element ist in der falschen Spatial Structure enthalten. Filter, Reports und Auswertungen brechen leise. <code>IfcRelContainedInSpatialStructure</code>-Prüfungen automatisieren.</li>
+    <li><strong>Reference-vs-Full-Verwechslung</strong> — der Empfänger erwartet bearbeitbare Authoring-Daten, bekommt aber ein Reference-View-Modell ohne editierbare Intelligenz (oder umgekehrt). Austausch-MVD im AIA/BAP explizit benennen.</li>
+    <li><strong>Infrastruktur ohne Alignment</strong> — bei Brücken-/Trassen-Modellen wird nur lokal platziert statt linear referenziert. Bei Infrastrukturprojekten <code>IfcAlignment</code> + <code>IfcLinearPlacement</code> als Pflicht im BAP fixieren.</li>
+  </ul>
+
+  <h2>Tool-Kompatibilität (vendor-self-reported, Stand 2026)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>IFC 2x3</th><th>IFC4 ADD2 TC1</th><th>IFC 4.3</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Archicad</td><td>✓</td><td>✓</td><td>—</td></tr>
+      <tr><td>ALLPLAN</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Revit</td><td>✓</td><td>✓</td><td>(Plugin)</td></tr>
+      <tr><td>Solibri Office</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>BIMcollab Zoom</td><td>✓</td><td>✓</td><td>—</td></tr>
+      <tr><td>DESITE BIM</td><td>✓</td><td>✓</td><td>✓ inkl. Alignment</td></tr>
+      <tr><td>Quadri</td><td>✓</td><td>✓</td><td>✓ full</td></tr>
+      <tr><td>usBIM</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    </tbody>
+  </table>
+
+  <p>Diese Angaben sind <em>vendor-self-reported</em> und von buildingSMART nicht verifiziert. Bei realer Ausschreibung immer per produktivem Proof-of-Concept mit Referenz-Modellen, IDS-Testfällen und BCF-Roundtrip prüfen.</p>
+
+  <div class="next">
+    <h3>Weiterlesen</h3>
+    <ul>
+      <li><a href="../koordination/bcf.html">Was ist BCF?</a> — wie Issues über IFC-Modelle kommuniziert werden</li>
+      <li><a href="../anforderungen/ids.html">Was ist IDS?</a> — wie Informationsanforderungen an IFC-Modelle maschinenprüfbar formuliert werden</li>
+      <li><a href="../prozess/iso-19650.html">ISO 19650</a> — der Lifecycle-Rahmen für IFC-Lieferungen</li>
+      <li><a href="../../../docs/STANDARDS-PROFILE.md">Standards-Profile</a> — welche Versionen Sovereign AEC exakt unterstützt</li>
+      <li><a href="../../../docs/KIND-REGISTRY.md">Kind Registry</a> — wie IFC auf Nostr-Tags abgebildet wird</li>
+    </ul>
+  </div>
+
+  <h2>Quellen</h2>
+  <ul>
+    <li><a href="https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/" target="_blank">buildingSMART IFC 4.3 Documentation</a></li>
+    <li><a href="https://technical.buildingsmart.org/standards/ifc/" target="_blank">buildingSMART Technical IFC Standards</a></li>
+    <li><a href="https://www.iso.org/standard/84123.html" target="_blank">ISO 16739-1:2024</a></li>
+    <li><a href="https://github.com/buildingSMART/IFC4.3.x-development" target="_blank">IFC4.3.x Development Repository</a></li>
+  </ul>
+
+</article>
+
+<footer>
+  Sovereign AEC Wiki · Modell · IFC · <a href="../index.html">zurück zum Wiki-Hub</a>
+</footer>
+
+</body>
+</html>

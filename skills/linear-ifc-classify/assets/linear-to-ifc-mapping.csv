@@ -1,0 +1,93 @@
+LIN_CLASSIFICATION_LINEAR,IfcExportAs,IfcExportType,PredefinedType_kommentar
+Thermal.Generation.Boiler,IfcBoiler,WATER,Heizkessel Gas/Öl/Pellets
+Thermal.Generation.HeatPump,IfcUnitaryEquipment,AIRHANDLER,Wärmepumpe (IFC4: kein eigenes IfcHeatPump)
+Thermal.Generation.Chiller,IfcChiller,AIRCOOLED,Kaltwassersatz luftgekühlt
+Thermal.Generation.ChillerWaterCooled,IfcChiller,WATERCOOLED,Kaltwassersatz wassergekühlt
+Thermal.Generation.SolarThermalCollector,IfcSolarDevice,SOLARCOLLECTOR,Solarthermie-Kollektor
+Thermal.Converter.Chiller,IfcChiller,NOTDEFINED,"Linear-Variante für Kühler, Untervariante via Pset"
+Thermal.Converter.CompactEnergyTransferStation,IfcUnitaryEquipment,AIRHANDLER,FWS / Frischwasserstation als Kompaktübergabestation
+Thermal.Movement.Pump,IfcPump,CIRCULATOR,Umwälzpumpe
+Thermal.Movement.PumpEndSuction,IfcPump,ENDSUCTION,Kreiselpumpe endgesaugt
+Thermal.Storage.Tank,IfcTank,STORAGE,Pufferspeicher Heizung/Kälte
+Thermal.Storage.BufferStorage,IfcTank,STORAGE,Pufferspeicher (Linear-Variante)
+Thermal.Storage.ExpansionTank,IfcTank,EXPANSION,Membran-Ausdehnungsgefäß (MAG)
+Thermal.Distribution.Manifold,IfcDistributionChamberElement,NOTDEFINED,"Heizungs-/Kälteverteiler (HZVT/KVT). IFC4 hat kein MANIFOLD-Predef, Pset-Reference klärt"
+Thermal.Distribution.RadiantHeatingAndCoolingManifold,IfcDistributionChamberElement,NOTDEFINED,FBH-Verteiler (VKF)
+Thermal.Distribution.HeatExchanger,IfcHeatExchanger,PLATE,Plattenwärmetauscher
+Thermal.Controller.TwoPortControlValve,IfcValve,REGULATING,2-Wege Regelventil
+Thermal.Controller.ThreePortControlValve,IfcValve,MIXING,3-Wege Mischarmatur
+Thermal.Controller.BalancingValve,IfcValve,REGULATING,Strangregulierventil
+Thermal.Controller.IsolationValveBall,IfcValve,ISOLATING,Kugelhahn (Stopventil)
+Thermal.Controller.IsolationValveGate,IfcValve,ISOLATING,Schieber
+Thermal.Controller.SafetyValve,IfcValve,PRESSURERELIEF,Sicherheitsventil
+Thermal.Controller.CheckValve,IfcValve,CHECK,Rückschlagventil
+Thermal.Controller.ZoneValveMotor,IfcValve,MIXING,Motorisches Zonenventil
+Thermal.Controller.MagneticValve,IfcValve,ISOLATING,Magnetventil (Stopfunktion)
+Thermal.Terminal.Radiator,IfcSpaceHeater,RADIATOR,Heizkörper / Radiator
+Thermal.Terminal.UnderfloorHeating,IfcSpaceHeater,PANELRADIATOR,Fußbodenheizung Panel
+Thermal.Terminal.FanCoil,IfcUnitaryEquipment,FANCOILUNIT,Fan-Coil Konvektor (alter Name)
+Thermal.Terminal.FanCoilUnit,IfcUnitaryEquipment,FANCOILUNIT,Fan-Coil (Linear aktueller Name)
+Thermal.Virtual.PartialNetworkStart,IfcVirtualElement,NOTDEFINED,Virtuelles Linear-Hilfselement (Teilnetz-Anfang)
+Thermal.Virtual.PartialNetworkEnd,IfcVirtualElement,NOTDEFINED,Virtuelles Linear-Hilfselement (Teilnetz-Ende)
+Water.Generation.StorageWaterHeater,IfcTank,WATERHEATER,Trinkwasserspeicher direkt
+Water.Storage.StorageWaterHeaterIndirectHeating,IfcTank,WATERHEATER,Trinkwasserspeicher indirekt (SAS)
+Water.Storage.StorageColdWater,IfcTank,WATERSTORAGEHORIZONTAL,Kaltwasserspeicher
+Water.Converter.FreshWaterStation,IfcUnitaryEquipment,AIRHANDLER,Frischwasserstation
+Water.Movement.Pump,IfcPump,CIRCULATOR,Trinkwasserpumpe
+Water.Movement.SewageLiftStation,IfcPump,SUMPPUMP,Hebeanlage Schmutzwasser
+Water.Other.VentAndAirAdmittanceValve,IfcValve,AIRRELEASE,Rohrbe-/Entlüfter (Sanitär)
+Water.Controller.CirculationBalancingValve,IfcValve,REGULATING,Zirkulations-Regulierventil
+Water.Controller.ShutOffValve,IfcValve,ISOLATING,Absperrventil
+Water.Safety.BackflowPreventer,IfcValve,CHECK,Systemtrenner / Backflow Preventer
+Water.Terminal.Tap,IfcSanitaryTerminal,WASHHANDBASIN,Waschtischarmatur (Mischer)
+Water.Terminal.MixerShower,IfcSanitaryTerminal,SHOWER,Brausearmatur
+Water.Terminal.Shower,IfcSanitaryTerminal,SHOWER,Dusche
+Water.Terminal.ToiletWithCistern,IfcSanitaryTerminal,TOILETPAN,WC mit Spülkasten
+Water.Terminal.Washbasin,IfcSanitaryTerminal,WASHHANDBASIN,Waschbecken
+Water.Terminal.Bidet,IfcSanitaryTerminal,BIDET,Bidet
+Water.Terminal.Sink,IfcSanitaryTerminal,SINK,Spüle
+Water.Terminal.KitchenSink,IfcSanitaryTerminal,SINK,Küchenspüle
+Water.Terminal.Faucet,IfcSanitaryTerminal,WASHHANDBASIN,"Wasserhahn (IFC4 hat kein FAUCET, Workaround Washhandbasin)"
+Water.Terminal.WashingMachine,IfcSanitaryTerminal,WASHHANDBASIN,Waschmaschinenanschluss (IFC4 kein WASHINGMACHINE)
+Water.Terminal.Generic,IfcSanitaryTerminal,USERDEFINED,"Generischer Wasser-Endpunkt, Pset präzisiert"
+Water.Connection.Bend,IfcPipeFitting,BEND,Rohrbogen Wasser
+Water.Connection.Branch,IfcPipeFitting,JUNCTION,T-Stück Wasser
+Water.Connection.DoubleBranch,IfcPipeFitting,JUNCTION,Doppel-T-Stück
+Water.Connection.WallConnection,IfcPipeFitting,TRANSITION,Wandanschluss
+Water.Connection.ReducingPart,IfcPipeFitting,TRANSITION,Reduzierstück
+Water.Connection.MaterialTransition,IfcPipeFitting,TRANSITION,Material-Übergang
+Water.Connection.PipeEnd,IfcPipeFitting,ENTRY,Rohrabschluss
+Water.Virtual.PartialNetworkStart,IfcVirtualElement,NOTDEFINED,Linear-Hilfselement
+Water.Virtual.PartialNetworkEnd,IfcVirtualElement,NOTDEFINED,Linear-Hilfselement
+AirHandling.Generation.AirHandlingUnit,IfcAirToAirHeatRecovery,PLATEHEATEXCHANGER,Lüftungsgerät (AHU) mit WRG
+AirHandling.Unit.VentilationUnit,IfcAirToAirHeatRecovery,PLATEHEATEXCHANGER,Lüftungsgerät (Linear-Variante)
+AirHandling.Movement.Fan,IfcFan,CENTRIFUGALFORWARDCURVED,Ventilator
+AirHandling.Terminal.Diffuser,IfcAirTerminal,DIFFUSER,Tellerauslass
+AirHandling.Terminal.LinearDiffuser,IfcAirTerminal,DIFFUSER,Schlitzauslass (IFC4 kennt nur DIFFUSER/GRILLE/LOUVER/REGISTER)
+AirHandling.Terminal.SwirlDiffuser,IfcAirTerminal,DIFFUSER,Drallauslass
+AirHandling.Terminal.Grille,IfcAirTerminal,GRILLE,Lüftungsgitter
+AirHandling.Terminal.Louver,IfcAirTerminal,LOUVER,Außengitter / Wetterschutzgitter
+AirHandling.Terminal.AirVent,IfcAirTerminal,DIFFUSER,Luftauslass allgemein
+AirHandling.Controller.FireDamper,IfcDamper,FIREDAMPER,Brandschutzklappe (alt)
+AirHandling.Safety.FireDamper,IfcDamper,FIREDAMPER,Brandschutzklappe (BSK) — Linear aktueller Namensraum
+AirHandling.Controller.SmokeDamper,IfcDamper,SMOKEDAMPER,Rauchschutzklappe
+AirHandling.Controller.VolumeControlDamper,IfcDamper,CONTROLDAMPER,Volumenstromregler (IFC4 kennt nur CONTROLDAMPER)
+AirHandling.Controller.VolumeFlowController,IfcDamper,CONTROLDAMPER,Volumenstromregler VAV/CAV (Linear aktueller Name)
+AirHandling.Controller.BalancingDamper,IfcDamper,BALANCINGDAMPER,Drosselklappe
+AirHandling.Treatment.Silencer,IfcDuctSilencer,RECTANGULAR,Schalldämpfer Kulisse rechteckig
+AirHandling.Treatment.SilencerRound,IfcDuctSilencer,ROUND,Schalldämpfer rund
+AirHandling.Treatment.SoundAbsorber,IfcDuctSilencer,RECTANGULAR,Schallabsorber (Linear-Variante)
+AirHandling.Treatment.AirFilter,IfcFilter,AIRPARTICLEFILTER,Luftfilter
+AirHandling.Connection.Bend,IfcDuctFitting,BEND,Kanalbogen
+AirHandling.Connection.BendTransition,IfcDuctFitting,BEND,Bogen mit Übergang
+AirHandling.Connection.Branch,IfcDuctFitting,JUNCTION,T-Stück Kanal
+AirHandling.Connection.WyePiece,IfcDuctFitting,JUNCTION,Y-Stück
+AirHandling.Connection.Transition,IfcDuctFitting,TRANSITION,Kanal-Übergang
+AirHandling.Connection.DuctEndCap,IfcDuctFitting,TRANSITION,"Kanal-Endkappe (IFC4 kein CAP, TRANSITION als Workaround)"
+AirHandling.Connection.Port,IfcVirtualElement,NOTDEFINED,Linear-Connector
+AirHandling.Virtual.PartialNetworkStart,IfcVirtualElement,NOTDEFINED,Linear-Hilfselement
+AirHandling.Virtual.PartialNetworkEnd,IfcVirtualElement,NOTDEFINED,Linear-Hilfselement
+Drainage.Terminal.FloorDrain,IfcSanitaryTerminal,SINK,"Bodenablauf (IFC4 kein FLOORTRAP, SINK als Workaround)"
+Drainage.Terminal.RoofDrain,IfcSanitaryTerminal,SINK,Dachablauf
+Drainage.Other.GreaseTrap,IfcInterceptor,GREASE,Fettabscheider
+FireProtection.Terminal.SprinklerHead,IfcFireSuppressionTerminal,SPRINKLER,Sp
