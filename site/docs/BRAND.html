@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gemeinwert / BIM CVP — Brand Concept &mdash; Gemeinwert Docs</title>
+  <meta name="description" content="Status. Brand decided May 2026. Living document — every brand convention is documented here." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <style>
+    body::before { display: none; }
+    .doc-wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    .doc-head { padding: 42px 0 28px; border-bottom: 1px solid var(--line); }
+    .doc-head .crumb { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+    .doc-head .crumb a { color: var(--muted); }
+    .doc-head h1 { font-family: var(--font-display); font-size: clamp(34px, 5vw, 58px); line-height: 1.08; font-weight: 400; margin: 0; }
+    .doc-head p { max-width: 72ch; color: var(--ink-2); font-size: 17px; line-height: 1.65; margin: 18px 0 0; }
+    .doc-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 34px 0 64px; }
+    .doc { max-width: 860px; }
+    .doc h2 { font-family: var(--font-display); font-size: 30px; line-height: 1.2; font-weight: 400; margin: 42px 0 14px; padding-top: 8px; border-top: 1px solid var(--line); }
+    .doc h3 { font-family: var(--font-display); font-size: 22px; line-height: 1.25; font-weight: 400; color: var(--gold); margin: 32px 0 10px; }
+    .doc h4 { font-size: 16px; color: var(--ink); margin: 24px 0 8px; }
+    .doc p, .doc li { color: var(--ink-2); font-size: 16px; line-height: 1.7; }
+    .doc p { margin: 0 0 16px; }
+    .doc a { color: var(--gold); }
+    .doc code { font-family: var(--font-mono); font-size: 0.92em; background: rgba(255,255,255,.055); border: 1px solid var(--line); border-radius: 4px; padding: 0.08rem 0.28rem; color: var(--ink); }
+    .doc pre { overflow-x: auto; background: #10151b; border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; margin: 20px 0; }
+    .doc pre code { background: transparent; border: 0; padding: 0; color: var(--ink); font-size: 13px; line-height: 1.55; }
+    .doc table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 14px; }
+    .doc th, .doc td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+    .doc th { color: var(--ink); background: rgba(255,255,255,.045); font-weight: 600; }
+    .doc td { color: var(--ink-2); }
+    .doc blockquote { margin: 20px 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--gold); color: var(--ink-2); }
+    .doc hr { border: 0; border-top: 1px solid var(--line); margin: 34px 0; }
+    .doc-foot { border-top: 1px solid var(--line); padding: 28px 0 56px; color: var(--dim); font-size: 13px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .doc-foot a { color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="topbar" data-screen-label="Top bar">
+  <div class="doc-wrap topbar__inner">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div><div class="brand__word">gemeinwert</div><div class="brand__sub">BIM <span class="cvp">CVP</span></div></div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="../en/standards.html">Standards</a>
+      <a href="./">Docs</a>
+    </nav>
+  </div>
+</header>
+<main class="doc-wrap">
+  <header class="doc-head">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="./">docs</a> &nbsp;/&nbsp; BRAND.html</p>
+    <h1>Gemeinwert / BIM CVP — Brand Concept</h1>
+    <p>Status. Brand decided May 2026. Living document — every brand convention is documented here.</p>
+  </header>
+  <div class="doc-layout">
+    <article class="doc">
+<p><strong>Status.</strong> Brand decided May 2026. Living document — every brand convention is documented here.</p>
+<hr />
+<h3 id="name">Name</h3>
+<ul>
+<li><strong>Gemeinwert</strong> (German / Italian / DACH market)</li>
+<li><strong>BIM CVP — Common Value Protocol</strong> (English / international / standards discourse)</li>
+</ul>
+<p>One word as German proper noun. English as a three-letter acronym in the buildingSMART family style (BCF, IDS, IDM, MVD … now CVP), long form <em>Common Value Protocol</em> as standards frame.</p>
+<p><strong>Usage:</strong></p>
+<ul>
+<li>DACH context (PA, architects, site managers): <strong>Gemeinwert</strong></li>
+<li>International / openBIM standards context: <strong>BIM CVP</strong></li>
+<li>English dev docs: <strong>CVP</strong> as short form, <em>Common Value Protocol</em> spelled out on first occurrence</li>
+<li>NIP draft to <code>nostr-protocol/nips</code>: <em>BIM CVP</em> in the title, <em>Common Value Protocol</em> in the description</li>
+</ul>
+<h3 id="domains">Domains</h3>
+<ul>
+<li><code>gemeinwert.com</code> — main entry</li>
+<li><code>gemeinwert.it</code> — Italy / Provincia di Bolzano context</li>
+<li><code>gemeinwert.eu</code> — neutral European</li>
+<li><code>gemeinwert.de</code> — if available/buyable, else skip</li>
+<li>(optional later) <code>bimcvp.org</code> or <code>commonvalueprotocol.org</code> for standards/dev pivot</li>
+</ul>
+<h3 id="motto">Motto</h3>
+<table><thead><tr><th>Audience</th><th>Motto</th></tr></thead><tbody>
+<tr><td>DACH / PA / architects</td><td><strong>„Die offene Schicht für signiertes Bauwesen.&quot;</strong></td></tr>
+<tr><td>International / standards</td><td><strong>„The open layer for signed construction.&quot;</strong></td></tr>
+<tr><td>Dev / Nostr space</td><td><strong>„build better with nostr&quot;</strong></td></tr>
+<tr><td>openBIM insiders</td><td><strong>„BIM CVP — Common Value Protocol&quot;</strong> as self-explanation</td></tr>
+</tbody></table>
+<p>Main site uses the DACH motto. Dev docs and GitHub README use <em>build better with nostr</em> as subtitle. Standards PRs use the full English name.</p>
+<h3 id="brand-positioning">Brand positioning</h3>
+<p>Gemeinwert / BIM CVP is the <strong>standards project</strong> and <strong>open layer</strong> on which signed construction workflows run. Non-extractive, MIT-licensed, openly extensible.</p>
+<p><strong>Bimbeam</strong> is the first commercial service provider on top of Gemeinwert — DVM marketplace provider for HKLS, CAM audit, owner advisory. Other providers welcome.</p>
+<p>Analogy: Linux + Red Hat. Gemeinwert = Linux. Bimbeam = Red Hat. Catenda, ACCA, other platforms can use the same pattern.</p>
+<h3 id="two-word-identity">Two-word identity</h3>
+<blockquote><strong>Gemeinwert. Signed.</strong></blockquote>
+<blockquote><strong>CVP. Signed.</strong></blockquote>
+<p>Used as ultra-short marketing slogan if needed. Expresses mission and mechanism in three syllables.</p>
+<h3 id="brand-architecture">Brand architecture</h3>
+<pre><code>Gemeinwert / BIM CVP            — platform / standards / movement
+  ├─ wiki                       — buildingSMART knowledge, standards mapping
+  ├─ tools                      — character / admin / keys / more HTML tools
+  ├─ marketplace                — DVM listings (NIP-90-based)
+  └─ providers
+       ├─ Bimbeam               — Felix's services: HKLS / MEP / CAM
+       └─ (more)                — other providers join over time</code></pre>
+<h3 id="visual-identity">Visual identity</h3>
+<p>Continues from existing HTML tools:</p>
+<table><thead><tr><th>Element</th><th>Value</th></tr></thead><tbody>
+<tr><td>Background</td><td><code>#0f1419</code> (dark-blue charcoal)</td></tr>
+<tr><td>Panel</td><td><code>#1a2027</code></td></tr>
+<tr><td>Lines</td><td><code>#2a3440</code></td></tr>
+<tr><td>Text</td><td><code>#e8e8e8</code></td></tr>
+<tr><td>Secondary text</td><td><code>#8a9aab</code></td></tr>
+<tr><td>Accent (gold)</td><td><code>#f4c430</code></td></tr>
+<tr><td>Accent-2 (blue)</td><td><code>#5b9bd5</code></td></tr>
+<tr><td>Success green</td><td><code>#4ade80</code></td></tr>
+<tr><td>Warning red</td><td><code>#f87171</code></td></tr>
+</tbody></table>
+<p>Typography: Serif (Georgia) for headlines, Sans-Serif (system stack) for body, Monospace (SF Mono / Menlo) for code.</p>
+<p>Logo: not yet designed. Candidates:</p>
+<ul>
+<li>Stylised Edelweiss in accent gold (alpine roots)</li>
+<li>An anchor plus workbench silhouette</li>
+<li>A &quot;G&quot; with a trace-line underneath</li>
+<li>Pure wordmark, no image — clean, professional</li>
+</ul>
+<p>Pure wordmark is the simplest path until a logo is decided.</p>
+<h3 id="language-conventions">Language conventions</h3>
+<ul>
+<li><strong>Source of truth:</strong> English (dev docs, code, NIP drafts, GitHub)</li>
+<li><strong>DACH market language:</strong> German (PA, architects, planners in DE/AT/CH/Südtirol)</li>
+<li><strong>Italian market language:</strong> Italian (Provincia di Bolzano, Italian public procurement)</li>
+</ul>
+<p>DE and IT versions are <strong>sourced from English</strong> — translated, not authored separately. This keeps standards-compliance vocabulary consistent across languages.</p>
+<p>Italian tagline draft: <em>„Lo strato aperto per l'edilizia firmata.&quot;</em> — needs native-speaker validation before going live.</p>
+<h3 id="voice-tone">Voice / tone</h3>
+<ul>
+<li><strong>To PA / bureaucracy toaster</strong>: respectful, clear, no tech jargon, trust-building</li>
+<li><strong>To architects / planners</strong>: collegial, direct, technical-precise</li>
+<li><strong>To devs / Nostr community</strong>: tinker-style, slightly playful, technically deep</li>
+<li><strong>To Bitcoin insiders</strong>: concise, factual, no marketing speech</li>
+</ul>
+<h3 id="what-not-to-mention-in-the-main-facade">What NOT to mention in the main facade</h3>
+<ul>
+<li><em>Bitcoin</em> — not in brand stack, not in front-page copy (comes actively later)</li>
+<li><em>Nostr</em> — as a term not prominent, only in technical documentation</li>
+<li><em>Blockchain</em> — never</li>
+<li><em>Crypto</em> — never</li>
+<li><em>Wallet</em> — not prominent, only in technical layers</li>
+</ul>
+<p>These terms live in the secondary motto (*build better with nostr*) for dev audiences and in the dev docs section — never on the landing page for site managers.</p>
+<h3 id="file-status-rename-to-gemeinwert-en-primary">File status (rename to Gemeinwert / EN-primary)</h3>
+<table><thead><tr><th>File</th><th>Status</th><th>When</th></tr></thead><tbody>
+<tr><td><code>README.md</code></td><td>done, EN primary</td><td>now</td></tr>
+<tr><td><code>docs/BRAND.md</code></td><td>done, EN primary</td><td>now</td></tr>
+<tr><td><code>docs/PRINCIPLES.md</code></td><td>EN primary</td><td>next pass</td></tr>
+<tr><td><code>docs/KIND-REGISTRY.md</code></td><td>EN primary</td><td>next pass</td></tr>
+<tr><td><code>docs/STANDARDS-PROFILE.md</code></td><td>EN primary</td><td>next pass</td></tr>
+<tr><td><code>docs/BACKEND-SETUP.md</code></td><td>EN primary</td><td>next pass</td></tr>
+<tr><td><code>docs/bcf-nostr-nip-research.md</code></td><td>EN primary</td><td>next pass</td></tr>
+<tr><td><code>web/index.html</code></td><td>Gemeinwert rename done</td><td>now</td></tr>
+<tr><td><code>web/wiki/index.html</code></td><td>rebrand</td><td>next pass</td></tr>
+<tr><td><code>web/character.html</code></td><td>rebrand</td><td>next pass</td></tr>
+<tr><td><code>web/admin.html</code></td><td>rebrand</td><td>next pass</td></tr>
+<tr><td><code>web/keys.html</code></td><td>rebrand</td><td>next pass</td></tr>
+<tr><td>Knowledge wiki pages</td><td>EN versions to be authored</td><td>follow-on waves</td></tr>
+<tr><td>Research docs (cde-research, cam-edilizia, deep-research-*)</td><td>keep in original language for now</td><td>low priority</td></tr>
+</tbody></table>
+<hr />
+<p><em>Stand: May 2026. Brand fixed. All future dev-related docs author in English first. DACH/IT translations follow as derivative.</em></p>
+    </article>
+  </div>
+</main>
+<footer class="doc-wrap doc-foot">
+  <span>Docs &middot; static HTML</span>
+  <a href="./">back to docs index</a>
+</footer>
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

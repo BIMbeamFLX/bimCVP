@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BCF — Gemeinwert Wiki</title>
-  <meta name="description" content="BIM Collaboration Format explained: topics, comments, viewpoints, the BCF-XML container and BCF-API, versions 2.1 and 3.0, and how Gemeinwert carries BCF as signed events." />
+  <title>BCF — BIM-CVP Wiki</title>
+  <meta name="description" content="BIM Collaboration Format explained: topics, comments, viewpoints, the BCF-XML container and BCF-API, versions 2.1 and 3.0, and how BIM-CVP carries BCF as signed events." />
   <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="../../assets/site.css" />
@@ -117,10 +117,10 @@
       <h2>Mapping to signed events</h2>
 
       <p>
-        Gemeinwert carries BCF as <strong>signed addressable events</strong>, not as
-        a file locked in one CDE. The topic is the durable, replaceable record;
-        comments are append-only references to it; the snapshot and any attachment
-        ride along as NIP-94 file events keyed by hash.
+        BIM-CVP carries BCF as <strong>signed events</strong>, not as a file
+        locked in one CDE. The current topic state is addressable, comments and
+        audit records are append-only, and snapshots or attachments ride along as
+        NIP-94 file events keyed by hash.
       </p>
 
       <pre>kind:30900  BCF Topic (addressable, replaceable)
@@ -128,28 +128,33 @@
   tags: [
     ["a",        "&lt;project-ref&gt;"],
     ["status",   "Active"],            # Closed, ReadyForReview, …
-    ["priority", "High"],
+    ["bcf-priority", "High"],
     ["p",        "&lt;assignee-pubkey&gt;"]
   ]
   content: { title, description, type, due_date }
 
-kind:30901  Viewpoint   → camera + selected IFC GUIDs + snapshot hash
-kind:1111   Comment      → references the topic, signed by its author
-kind:1063   Snapshot/att → NIP-94 file event, integrity by sha256</pre>
+kind:30901  Viewpoint   → immutable camera + selected IFC GUIDs + snapshot hash
+kind:1170   Comment     → references the topic, signed by its author
+kind:1171   Audit       → status, assignment and approval changes
+kind:1063   Snapshot    → NIP-94 file event, integrity by sha256</pre>
 
       <p>
-        Every state change is a new signed event by a known key: the audit trail is
-        the signature chain, not a database row anyone can edit. The exact kind and
-        tag registry is on the <a href="../nostr-mapping/kind-mapping.html">kind
-        mapping</a> page; the signing model is in
+        Viewpoints follow the BCF rule: they are immutable. If the camera,
+        selection, clipping plane or snapshot changes, the client creates a new
+        viewpoint GUID and links it to the topic. Every topic state change also
+        gets a signed audit event; the audit trail is the signature chain, not a
+        database row anyone can edit. The detailed event mapping is on the
+        <a href="../nostr-mapping/bcf-events.html">BCF to Nostr events</a> page;
+        the full registry is on <a href="../nostr-mapping/kind-mapping.html">kind
+        mapping</a>; the signing model is in
         <a href="../nostr/basics.html">Nostr basics</a>.
       </p>
 
-      <div class="callout" style="border:1px solid var(--line); border-radius:8px; padding:16px 20px; margin:28px 0;">
-        <strong>Coming on this site.</strong> A simple BCF platform that creates and
-        reads these topics, comments and viewpoints as signed events directly in the
-        browser &mdash; this page is its data model.
-      </div>
+      <p>
+        In BIM-CVP, the browser client creates and reads these topics, comments and
+        viewpoints as signed events. This page is the BCF data model behind that
+        workflow.
+      </p>
 
       <h2>Practical pitfalls</h2>
 
@@ -164,6 +169,7 @@ kind:1063   Snapshot/att → NIP-94 file event, integrity by sha256</pre>
         <h3>Read on</h3>
         <ul>
           <li><a href="../modell/ifc.html">IFC</a> &mdash; the GUIDs BCF points at</li>
+          <li><a href="../nostr-mapping/bcf-events.html">BCF to Nostr events</a> &mdash; detailed mapping, examples and round-trip rules</li>
           <li><a href="../nostr/basics.html">Nostr basics</a> &mdash; how a topic becomes a signed event</li>
           <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; the full event/tag registry</li>
           <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; the state model BCF status fits into</li>
@@ -175,6 +181,8 @@ kind:1063   Snapshot/att → NIP-94 file event, integrity by sha256</pre>
         <li><a href="https://technical.buildingsmart.org/standards/bcf/" target="_blank" rel="noopener">buildingSMART BCF standard</a></li>
         <li><a href="https://github.com/buildingSMART/BCF-XML" target="_blank" rel="noopener">BCF-XML specification</a></li>
         <li><a href="https://github.com/buildingSMART/BCF-API" target="_blank" rel="noopener">BCF-API specification</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/01.md" target="_blank" rel="noopener">Nostr NIP-01 event model</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/94.md" target="_blank" rel="noopener">Nostr NIP-94 file metadata</a></li>
       </ul>
 
     </article>

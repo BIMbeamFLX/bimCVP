@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kind Registry — Gemeinwert / BIM CVP Pilot &mdash; Gemeinwert Docs</title>
+  <meta name="description" content="Status. Internal allocation, not a NIP yet. Maintained alongside pilot code. NIP proposal only after 3+ project validations." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <style>
+    body::before { display: none; }
+    .doc-wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    .doc-head { padding: 42px 0 28px; border-bottom: 1px solid var(--line); }
+    .doc-head .crumb { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+    .doc-head .crumb a { color: var(--muted); }
+    .doc-head h1 { font-family: var(--font-display); font-size: clamp(34px, 5vw, 58px); line-height: 1.08; font-weight: 400; margin: 0; }
+    .doc-head p { max-width: 72ch; color: var(--ink-2); font-size: 17px; line-height: 1.65; margin: 18px 0 0; }
+    .doc-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 34px 0 64px; }
+    .doc { max-width: 860px; }
+    .doc h2 { font-family: var(--font-display); font-size: 30px; line-height: 1.2; font-weight: 400; margin: 42px 0 14px; padding-top: 8px; border-top: 1px solid var(--line); }
+    .doc h3 { font-family: var(--font-display); font-size: 22px; line-height: 1.25; font-weight: 400; color: var(--gold); margin: 32px 0 10px; }
+    .doc h4 { font-size: 16px; color: var(--ink); margin: 24px 0 8px; }
+    .doc p, .doc li { color: var(--ink-2); font-size: 16px; line-height: 1.7; }
+    .doc p { margin: 0 0 16px; }
+    .doc a { color: var(--gold); }
+    .doc code { font-family: var(--font-mono); font-size: 0.92em; background: rgba(255,255,255,.055); border: 1px solid var(--line); border-radius: 4px; padding: 0.08rem 0.28rem; color: var(--ink); }
+    .doc pre { overflow-x: auto; background: #10151b; border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; margin: 20px 0; }
+    .doc pre code { background: transparent; border: 0; padding: 0; color: var(--ink); font-size: 13px; line-height: 1.55; }
+    .doc table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 14px; }
+    .doc th, .doc td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+    .doc th { color: var(--ink); background: rgba(255,255,255,.045); font-weight: 600; }
+    .doc td { color: var(--ink-2); }
+    .doc blockquote { margin: 20px 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--gold); color: var(--ink-2); }
+    .doc hr { border: 0; border-top: 1px solid var(--line); margin: 34px 0; }
+    .doc-foot { border-top: 1px solid var(--line); padding: 28px 0 56px; color: var(--dim); font-size: 13px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .doc-foot a { color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="topbar" data-screen-label="Top bar">
+  <div class="doc-wrap topbar__inner">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div><div class="brand__word">gemeinwert</div><div class="brand__sub">BIM <span class="cvp">CVP</span></div></div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="../en/standards.html">Standards</a>
+      <a href="./">Docs</a>
+    </nav>
+  </div>
+</header>
+<main class="doc-wrap">
+  <header class="doc-head">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="./">docs</a> &nbsp;/&nbsp; KIND-REGISTRY.html</p>
+    <h1>Kind Registry — Gemeinwert / BIM CVP Pilot</h1>
+    <p>Status. Internal allocation, not a NIP yet. Maintained alongside pilot code. NIP proposal only after 3+ project validations.</p>
+  </header>
+  <div class="doc-layout">
+    <article class="doc">
+<p><strong>Status.</strong> Internal allocation, not a NIP yet. Maintained alongside pilot code. NIP proposal only after 3+ project validations.</p>
+<p><strong>Principle.</strong> Use existing kinds where they fit. Own range only where there is a NIP gap + replaceable need. Document tag conventions cleanly so future self and contributors don't have to guess.</p>
+<p><strong>Reference to standards.</strong> The version choices (which IFC, which BCF, which MVD …) are centrally fixed in <code>STANDARDS-PROFILE.md</code>. This registry describes only how the Nostr events are structured. When a standard version bumps, <code>STANDARDS-PROFILE.md</code> is updated; the corresponding tag value ranges follow here.</p>
+<hr />
+<h3 id="own-range-30900-30999-parameterized-replaceable">Own range 30900–30999 (parameterized replaceable)</h3>
+<table><thead><tr><th>Kind</th><th>Name</th><th><code>d</code>-Tag</th><th>Content</th><th>Status</th></tr></thead><tbody>
+<tr><td>30900</td><td>BCF Topic</td><td>topic-guid</td><td>current state</td><td>in testing</td></tr>
+<tr><td>30901</td><td>BCF Viewpoint</td><td>viewpoint-guid</td><td>immutable camera + components</td><td>in testing</td></tr>
+<tr><td>30902</td><td>BCF Project</td><td>project-guid</td><td>project metadata</td><td>in testing</td></tr>
+<tr><td>30903</td><td>Document Reference</td><td>doc-guid</td><td>external document</td><td>reserved</td></tr>
+<tr><td>30904</td><td>IFC File Reference</td><td>file-guid</td><td>IFC or other model</td><td>in testing</td></tr>
+<tr><td>30810</td><td>IDS Specification</td><td>spec-guid</td><td>Information Delivery Spec</td><td>reserved</td></tr>
+<tr><td>30811</td><td>LOIN Definition</td><td>loin-id</td><td>Level of Information Need</td><td>reserved</td></tr>
+<tr><td>30850</td><td>Product Data Template (PDT)</td><td>template-id</td><td>manufacturer datasheet</td><td>reserved</td></tr>
+<tr><td>30880</td><td>PIR / Owner Information Requirements</td><td>spec-id</td><td>Project Information Requirements</td><td>reserved</td></tr>
+<tr><td>30881</td><td>Room Book Entry</td><td>room-id</td><td>DIN 18205 compliant room</td><td>reserved</td></tr>
+<tr><td>30930</td><td>Document Record</td><td>doc-id</td><td>ISO 19650 lifecycle document</td><td>reserved</td></tr>
+<tr><td>30940</td><td>LCA Study reference</td><td>study-id</td><td>EN 15804/15978 LCA report, CAM 1.3.2</td><td>reserved</td></tr>
+<tr><td>30941</td><td>LCC Study reference</td><td>study-id</td><td>EN 16627 LCC report</td><td>reserved</td></tr>
+<tr><td>30942</td><td>Level(s) Indicator Set</td><td>period-id</td><td>EU reporting snapshot</td><td>reserved</td></tr>
+<tr><td>30960</td><td>Construction Diary Entry</td><td>YYYY-MM-DD</td><td>OTS-anchored</td><td>reserved</td></tr>
+<tr><td>30962</td><td>Maintenance Cycle</td><td>cycle-id</td><td>maintenance event per CAM 2.3.16</td><td>reserved</td></tr>
+<tr><td>30970</td><td>Approval (single or multi-sig)</td><td>approval-id</td><td>plan / phase release</td><td>reserved</td></tr>
+<tr><td>30971</td><td>Deconstruction Plan Approval</td><td>plan-id</td><td>CAM 2.3.17, 70% reuse target</td><td>reserved</td></tr>
+<tr><td>30972</td><td>Export Authorization</td><td>export-id</td><td>publish-to-external-CDE manifest</td><td>reserved</td></tr>
+</tbody></table>
+<h3 id="own-range-1170-1179-regular-immutable">Own range 1170–1179 (regular, immutable)</h3>
+<p><strong>BCF viewpoint profile rule.</strong> <code>30901</code> lives in the addressable range so a viewer can look up a viewpoint by BCF GUID, but the pilot profile forbids republishing the same <code>d</code> value. BCF viewpoints are immutable; a changed camera, selection, clipping plane or snapshot gets a new BCF viewpoint GUID.</p>
+<table><thead><tr><th>Kind</th><th>Name</th><th>Content</th></tr></thead><tbody>
+<tr><td>1170</td><td>BCF Comment</td><td>comment text on topic</td></tr>
+<tr><td>1171</td><td>BCF Audit Event</td><td>field change (status, priority, assignee)</td></tr>
+<tr><td>1172</td><td>BCF Reaction</td><td>quick ack (&quot;seen&quot;, &quot;working on it&quot;)</td></tr>
+</tbody></table>
+<h3 id="own-range-1180-1189-regular-immutable">Own range 1180–1189 (regular, immutable)</h3>
+<table><thead><tr><th>Kind</th><th>Name</th><th>Content</th></tr></thead><tbody>
+<tr><td>1180</td><td>IDS Validation Result</td><td>pass/fail with report ref</td></tr>
+<tr><td>1190</td><td>Sustainability Indicator Snapshot</td><td>Level(s) indicator point-in-time, CAM reporting</td></tr>
+<tr><td>1230</td><td>HVAC Telemetry</td><td>sensor data point</td></tr>
+</tbody></table>
+<h3 id="used-existing-kinds">Used existing kinds</h3>
+<table><thead><tr><th>Kind</th><th>NIP</th><th>Usage</th></tr></thead><tbody>
+<tr><td>0</td><td>NIP-01</td><td>profile metadata per stakeholder</td></tr>
+<tr><td>1</td><td>NIP-01</td><td>demo notes, tribe-level comments</td></tr>
+<tr><td>1063</td><td>NIP-94</td><td>file metadata for IFCs, snapshots, attachments</td></tr>
+<tr><td>9735</td><td>NIP-57</td><td>zaps (bounty, donations)</td></tr>
+<tr><td>9734</td><td>NIP-57</td><td>zap requests</td></tr>
+<tr><td>30023</td><td>NIP-23</td><td>long-form: reports, justifications, annexes</td></tr>
+<tr><td>9000 / 9007</td><td>NIP-29</td><td>group management</td></tr>
+<tr><td>30009</td><td>NIP-58</td><td>badge awards for role attestation</td></tr>
+</tbody></table>
+<hr />
+<h3 id="tag-conventions-binding-for-the-pilot">Tag conventions (binding for the pilot)</h3>
+<table><thead><tr><th>Tag</th><th>Meaning</th><th>Required?</th></tr></thead><tbody>
+<tr><td><code>d</code></td><td>identity for replaceable events (GUID etc.)</td><td>yes for 309xx</td></tr>
+<tr><td><code>a</code></td><td>project reference (format <code>30902:&lt;pubkey&gt;:&lt;project-guid&gt;</code>)</td><td>yes for 309xx + 1170 + 1171</td></tr>
+<tr><td><code>h</code></td><td>NIP-29 group ID (if project in a group)</td><td>when present</td></tr>
+<tr><td><code>e</code></td><td>event reference (topic, viewpoint, file, parent comment)</td><td>per relationship</td></tr>
+<tr><td><code>p</code></td><td>pubkey of a participant (assignee, reporter, watcher)</td><td>when applicable</td></tr>
+<tr><td><code>s</code></td><td>indexed mirror of <code>bcf-status</code> for relay filtering</td><td>yes for 30900</td></tr>
+<tr><td><code>t</code></td><td>free tag or BCF label</td><td>optional</td></tr>
+<tr><td><code>bcf-guid</code></td><td>original BCF GUID preserved for round-trip</td><td>yes for 30900 + 30901</td></tr>
+<tr><td><code>bcf-version</code></td><td>buildingSMART BCF version that the event semantically represents: <code>3.0</code> (default) or <code>2.1</code> (fallback)</td><td>yes for 309xx</td></tr>
+<tr><td><code>bcf-status</code></td><td>topic status (BCF 3.0 Project Extensions value list)</td><td>yes for 30900</td></tr>
+<tr><td><code>bcf-type</code></td><td>topic type (Issue, Clash, RFI, …)</td><td>yes for 30900</td></tr>
+<tr><td><code>bcf-priority</code></td><td>priority</td><td>optional</td></tr>
+<tr><td><code>bcf-due</code></td><td>unix timestamp due date</td><td>optional</td></tr>
+<tr><td><code>bcf-stage</code></td><td>project phase</td><td>optional</td></tr>
+<tr><td><code>bcf-server-assigned-id</code></td><td>human-readable ID from BCF 3.0 ServerAssignedId</td><td>optional</td></tr>
+<tr><td><code>ifc</code></td><td>IFC element GUID (22-char compressed)</td><td>when topic references an element</td></tr>
+<tr><td><code>ifc-file</code></td><td>event ID of a kind:30904 file ref</td><td>when model is referenced</td></tr>
+<tr><td><code>ifc-project</code></td><td>IfcProject GUID</td><td>yes for 30904</td></tr>
+<tr><td><code>ifc-spatial</code></td><td>IfcSpatialStructureElement GUID</td><td>optional</td></tr>
+<tr><td><code>authoring-tool</code></td><td>Revit / ArchiCAD / Allplan / Tekla / Vectorworks / DDS-CAD / …</td><td>yes for 30904</td></tr>
+<tr><td><code>discipline</code></td><td><code>architecture</code> / <code>structural</code> / <code>mep</code> / <code>electrical</code> / <code>civil</code> / <code>buildingPhysics</code> / <code>fireSafety</code></td><td>yes for 30904</td></tr>
+<tr><td><code>schema</code></td><td>exact IFC version: <code>IFC4X3_ADD2</code> (default), <code>IFC4_ADD2_TC1</code>, <code>IFC2X3_TC1</code> (legacy)</td><td>yes for 30904</td></tr>
+<tr><td><code>mvd</code></td><td>Model View Definition: <code>ReferenceView</code> (default), <code>AlignmentBasedView</code>, <code>IFC4Precast</code>, <code>IFC2x3CoordinationView</code> …</td><td>yes for 30904</td></tr>
+<tr><td><code>iso19650-state</code></td><td>lifecycle state: <code>WIP</code> / <code>Shared</code> / <code>Published</code> / <code>Archive</code></td><td>yes for 30903, 30904, 30930</td></tr>
+<tr><td><code>ids-spec-ref</code></td><td>event ID of a kind:30810 IDS spec being validated against</td><td>yes for 1180</td></tr>
+<tr><td><code>x</code></td><td>sha256 (hex, lowercase)</td><td>yes for file metadata</td></tr>
+<tr><td><code>m</code></td><td>MIME type</td><td>yes for file metadata</td></tr>
+<tr><td><code>size</code></td><td>bytes</td><td>yes for file metadata</td></tr>
+<tr><td><code>ots</code></td><td>OpenTimestamps proof (base64)</td><td>optional</td></tr>
+<tr><td><code>audit-field</code>, <code>audit-from</code>, <code>audit-to</code></td><td>field value change</td><td>yes for 1171</td></tr>
+<tr><td><code>client</code></td><td>producer client (tool name + version)</td><td>optional</td></tr>
+<tr><td><code>bcf-action</code></td><td>BCF API action (<code>update</code>, <code>createComment</code>, <code>createViewpoint</code> …) — relevant for audit events</td><td>optional for 1171</td></tr>
+<tr><td><code>visibility</code></td><td><code>internal</code> / <code>team-shared</code> / <code>client-ready</code> — controls export filter</td><td>default <code>team-shared</code></td></tr>
+<tr><td><code>remote</code></td><td>external CDE endpoint (<code>provincia-bolzano-cde</code>, <code>acc-mirror</code>, etc.)</td><td>optional, multiple allowed</td></tr>
+</tbody></table>
+<h4 id="honesty-tags-data-provenance">Honesty tags — data provenance</h4>
+<p>CAM data is often modelled, not measured. Each sustainability value carries a source marker:</p>
+<table><thead><tr><th>Tag</th><th>Values</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>epd-source</code></td><td><code>model</code> / <code>verified</code> / <code>measured</code></td><td>EPD industry average / EN-15804-accredited / factory telemetry</td></tr>
+<tr><td><code>lca-source</code></td><td><code>model</code> / <code>verified</code> / <code>measured</code></td><td>same for LCA calculations</td></tr>
+<tr><td><code>co2-source</code></td><td><code>model</code> / <code>verified</code> / <code>measured</code></td><td>same for CO2 balance values</td></tr>
+</tbody></table>
+<p>Usage example in a <code>kind:30850</code> PDT or <code>kind:30940</code> LCA event:</p>
+<pre><code>[&quot;epd-uri&quot;, &quot;https://epditaly.it/epd/abc123&quot;]
+[&quot;epd-source&quot;, &quot;verified&quot;]
+[&quot;epd-valid-until&quot;, &quot;2029-04-15&quot;]
+[&quot;co2-source&quot;, &quot;model&quot;]</code></pre>
+<p>Audit trail thus shows what was estimated and what was measured. Over years, <code>measured</code> gradually replaces <code>model</code> values without structural change.</p>
+<h4 id="private-layer-cross-references-bitcoin-white-noise-bitcredit">Private-layer cross-references (Bitcoin / White Noise / Bitcredit)</h4>
+<p>Per PRINCIPLES section 4 (Public ledger, private conversation): every signed public event MAY carry references to corresponding off-chain private artifacts. Identity stays <code>npub</code>-rooted; both layers share the same actor.</p>
+<table><thead><tr><th>Tag</th><th>Values</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>white-noise-group</code></td><td>MLS group identifier</td><td>Private team discussion that preceded or accompanies this public event. Allows audit-traceback without disclosure.</td></tr>
+<tr><td><code>bitcredit-note</code></td><td>Bitcredit note identifier (URI / hash)</td><td>Real Bill issued against this event as underwriting substrate. Use on approved Abschlagsrechnung / Lieferantenkredit events.</td></tr>
+<tr><td><code>lnurl-pay</code></td><td>LNURL-Pay endpoint or Lightning Address</td><td>Payment endpoint for service-bound events (DVM marketplace, Bauleistung-Pay-Per-Item).</td></tr>
+<tr><td><code>cashu-mint</code></td><td>Cashu mint URL</td><td>For anonymous reviews or whistleblower channels coupled to this event.</td></tr>
+<tr><td><code>nip-44-key</code></td><td>hex pubkey</td><td>Encryption key for NIP-17 fallback when White Noise unavailable. Per PRINCIPLES §4 production-readiness clause.</td></tr>
+<tr><td><code>fedimint-fed</code></td><td>Federation invitation code</td><td>Shared-treasury context (Bauherrengemeinschaft, planning office liquidity pool).</td></tr>
+</tbody></table>
+<p>Usage example on a <code>kind:30970</code> Approval event:</p>
+<pre><code>[&quot;a&quot;, &quot;30902:&lt;pubkey&gt;:building-2026&quot;]
+[&quot;e&quot;, &quot;&lt;topic-event-id&gt;&quot;]
+[&quot;bcf-status&quot;, &quot;Closed&quot;]
+[&quot;white-noise-group&quot;, &quot;mls-grp-building-hkls-bauteam&quot;]
+[&quot;bitcredit-note&quot;, &quot;bcr:bn1...subleistung-EG-HKLS&quot;]
+[&quot;ots&quot;, &quot;&lt;base64 timestamp proof&gt;&quot;]</code></pre>
+<p>The Approval is publicly signed and auditable. The pre-discussion remains in the MLS group. The Real Bill is anchored on Bitcredit and references the same approval as its underwriting source. Three protocols, one event.</p>
+<h4 id="cam-edilizia-2025-tags">CAM Edilizia 2025 tags</h4>
+<table><thead><tr><th>Tag</th><th>Values</th><th>Required?</th></tr></thead><tbody>
+<tr><td><code>reuse-class</code></td><td><code>direct-reuse</code> / <code>recycle</code> / <code>recovery</code> / <code>disposal</code></td><td>yes for <code>kind:30850</code> PDT + 30971</td></tr>
+<tr><td><code>dismount-method</code></td><td>free text (screwed, glued, mortared …)</td><td>optional, in PDT</td></tr>
+<tr><td><code>uni-8290-code</code></td><td>building part code per UNI 8290-1</td><td>optional for Italian projects</td></tr>
+<tr><td><code>epd-uri</code></td><td>URL to accredited EPD</td><td>yes for 30850 if present</td></tr>
+<tr><td><code>epd-valid-until</code></td><td>ISO date</td><td>yes for 30850 if epd-uri set</td></tr>
+<tr><td><code>lca-rsp</code></td><td>Reference Study Period in years</td><td>yes for 30940</td></tr>
+<tr><td><code>level-s-indicator</code></td><td>indicator name per EU Level(s) framework</td><td>yes for 1190</td></tr>
+</tbody></table>
+<hr />
+<h3 id="versioning-policy">Versioning policy</h3>
+<h4 id="two-version-axes">Two version axes</h4>
+<ul>
+<li><strong><code>bcf-version</code> in the event</strong> references the <strong>buildingSMART BCF version</strong> the event is semantically compatible with (<code>3.0</code> as default, <code>2.1</code> as fallback). This axis follows buildingSMART, not us.</li>
+<li><strong>Our pilot schema iteration</strong> is tracked at the repo level: git tag, release notes, <code>README.md</code>. This axis describes how our tag conventions mature. Pre-1.0 expects breaking changes; consumers must be tolerant.</li>
+</ul>
+<h4 id="when-to-bump-what">When to bump what</h4>
+<ul>
+<li><strong>buildingSMART version bump</strong> (e.g. BCF 3.0 → 3.1): update <code>STANDARDS-PROFILE.md</code>, extend the <code>bcf-version</code> value list here, events carry the new version once producers switch.</li>
+<li><strong>Our tag rename or required-tag change</strong>: repo tag bump to major (e.g. v0.2 → v0.3), consumers need to adjust their parsers.</li>
+<li><strong>New optional tags</strong>: repo tag bump to minor, old consumers work unchanged.</li>
+<li><strong>Repo tag 1.0</strong>: only after NIP draft consensus and at least 3 completed pilot projects.</li>
+</ul>
+<h4 id="current-state">Current state</h4>
+<ul>
+<li>Repo version: 0.1 (pre-release, breaking changes expected)</li>
+<li>BCF default: 3.0</li>
+<li>IFC default: 4.3.2.0 with Reference View MVD</li>
+<li>IDS default: 1.0</li>
+</ul>
+<hr />
+<h3 id="path-to-nip">Path to NIP</h3>
+<ol>
+<li><strong>Run through phases 0–6 of the Building pilot</strong> (see <code>building-pilot-build-plan.md</code>).</li>
+<li><strong>Review the event corpus</strong> — which tags were actually used, which were dead, which were missing.</li>
+<li><strong>Run schema validation</strong> over the gathered material, mark inconsistencies.</li>
+<li><strong>Write the NIP draft</strong> with real events as test vectors.</li>
+<li><strong>Consensus sondierung</strong> with 1–2 other AEC builders before PR.</li>
+<li><strong>PR against <code>nostr-protocol/nips</code></strong> with the allocated range reservation.</li>
+</ol>
+<p>Earliest Q4 2026, realistically Q1/Q2 2027.</p>
+<hr />
+<p><em>This file lives with the code. Every change in the tag or kind schema = entry here. No tag convention in code that isn't documented here.</em></p>
+    </article>
+  </div>
+</main>
+<footer class="doc-wrap doc-foot">
+  <span>Docs &middot; static HTML</span>
+  <a href="./">back to docs index</a>
+</footer>
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

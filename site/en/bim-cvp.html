@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BIM-CVP &mdash; Common Value Protocol</title>
+  <meta name="description" content="BIM-CVP is the Common Value Protocol for openBIM coordination: signed Nostr events, portable identity, verifiable authorship and vendor-neutral project communication." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art-wide topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="./" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="./">Home</a>
+      <a href="standards.html">Standards</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="bim-cvp.html" class="active">BIM-CVP</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide">
+    <p class="crumb"><a href="./">gemeinwert</a> &nbsp;/&nbsp; BIM-CVP</p>
+
+    <header class="art-head">
+      <h1>BIM-CVP: Common Value Protocol for openBIM coordination.</h1>
+      <p class="art-lede">
+        BIM-CVP is an open coordination layer for BIM communication built on signed
+        Nostr events. It extends the idea of BCF beyond centralized platforms:
+        portable identity, verifiable authorship, relay-based distribution and
+        auditable coordination across tools and organizations.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">Position</span>
+        <p>
+          Gemeinwert is the brand. BIM-CVP is the protocol language for developers,
+          standards discussions and integrations: BCF semantics, IFC and IDS references,
+          signed events and open distribution.
+        </p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#why">Why CVP</a></li>
+          <li><a href="#plain-language">BIM and Nostr in plain language</a></li>
+          <li><a href="#economics">Coordination as an economic process</a></li>
+          <li><a href="#principles">Core principles</a></li>
+          <li><a href="#not-blockchain">Why not a blockchain for BIM</a></li>
+          <li><a href="#technical">Technical overview</a></li>
+          <li><a href="#sources">Sources</a></li>
+        </ul>
+      </div>
+
+      <h2 id="why">Why CVP</h2>
+
+      <p>
+        Modern BIM coordination has a structural problem: the people creating project
+        value often do not control the communication infrastructure they depend on.
+        Coordination data is scattered across proprietary CDEs, email chains, PDFs,
+        issue trackers, disconnected BCF silos and vendor-controlled platforms.
+      </p>
+
+      <p>
+        The result is predictable: lost context, unclear responsibility, duplicated
+        coordination, platform lock-in, weak interoperability and expensive
+        information asymmetry. BIM-CVP approaches that problem by separating the
+        coordination record from the platform that happens to display it.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Problem</th><th>CVP response</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Project identity is trapped in one tenant.</td><td>Identity is a portable signing key.</td></tr>
+          <tr><td>Issues live inside one platform.</td><td>Issues become signed BCF-compatible events.</td></tr>
+          <tr><td>Authorship is implied by a login.</td><td>Authorship is cryptographically verifiable.</td></tr>
+          <tr><td>Audit history is platform-owned.</td><td>History can be mirrored across relays and exports.</td></tr>
+          <tr><td>Tools compete by capturing data.</td><td>Tools compete on usability, validation and workflow value.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="plain-language">BIM and Nostr in plain language</h2>
+
+      <p>
+        BIM is the building-information side. It describes walls, ducts, spaces,
+        equipment, requirements, issues and approvals as structured data instead of
+        loose screenshots or email text. The important openBIM standards are already
+        defined by buildingSMART and ISO: IFC for model objects, BCF for coordination
+        issues, IDS for checkable requirements and ISO 19650 for information
+        management.
+      </p>
+
+      <p>
+        Nostr is the signed-record side. It does not know what a wall, duct or BCF
+        topic is. It only gives each author a keypair, signs small JSON events and
+        sends those events to relays. BIM-CVP puts BIM meaning into those signed
+        events: the standard still defines the domain data, while the signature proves
+        who created the record and which file, topic or requirement it references.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>If you know BIM</th><th>If you know Nostr</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Think of BIM-CVP as a signed audit and transport layer around IFC, BCF and IDS.</td><td>Think of BIM-CVP as a domain-specific event profile with strict openBIM semantics.</td></tr>
+          <tr><td>The model stays in IFC or native tools; the coordination record becomes portable.</td><td>The event stays small; large payloads remain files referenced by hash.</td></tr>
+          <tr><td>BCF topics, comments and viewpoints still round-trip to normal BCFZIP.</td><td>Relays distribute records; clients validate signatures, hashes and required tags.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="economics">Coordination as an economic process</h2>
+
+      <p>
+        BIM-CVP uses a simple Austrian-economics lens: coordination is a decentralized
+        knowledge problem. No central platform possesses complete project knowledge.
+        Architects, engineers, contractors, operators, suppliers and owners each hold
+        local information that becomes valuable only when others can trust and use it.
+      </p>
+
+      <p>
+        This follows Friedrich Hayek's knowledge-problem insight: economically relevant
+        knowledge is dispersed and cannot be fully centralized. In a BIM project, the
+        same is true for constructability constraints, design intent, site conditions,
+        maintenance requirements, product evidence and approval risk. Real coordination
+        emerges through exchange between responsible individuals.
+      </p>
+
+      <p>
+        Rahim Taghizadegan's Austrian School work is useful here because it frames
+        value as contextual, action-based and tied to responsibility. CVP turns that
+        into a technical rule: if a project claim matters, it should be signed by the
+        person or system making it, linked to the openBIM object it concerns, and
+        portable beyond the application that created it.
+      </p>
+
+      <h2 id="principles">Core principles</h2>
+
+      <h3>1. Sovereign communication</h3>
+      <p>
+        Project communication should not depend on a single software vendor or cloud
+        tenant. Coordination events belong to the participants creating them. Identity
+        is portable, history is verifiable and infrastructure can be federated.
+      </p>
+
+      <h3>2. Signed responsibility</h3>
+      <p>
+        Every coordination event is cryptographically signed. No anonymous edits, no
+        invisible modifications and no uncertainty about authorship. That creates
+        accountability, trust, traceability and professional ownership.
+      </p>
+
+      <h3>3. Open market coordination</h3>
+      <p>
+        Different tools should compete on usability and value creation, not on data
+        captivity. BIM-CVP separates protocol, identity, transport and application
+        layer. Any compliant application can participate, just as email and the web
+        allow many clients and providers.
+      </p>
+
+      <h3>4. Distributed knowledge</h3>
+      <p>
+        Project intelligence emerges from many actors interacting through shared
+        standards. BIM-CVP uses relay-based event distribution inspired by Nostr:
+        lightweight, resilient, interoperable and vendor neutral.
+      </p>
+
+      <h2 id="not-blockchain">Why not a blockchain for BIM</h2>
+
+      <p>
+        BIM-CVP is not about speculative tokens or artificial decentralization
+        narratives. BIM coordination needs signed communication, interoperable
+        issue exchange, verifiable history, resilient infrastructure and open
+        standards. It does not need financialization to solve that problem.
+      </p>
+
+      <p>
+        Nostr gives us the useful part: public-key identity, event signatures, relays
+        and simple JSON messages. Lightning-style settlement thinking is useful for
+        payment references and paid validation services, but the coordination workflow
+        remains practical engineering infrastructure.
+      </p>
+
+      <h2 id="technical">Technical overview</h2>
+
+      <p>
+        BIM-CVP combines BCF semantics, signed Nostr events, relay distribution,
+        optional encryption, IFC hash references, portable identities and append-only
+        coordination history.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>BCF semantics</td><td>Topics, comments, viewpoints, status, assignee and audit fields.</td></tr>
+          <tr><td>IFC references</td><td>Model file hash, schema, project GUID and element GlobalIds.</td></tr>
+          <tr><td>IDS references</td><td>Machine-checkable requirements and validation results.</td></tr>
+          <tr><td>Nostr events</td><td>Signatures, timestamps, authorship, tags and relay distribution.</td></tr>
+          <tr><td>openCDE adapters</td><td>Import/export boundary for existing CDE and document platforms.</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        A BIM-CVP event can contain issue references, viewpoints, comments, approvals,
+        coordination states, model references, signatures and timestamps. Each record is
+        independently verifiable and can still be exported back into normal openBIM
+        artifacts such as BCFZIP, IDS reports and IFC file references.
+      </p>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../wiki/standards/buildingsmart-international.html">buildingSMART International</a> &mdash; the openBIM standards frame</li>
+          <li><a href="../wiki/nostr-mapping/bcf-events.html">BCF to Nostr events</a> &mdash; exact event mapping</li>
+          <li><a href="../wiki/nostr-mapping/alice-bob-max.html">Alice, Bob, Max</a> &mdash; signed data sharing example</li>
+          <li><a href="standards.html">Pinned standards</a> &mdash; implementation baseline</li>
+        </ul>
+      </div>
+
+      <h2 id="sources">Sources</h2>
+      <ul>
+        <li><a href="https://www.buildingsmart.org/standards/" target="_blank" rel="noopener">buildingSMART International &mdash; Solutions and Standards</a></li>
+        <li><a href="https://technical.buildingsmart.org/standards/" target="_blank" rel="noopener">buildingSMART Technical &mdash; standards portal</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/01.md" target="_blank" rel="noopener">Nostr NIP-01 &mdash; basic event model</a></li>
+        <li><a href="https://www.econlib.org/archives/2009/12/hayek_on_knowle.html" target="_blank" rel="noopener">Hayek knowledge-problem reference</a></li>
+        <li><a href="https://scholarium.at/rahim/" target="_blank" rel="noopener">Rahim Taghizadegan / scholarium</a></li>
+        <li><a href="https://austrian-institute.org/en/authors/rahim-taghizadegan/" target="_blank" rel="noopener">Austrian Institute &mdash; Rahim Taghizadegan profile</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>BIM-CVP &middot; Common Value Protocol</span>
+      <a href="./">&larr; back to home</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

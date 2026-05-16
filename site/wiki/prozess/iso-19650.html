@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ISO 19650 — Gemeinwert Wiki</title>
-  <meta name="description" content="ISO 19650 — the international standard series for information management in construction. Container states, requirements hierarchy, BIM roles, DACH adapters." />
+  <title>ISO 19650 — BIM-CVP Wiki</title>
+  <meta name="description" content="ISO 19650 — the international standard series for information management in construction. Container states, requirements hierarchy, BIM roles and event mapping." />
   <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="../../assets/site.css" />
@@ -257,7 +257,7 @@
 
       <h2>Mapping to signed events</h2>
 
-      <p>In the Gemeinwert stack, ISO 19650 concepts land on the following structures:</p>
+      <p>In the BIM-CVP stack, ISO 19650 concepts land on the following structures:</p>
 
       <pre># Container states as a tag
 ["iso19650-state", "WIP"]        # or "Shared", "Published", "Archive"
@@ -277,9 +277,15 @@ kind:30930  Document record (BEP/BAP plus all other docs)
 # State transitions as audit events
 kind:1171   Audit event with audit-field "iso19650-state"</pre>
 
-      <h2>Swiss default profile</h2>
+      <h2>Regional profiles</h2>
 
-      <p>Of the three DACH countries, Switzerland currently provides the <strong>operationally most directly usable artefacts</strong> for ISO 19650 workflows:</p>
+      <p>
+        ISO 19650 is the international process frame. National and client-specific
+        guidance should be treated as profile overlays, not as a replacement for the
+        core state model, role model or event vocabulary.
+      </p>
+
+      <p>Examples of useful regional material:</p>
 
       <ul>
         <li><strong>KBOB contract annexes</strong> &bdquo;Anwendung der Methode BIM&ldquo; &mdash; directly referenceable in contracts</li>
@@ -290,7 +296,11 @@ kind:1171   Audit event with audit-field "iso19650-state"</pre>
         <li><strong>buildingSMART Switzerland glossary</strong> &mdash; terminological discipline</li>
       </ul>
 
-      <p>Gemeinwert uses the Swiss profile as the default workflow template. DE, AT and IT adapters overlay when needed. SIA 2051 was withdrawn at the end of 2024 &mdash; the Swiss anchor shifts to the SN EN ISO 19650 family plus KBOB.</p>
+      <p>
+        BIM-CVP uses the same technical event model everywhere. Regional profiles
+        may add accepted document labels, procurement terminology, phase names,
+        classification systems and client-specific exchange gates.
+      </p>
 
       <h2>Typical mistakes</h2>
 

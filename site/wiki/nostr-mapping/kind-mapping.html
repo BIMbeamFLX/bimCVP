@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Standards-to-Events Mapping — Gemeinwert Wiki</title>
+  <title>Standards-to-Events Mapping — BIM-CVP Wiki</title>
   <meta name="description" content="How each buildingSMART and ISO standard maps onto signed events. Complete overview with example JSON per event kind." />
   <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
@@ -110,7 +110,7 @@
           <tr><td><code>30880</code></td><td>PIR &mdash; client requirements</td><td>ISO 19650-1</td><td>par. repl.</td></tr>
           <tr><td><code>30881</code></td><td>Room-book entry</td><td>DIN 18205</td><td>par. repl.</td></tr>
           <tr><td><code>30900</code></td><td>BCF topic</td><td>BCF 3.0</td><td>par. repl.</td></tr>
-          <tr><td><code>30901</code></td><td>BCF viewpoint</td><td>BCF 3.0</td><td>par. repl.</td></tr>
+          <tr><td><code>30901</code></td><td>BCF viewpoint</td><td>BCF 3.0</td><td>addressable, no republish</td></tr>
           <tr><td><code>30902</code></td><td>BCF project</td><td>BCF 3.0</td><td>par. repl.</td></tr>
           <tr><td><code>30903</code></td><td>Document reference</td><td>BCF 3.0 + openCDE</td><td>par. repl.</td></tr>
           <tr><td><code>30904</code></td><td>IFC file reference</td><td>IFC 4.3.2.0</td><td>par. repl.</td></tr>
@@ -125,7 +125,7 @@
         </tbody>
       </table>
 
-      <p>&ldquo;par. repl.&rdquo; = parameterised replaceable (NIP-01 convention): the current version per <code>(pubkey, kind, d-tag)</code> is authoritative, history is reconstructed via separate audit events (<code>kind:1171</code>).</p>
+      <p>&ldquo;par. repl.&rdquo; = parameterised replaceable / addressable (NIP-01 convention): the current version per <code>(pubkey, kind, d-tag)</code> is authoritative, history is reconstructed via separate audit events (<code>kind:1171</code>). BCF viewpoints use <code>kind:30901</code> for addressability, but the BIM-CVP profile forbids republishing the same <code>d</code> because BCF viewpoints are immutable.</p>
 
       <!-- IDENTITY -->
       <h2 id="identity">Identity &mdash; profiles, groups, roles, badges</h2>
@@ -143,7 +143,7 @@
   "kind": 30902,
   "tags": [
     ["d", "pilot-2026"],
-    ["title", "Pilot project"],
+    ["title", "Sample project"],
     ["bcf-version", "3.0"],
     ["iso19650-state", "Shared"],
     ["h", "&lt;nip29-group-id&gt;"],
@@ -240,14 +240,14 @@
     ["ifc",      "0aB1cD2eF3gH4iJ5kL6mN7"],
     ["ifc-file", "&lt;kind-30904-arc-id&gt;"],
     ["ifc-file", "&lt;kind-30904-mep-id&gt;"],
-    ["viewpoint","&lt;kind-30901-id&gt;"],
-    ["snapshot", "https://blossom.example/abc123.png", "sha256:abc123..."]
+    ["e", "&lt;kind-30901-id&gt;", "", "viewpoint"],
+    ["e", "&lt;nip94-snapshot-id&gt;", "", "snapshot"]
   ],
   "content": "{\"title\":\"Duct crosses main girder axis 4/B\",...}"
 }</pre>
 
       <h3>BCF viewpoint <span class="kind">kind:30901</span> <span class="standard-ref">BCF 3.0 visinfo.bcfv</span></h3>
-      <p>Camera, component list, visibility. Replaceable, because viewpoints can be improved after creation.</p>
+      <p>Camera, component list, visibility. Addressable for lookup, but immutable by profile: improving a viewpoint creates a new BCF viewpoint GUID and a new event.</p>
 
       <h3>BCF comment <span class="kind">kind:1170</span> <span class="standard-ref">BCF 3.0 comment</span></h3>
       <p>Reply to a topic. Immutable &mdash; edits are handled via delete + republish.</p>
@@ -259,7 +259,7 @@
     ["e", "&lt;topic-event-id&gt;", "", "root"],
     ["a", "30902:&lt;owner-hex&gt;:pilot-2026"],
     ["p", "&lt;mep-hex&gt;"],
-    ["viewpoint", "&lt;kind-30901-id&gt;"]
+    ["e", "&lt;kind-30901-id&gt;", "", "viewpoint"]
   ],
   "content": "{\"text\":\"Girder HEB400 cannot be lowered...\"}"
 }</pre>
@@ -337,7 +337,7 @@
       <h2 id="lifecycle">Lifecycle &mdash; site diary, maintenance, deconstruction, LCA</h2>
 
       <h3>Site-diary entry <span class="kind">kind:30960</span> <span class="standard-ref">OTS-anchored</span></h3>
-      <p>Daily site entry. Signed. Anchored on the timechain via OpenTimestamps.</p>
+      <p>Daily site entry. Signed. Anchored with an OpenTimestamps proof.</p>
 
       <pre>{
   "kind": 30960,
@@ -418,18 +418,20 @@
       <p>Every project-related event carries an <code>a</code> tag of the form <code>30902:&lt;owner-pubkey&gt;:&lt;project-d-tag&gt;</code>. This makes the event discoverable and filterable at project scope.</p>
 
       <h3>Language tags</h3>
-      <p>Multilingual content (DE/IT/EN) is marked by repeated <code>lang</code> tags and stored in the content JSON as a map: <code>{"name":{"de":"...","it":"..."}}</code>. Default language is DE for DACH projects, IT for Italian public contracts.</p>
+      <p>Multilingual content is marked by repeated <code>lang</code> tags and stored in the content JSON as a map: <code>{"name":{"en":"...","de":"...","it":"..."}}</code>. The project event defines the default language; regional profiles may add required translations.</p>
 
       <h3>State-transition rights</h3>
       <p>State-tag changes (<code>iso19650-state</code>) are not free write rights. A transition requires a corresponding <code>kind:30970</code> approval. This is not enforced at the relay layer but validated client-side.</p>
 
       <h3>OTS anchor</h3>
-      <p>Security-critical events (site diary, approvals, final model versions) carry an <code>ots</code> tag with a base64-encoded OpenTimestamps proof. The content is thus immutably anchored to the Bitcoin timechain at the moment of creation.</p>
+      <p>Security-critical events (site diary, approvals, final model versions) carry an <code>ots</code> tag with a base64-encoded OpenTimestamps proof. The content can then be checked against an external timestamp proof at the moment of creation.</p>
 
       <div class="art-next">
         <h3>Read on</h3>
         <ul>
+          <li><a href="workflow.html">Workflow model</a> &mdash; end-to-end process before implementation</li>
           <li><a href="../modell/ifc.html">IFC</a> &mdash; the data model referenced by kind:30904</li>
+          <li><a href="bcf-events.html">BCF to Nostr events</a> &mdash; detailed topic/comment/viewpoint mapping</li>
           <li><a href="../anforderungen/ids.html">IDS</a> &mdash; the spec that becomes kind:30810</li>
           <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; the process frame for state tags and roles</li>
           <li><a href="../../en/standards.html">Standards profile</a> &mdash; pinned versions</li>

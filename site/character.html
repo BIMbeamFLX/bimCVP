@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gemeinwert — Charakter-Erschaffung</title>
+  <style>
+    :root {
+      --ink: #1a1a1a; --muted: #6a6a6a; --bg: #0f1419; --panel: #1a2027;
+      --line: #2a3440; --accent: #f4c430; --accent-2: #5b9bd5;
+      --ok: #4ade80; --warn: #f87171;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      margin: 0; padding: 2rem 1rem; min-height: 100vh;
+      background: radial-gradient(ellipse at top, #1a2027 0%, #0f1419 100%);
+      color: #e8e8e8;
+      line-height: 1.5;
+    }
+    main { max-width: 720px; margin: 0 auto; }
+    .frame {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 0 0 1px rgba(244,196,48,0.04), 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .progress {
+      display: flex; gap: .5rem; margin-bottom: 2rem;
+    }
+    .progress > div {
+      flex: 1; height: 4px;
+      background: var(--line); border-radius: 2px;
+    }
+    .progress > div.done { background: var(--accent); }
+    .progress > div.current { background: var(--accent-2); }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 1.8rem; margin: 0 0 .25rem;
+      color: var(--accent);
+      letter-spacing: .03em;
+    }
+    h2 {
+      font-family: Georgia, serif;
+      font-size: 1.3rem; margin: 0 0 .5rem;
+      color: #e8e8e8;
+    }
+    .sub { color: var(--muted); margin-bottom: 1.5rem; font-size: .9rem; }
+    button {
+      background: var(--accent); color: #1a1a1a; border: 0;
+      border-radius: 4px; padding: .7rem 1.4rem;
+      font-family: inherit; font-size: .95rem; font-weight: 600;
+      cursor: pointer; letter-spacing: .02em;
+      transition: transform .1s, opacity .1s;
+    }
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .3; cursor: not-allowed; }
+    button.secondary {
+      background: transparent; color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    button.ghost {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--line); font-weight: normal;
+    }
+    input {
+      width: 100%;
+      font-family: inherit; font-size: 1rem;
+      background: #0f1419; color: #e8e8e8;
+      border: 1px solid var(--line); border-radius: 4px;
+      padding: .8rem 1rem;
+    }
+    input:focus { border-color: var(--accent); outline: 0; }
+    .step { display: none; animation: fadein .25s ease; }
+    .step.active { display: block; }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .grid {
+      display: grid; gap: .75rem;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      margin: 1rem 0 1.5rem;
+    }
+    .choice {
+      background: #0f1419;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color .15s, transform .1s;
+      text-align: center;
+    }
+    .choice:hover { border-color: var(--accent-2); transform: translateY(-2px); }
+    .choice.selected { border-color: var(--accent); background: #1f2630; }
+    .choice .label {
+      font-weight: 600; color: #e8e8e8;
+      margin-bottom: .25rem;
+    }
+    .choice .meta {
+      font-size: .75rem; color: var(--muted);
+    }
+    .choice .name {
+      font-size: .8rem; color: var(--accent-2);
+      margin-bottom: .35rem;
+    }
+    .avatars {
+      display: grid; gap: .75rem;
+      grid-template-columns: repeat(3, 1fr);
+      margin: 1rem 0 1.5rem;
+    }
+    .avatar {
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      padding: .5rem;
+      cursor: pointer;
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .15s, transform .1s;
+    }
+    .avatar:hover { border-color: var(--accent-2); transform: scale(1.02); }
+    .avatar.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+    .avatar img { width: 100%; height: 100%; }
+    .actions {
+      display: flex; gap: .5rem; justify-content: space-between;
+      margin-top: 1rem;
+    }
+    .summary {
+      background: #0f1419;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+      display: flex; gap: 1.5rem; align-items: center;
+    }
+    .summary .av {
+      width: 110px; height: 110px; flex-shrink: 0;
+      background: #fff; border-radius: 8px; padding: .5rem;
+    }
+    .summary .av img { width: 100%; height: 100%; }
+    .summary .stats { flex: 1; }
+    .summary .stat-line { display: flex; justify-content: space-between; padding: .25rem 0; border-bottom: 1px dashed var(--line); font-size: .85rem; }
+    .summary .stat-line:last-child { border-bottom: 0; }
+    .summary .key { color: var(--muted); }
+    .summary .val { color: var(--accent); }
+    .keys {
+      font-family: inherit;
+      background: #0f1419;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: .75rem;
+      word-break: break-all;
+      font-size: .8rem;
+      margin: .5rem 0;
+    }
+    .keys .label { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; }
+    .nsec { color: var(--warn); }
+    .npub { color: var(--ok); }
+    .status { font-size: .85rem; color: var(--muted); margin: .5rem 0; min-height: 1.2em; }
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--warn); }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+<main>
+
+<div class="frame">
+
+  <div class="progress" id="progress">
+    <div></div><div></div><div></div><div></div><div></div>
+  </div>
+
+  <!-- STEP 0: Welcome -->
+  <div class="step active" data-step="0">
+    <h1>Gemeinwert</h1>
+    <p class="sub">Charakter-Erschaffung. Du brauchst keinen Account. Du brauchst keinen Login. Du brauchst keine Mail.</p>
+    <p style="color: #e8e8e8;">
+      Dein Schlüssel ist deine Identität. Niemand kann ihn dir wegnehmen, niemand kann ihn vergessen, niemand kann ihn löschen — solange du das Backup hast.
+    </p>
+    <p style="color: var(--muted); font-size: .85rem;">
+      Im klassischen System loggst du dich ein und bekommst eine User-ID. In Nostr erzeugst du einen Schlüssel und bist eine Identität. Das ist alles.
+    </p>
+    <div class="actions">
+      <span></span>
+      <button id="btn-start">Charakter erschaffen</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: Name -->
+  <div class="step" data-step="1">
+    <h2>Wie heißt du?</h2>
+    <p class="sub">Dein Anzeigename in der Tribe. Kann später jederzeit geändert werden.</p>
+    <input id="char-name" placeholder="z. B. Felix" autocomplete="off" />
+    <div class="actions">
+      <button class="ghost" data-back>← Zurück</button>
+      <button id="btn-step-name" disabled>Weiter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Class (IFC ActorRole) -->
+  <div class="step" data-step="2">
+    <h2>Wähle deine Profession</h2>
+    <p class="sub">Deine Hauptrolle in Bauprojekten. Folgt <code>IfcActorRoleEnum</code> aus buildingSMART.</p>
+    <div class="grid" id="class-grid"></div>
+    <div class="actions">
+      <button class="ghost" data-back>← Zurück</button>
+      <button id="btn-step-class" disabled>Weiter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Race / Style -->
+  <div class="step" data-step="3">
+    <h2>Aus welchem Volk?</h2>
+    <p class="sub">Bestimmt den Stil deines Avatars. Geschmackssache, keine technische Bedeutung.</p>
+    <div class="grid" id="race-grid"></div>
+    <div class="actions">
+      <button class="ghost" data-back>← Zurück</button>
+      <button id="btn-step-race" disabled>Weiter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Avatar Selection -->
+  <div class="step" data-step="4">
+    <h2>Wer bist du?</h2>
+    <p class="sub">Wähle einen Avatar oder würfle erneut, bis es passt.</p>
+    <div class="avatars" id="avatar-grid"></div>
+    <div class="actions">
+      <button class="ghost" data-back>← Zurück</button>
+      <div>
+        <button class="secondary" id="btn-reroll">Neu würfeln</button>
+        <button id="btn-step-avatar" disabled>Das bin ich →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Generate + Save -->
+  <div class="step" data-step="5">
+    <h2>Charakter-Bogen</h2>
+    <p class="sub">Letzte Bestätigung. Wenn du klickst, wird dein Schlüsselpaar erzeugt und das Profil publisht.</p>
+
+    <div class="summary">
+      <div class="av"><img id="sum-avatar" alt="" /></div>
+      <div class="stats">
+        <div class="stat-line"><span class="key">Name</span><span class="val" id="sum-name">—</span></div>
+        <div class="stat-line"><span class="key">Profession</span><span class="val" id="sum-class">—</span></div>
+        <div class="stat-line"><span class="key">Volk</span><span class="val" id="sum-race">—</span></div>
+      </div>
+    </div>
+
+    <div id="keys-block" style="display:none">
+      <div class="keys">
+        <div class="label">npub (öffentlich)</div>
+        <div class="npub" id="show-npub"></div>
+      </div>
+      <div class="keys">
+        <div class="label">nsec (geheim — NIEMALS teilen, jetzt sichern)</div>
+        <div class="nsec" id="show-nsec"></div>
+      </div>
+      <div class="status" id="profile-status"></div>
+    </div>
+
+    <div class="actions">
+      <button class="ghost" data-back>← Zurück</button>
+      <div>
+        <button id="btn-generate">Charakter erschaffen</button>
+        <button class="secondary" id="btn-download" style="display:none">nsec sichern</button>
+        <button id="btn-enter" style="display:none">Welt betreten →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center; color: var(--muted); font-size: .75rem; margin-top: 1.5rem;">
+  Gemeinwert · character.html · Avatare via DiceBear · <a href="keys.html">Klassisches Identitäts-Setup →</a>
+</p>
+
+</main>
+
+<script type="module">
+  import NDK, { NDKEvent, NDKPrivateKeySigner } from "https://esm.sh/@nostr-dev-kit/ndk@2.10.0";
+
+  // ---- catalog ----------------------------------------------------------
+  const CLASSES = [
+    { id: "architect",          name: "Architekt",          tagline: "Du formst Räume und Funktion." },
+    { id: "structuralEngineer", name: "Tragwerksplaner",    tagline: "Du hältst das Bauwerk aufrecht." },
+    { id: "mepEngineer",        name: "HKLS-/MEP-Planer",   tagline: "Du lässt das Haus atmen." },
+    { id: "electricalEngineer", name: "Elektroplaner",      tagline: "Du bringst Licht und Strom." },
+    { id: "civilEngineer",      name: "Bauingenieur",       tagline: "Du baust das Fundament." },
+    { id: "buildingPhysicist",  name: "Bauphysiker",        tagline: "Du dämmst gegen Welten." },
+    { id: "fireSafetyEngineer", name: "Brandschutz",        tagline: "Du verteidigst gegen Flammen." },
+    { id: "coordinator",        name: "BIM-Koordinator",    tagline: "Du dirigierst das Orchester." },
+    { id: "constructionManager",name: "Bauleiter",          tagline: "Du führst auf der Baustelle." },
+    { id: "client",             name: "Bauherr",            tagline: "Du gibst den Auftrag." },
+    { id: "consultant",         name: "Berater",            tagline: "Du kennst die Antwort." },
+    { id: "approver",           name: "Behörde",            tagline: "Du genehmigst." },
+  ];
+
+  // DiceBear styles — each one is a "race"
+  const RACES = [
+    { id: "adventurer", name: "Abenteurer", tagline: "Fantasy-Stil mit Charakter." },
+    { id: "lorelei",    name: "Erzähler",   tagline: "Illustrierte Gesichter." },
+    { id: "notionists", name: "Bürger",     tagline: "Freundlich, modern, klar." },
+    { id: "pixel-art",  name: "Pixel-Volk", tagline: "8-Bit-Retro." },
+    { id: "bottts",     name: "Mechanisch", tagline: "Roboter unter Menschen." },
+    { id: "open-peeps", name: "Volk",       tagline: "Comic-stilisierte Menschen." },
+  ];
+
+  // ---- state ------------------------------------------------------------
+  let step = 0;
+  const state = {
+    name: "",
+    class: null,
+    race: null,
+    avatarSeed: null,
+    avatarUrl: null,
+    nsec: null,
+    npub: null,
+  };
+
+  // ---- rendering --------------------------------------------------------
+  function updateProgress() {
+    const dots = document.querySelectorAll(".progress > div");
+    dots.forEach((d, i) => {
+      d.className = i < step ? "done" : (i === step - 1 ? "current" : "");
+    });
+  }
+
+  function showStep(n) {
+    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+    document.querySelector(`.step[data-step="${n}"]`).classList.add("active");
+    step = n;
+    updateProgress();
+  }
+
+  function renderClassGrid() {
+    const g = document.getElementById("class-grid");
+    g.innerHTML = "";
+    for (const c of CLASSES) {
+      const el = document.createElement("div");
+      el.className = "choice";
+      el.dataset.value = c.id;
+      el.innerHTML = `
+        <div class="label">${c.name}</div>
+        <div class="name">${c.id}</div>
+        <div class="meta">${c.tagline}</div>
+      `;
+      el.onclick = () => {
+        document.querySelectorAll("#class-grid .choice").forEach(x => x.classList.remove("selected"));
+        el.classList.add("selected");
+        state.class = c.id;
+        document.getElementById("btn-step-class").disabled = false;
+      };
+      g.appendChild(el);
+    }
+  }
+
+  function renderRaceGrid() {
+    const g = document.getElementById("race-grid");
+    g.innerHTML = "";
+    for (const r of RACES) {
+      const el = document.createElement("div");
+      el.className = "choice";
+      el.dataset.value = r.id;
+      const previewUrl = avatarUrl(r.id, "preview-" + r.id);
+      el.innerHTML = `
+        <div style="background:white; border-radius:6px; padding:.25rem; margin-bottom:.5rem;">
+          <img src="${previewUrl}" alt="" style="width: 100%; aspect-ratio:1;" />
+        </div>
+        <div class="label">${r.name}</div>
+        <div class="meta">${r.tagline}</div>
+      `;
+      el.onclick = () => {
+        document.querySelectorAll("#race-grid .choice").forEach(x => x.classList.remove("selected"));
+        el.classList.add("selected");
+        state.race = r.id;
+        document.getElementById("btn-step-race").disabled = false;
+      };
+      g.appendChild(el);
+    }
+  }
+
+  function avatarUrl(race, seed) {
+    return `https://api.dicebear.com/9.x/${race}/svg?seed=${encodeURIComponent(seed)}&size=200`;
+  }
+
+  let rerollCounter = 0;
+  function renderAvatarGrid() {
+    const g = document.getElementById("avatar-grid");
+    g.innerHTML = "";
+    const base = state.name + "-" + state.class + "-" + Date.now() + "-r" + rerollCounter;
+    for (let i = 0; i < 6; i++) {
+      const seed = base + "-" + i;
+      const url = avatarUrl(state.race, seed);
+      const el = document.createElement("div");
+      el.className = "avatar";
+      el.dataset.seed = seed;
+      el.innerHTML = `<img src="${url}" alt="" />`;
+      el.onclick = () => {
+        document.querySelectorAll("#avatar-grid .avatar").forEach(x => x.classList.remove("selected"));
+        el.classList.add("selected");
+        state.avatarSeed = seed;
+        state.avatarUrl = url;
+        document.getElementById("btn-step-avatar").disabled = false;
+      };
+      g.appendChild(el);
+    }
+  }
+
+  // ---- character generation --------------------------------------------
+  async function generateCharacter() {
+    const signer = NDKPrivateKeySigner.generate();
+    state.nsec = signer.nsec;
+    state.npub = signer.npub;
+    localStorage.setItem("sov-aec-nsec", state.nsec);
+
+    document.getElementById("show-nsec").textContent = state.nsec;
+    document.getElementById("show-npub").textContent = state.npub;
+    document.getElementById("keys-block").style.display = "block";
+    document.getElementById("btn-generate").style.display = "none";
+    document.getElementById("btn-download").style.display = "inline-block";
+    document.getElementById("btn-enter").style.display = "inline-block";
+
+    // publish profile (kind:0)
+    const status = document.getElementById("profile-status");
+    status.textContent = "publishe Profil…";
+    try {
+      const relays = (localStorage.getItem("sov-aec-relays") || "ws://localhost:7777,wss://relay.damus.io,wss://nos.lol").split(",").map(s => s.trim()).filter(Boolean);
+      const ndk = new NDK({ explicitRelayUrls: relays, signer });
+      await ndk.connect(2500);
+      const ev = new NDKEvent(ndk);
+      ev.kind = 0;
+      ev.content = JSON.stringify({
+        name: state.name,
+        display_name: state.name,
+        picture: state.avatarUrl,
+        about: `${CLASSES.find(c => c.id === state.class)?.name || state.class} · ${RACES.find(r => r.id === state.race)?.name || state.race}`,
+        discipline: state.class,
+      });
+      await ev.publish();
+      status.textContent = "Profil ist in der Welt ✓";
+      status.className = "status ok";
+    } catch (e) {
+      status.textContent = "Profil-Publish fehlgeschlagen — keine Sorge, Schlüssel ist trotzdem da. " + e.message;
+      status.className = "status err";
+    }
+  }
+
+  // ---- handlers ---------------------------------------------------------
+  document.getElementById("btn-start").onclick = () => showStep(1);
+
+  document.querySelectorAll("[data-back]").forEach(b => {
+    b.onclick = () => showStep(step - 1);
+  });
+
+  const nameInput = document.getElementById("char-name");
+  nameInput.oninput = (e) => {
+    state.name = e.target.value.trim();
+    document.getElementById("btn-step-name").disabled = state.name.length < 1;
+  };
+  document.getElementById("btn-step-name").onclick = () => {
+    renderClassGrid();
+    showStep(2);
+  };
+
+  document.getElementById("btn-step-class").onclick = () => {
+    renderRaceGrid();
+    showStep(3);
+  };
+
+  document.getElementById("btn-step-race").onclick = () => {
+    rerollCounter = 0;
+    renderAvatarGrid();
+    showStep(4);
+  };
+
+  document.getElementById("btn-reroll").onclick = () => {
+    rerollCounter += 1;
+    state.avatarSeed = null;
+    state.avatarUrl = null;
+    renderAvatarGrid();
+    document.getElementById("btn-step-avatar").disabled = true;
+  };
+
+  document.getElementById("btn-step-avatar").onclick = () => {
+    document.getElementById("sum-avatar").src = state.avatarUrl;
+    document.getElementById("sum-name").textContent = state.name;
+    document.getElementById("sum-class").textContent = CLASSES.find(c => c.id === state.class)?.name || state.class;
+    document.getElementById("sum-race").textContent = RACES.find(r => r.id === state.race)?.name || state.race;
+    showStep(5);
+  };
+
+  document.getElementById("btn-generate").onclick = generateCharacter;
+
+  document.getElementById("btn-download").onclick = () => {
+    const lines = [
+      "# Gemeinwert — Charakter-Backup",
+      "# DIESEN INHALT NIE TEILEN. KOPIE OFFLINE AUFBEWAHREN.",
+      "",
+      `name:    ${state.name}`,
+      `class:   ${state.class}`,
+      `race:    ${state.race}`,
+      `npub:    ${state.npub}`,
+      `nsec:    ${state.nsec}`,
+      `avatar:  ${state.avatarUrl}`,
+    ].join("\n");
+    const blob = new Blob([lines + "\n"], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${state.name.toLowerCase().replace(/\s+/g, "-")}-nsec.txt`;
+    a.click();
+  };
+
+  document.getElementById("btn-enter").onclick = () => {
+    window.location.href = "admin.html";
+  };
+
+  // ---- init -------------------------------------------------------------
+  // Pre-load existing character (skip flow if already present)
+  if (localStorage.getItem("sov-aec-nsec")) {
+    if (confirm("Schon ein Charakter im Browser. Weiter zur Welt (admin.html) oder neuen Charakter erschaffen?\n\nOK = Welt betreten\nAbbrechen = Neu erschaffen")) {
+      window.location.href = "admin.html";
+    } else {
+      localStorage.removeItem("sov-aec-nsec");
+    }
+  }
+
+  updateProgress();
+</script>
+
+</body>
+</html>

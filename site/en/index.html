@@ -3,341 +3,227 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gemeinwert — Open ground for building records</title>
-  <meta name="description" content="Gemeinwert keeps the records of a building signed, portable and readable for as long as the building stands. An open layer for everyone who plans, builds or owns one. MIT-licensed." />
-  <meta property="og:title" content="Gemeinwert — Open ground for building records" />
-  <meta property="og:description" content="Buildings last fifty years. Software platforms don't. Gemeinwert keeps the records you make signed, portable, and yours." />
+  <title>Gemeinwert / BIM-CVP &mdash; Common Value Protocol</title>
+  <meta name="description" content="Gemeinwert is the DACH brand for BIM-CVP, the Common Value Protocol for signed openBIM coordination records." />
+  <meta property="og:title" content="Gemeinwert / BIM-CVP &mdash; Common Value Protocol" />
+  <meta property="og:description" content="Buildings last fifty years. Software platforms do not. Gemeinwert uses BIM-CVP to keep coordination records signed, portable, and yours." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="../assets/og-image.png" />
   <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/wiki.css" />
   <style>
-    /* ============================================================
-       Simpler landing — overrides the denser primitives from site.css.
-       No grid overlay, no mono uppercase chrome, sentence case throughout.
-       ============================================================ */
-    body::before { display: none; }
-    body { line-height: 1.65; }
-
-    .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; height: 64px; }
-    .topbar__inner { gap: 32px; }
-    .brand__word { font-size: 19px; }
-    .topbar .nav { margin-left: auto; }
-    .topbar .nav a {
-      font-family: var(--font-body);
-      font-size: 15px;
+    .home-wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    .home-hero { padding: 52px 0 64px; }
+    .home-hero h1 {
+      font-family: var(--font-display);
+      font-size: 64px;
+      font-weight: 400;
       letter-spacing: 0;
-      text-transform: none;
-      color: var(--ink-2);
-    }
-    .topbar .nav a:hover { color: var(--gold); }
-    .topbar__meta { display: none; }
-
-    .wrap {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* Hero */
-    .hero2 { padding: 88px 0 56px; }
-    .hero2 h1 {
-      font-family: var(--font-display);
-      font-size: clamp(34px, 5vw, 60px);
-      line-height: 1.08;
-      letter-spacing: -0.015em;
+      line-height: 1.05;
       margin: 0 0 24px;
-      font-weight: 400;
-      text-wrap: balance;
+      max-width: 11ch;
     }
-    .hero2 h1 em { font-style: italic; color: var(--gold); }
-    .hero2 .lede {
+    .home-hero h1 em { color: var(--gold); font-style: italic; }
+    .home-hero p {
+      color: var(--ink-2);
       font-size: 19px;
-      line-height: 1.6;
-      color: var(--ink-2);
-      margin: 0 0 32px;
-      max-width: 60ch;
-    }
-    .hero2 .cta-row {
-      display: flex; gap: 12px; flex-wrap: wrap;
-    }
-
-    /* Section pattern */
-    .sec2 { padding: 56px 0; border-top: 1px solid var(--line); }
-    .sec2 h2 {
-      font-family: var(--font-display);
-      font-size: 26px;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      margin: 0 0 24px;
-      font-weight: 400;
-    }
-    .sec2 p {
-      font-size: 17px;
-      line-height: 1.65;
-      color: var(--ink-2);
+      line-height: 1.62;
       margin: 0 0 18px;
-      max-width: 64ch;
-      text-wrap: pretty;
+      max-width: 62ch;
     }
-    .sec2 p:last-child { margin-bottom: 0; }
-    .sec2 strong { color: var(--ink); font-weight: 600; }
-    .sec2 em { color: var(--gold); font-style: italic; }
-
-    /* Sentence-case button variant */
-    .btn-soft {
-      display: inline-flex; align-items: center; gap: 8px;
-      height: 44px;
-      padding: 0 22px;
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 15px;
-      letter-spacing: 0;
-      text-transform: none;
-      border: 1px solid var(--ink);
-      background: transparent;
-      color: var(--ink);
-      cursor: pointer;
-      transition: background 150ms, color 150ms, border-color 150ms;
-      text-decoration: none;
-    }
-    .btn-soft:hover { background: var(--ink); color: var(--bg); }
-    .btn-soft.primary {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #1a1208;
-    }
-    .btn-soft.primary:hover { background: var(--gold-ember); border-color: var(--gold-ember); }
-    .btn-soft.ghost {
-      border-color: var(--line-strong);
-      color: var(--ink-2);
-    }
-    .btn-soft.ghost:hover { background: transparent; color: var(--gold); border-color: var(--gold); }
-    .btn-soft .arrow { transition: transform 150ms; }
-    .btn-soft:hover .arrow { transform: translateX(3px); }
-
-    /* Audiences — editorial blocks, no card chrome */
-    .aud2 { display: flex; flex-direction: column; gap: 0; }
-    .aud2 > article {
-      padding: 24px 0;
+    .story-section {
       border-top: 1px solid var(--line);
-    }
-    .aud2 > article:first-child { border-top: none; padding-top: 0; }
-    .aud2 h3 {
-      font-family: var(--font-display);
-      font-size: 21px;
-      line-height: 1.2;
-      letter-spacing: -0.005em;
-      color: var(--gold);
-      font-weight: 400;
-      margin: 0 0 8px;
-    }
-    .aud2 p {
-      font-size: 16px;
-      line-height: 1.6;
-      color: var(--ink-2);
-      margin: 0;
-      max-width: 64ch;
-    }
-
-    /* Tools — flat list */
-    .tools2 { display: flex; flex-direction: column; }
-    .tools2 a {
+      column-gap: 48px;
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      padding: 18px 0;
-      border-top: 1px solid var(--line);
-      align-items: baseline;
-      color: var(--ink);
-      text-decoration: none;
-      transition: color 150ms;
+      grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+      padding: 46px 0;
     }
-    .tools2 a:first-child { border-top: none; padding-top: 4px; }
-    .tools2 a:last-child { border-bottom: 1px solid var(--line); }
-    .tools2 .name {
+    .story-section h2 {
       font-family: var(--font-display);
-      font-size: 19px;
-      letter-spacing: -0.005em;
-      margin-bottom: 4px;
+      font-size: 27px;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.2;
+      margin: 0 0 16px;
     }
-    .tools2 .desc {
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.5;
-      max-width: 60ch;
+    .story-section p,
+    .story-section li {
+      color: var(--ink-2);
+      font-size: 16px;
+      line-height: 1.68;
     }
-    .tools2 .arr {
+    .story-section p,
+    .story-section ul,
+    .story-section .home-links { grid-column: 2; }
+    .story-section p { margin: 0 0 14px; max-width: 66ch; }
+    .story-section ul { list-style: none; margin: 18px 0 0; padding: 0; }
+    .story-section li { margin: 10px 0; padding-left: 18px; position: relative; }
+    .story-section li::before {
+      content: "";
+      background: var(--gold);
+      height: 5px;
+      left: 0;
+      position: absolute;
+      top: 0.72em;
+      width: 5px;
+    }
+    .home-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 22px;
+      max-width: 680px;
+    }
+    .home-link {
+      align-items: baseline;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(160px, 220px) 1fr;
+      padding: 16px 0;
+      position: relative;
+      text-decoration: none;
+    }
+    .home-link::after {
       color: var(--dim);
-      font-size: 18px;
-      transition: transform 150ms, color 150ms;
-    }
-    .tools2 a:hover { color: var(--gold); }
-    .tools2 a:hover .arr { color: var(--gold); transform: translateX(4px); }
-    .tools2 .soon {
-      display: inline-block;
-      font-size: 11px;
-      color: var(--dim);
-      margin-left: 8px;
-      letter-spacing: 0.04em;
-    }
-    .tools2 .roadmap-note {
-      font-size: 14px;
-      color: var(--muted);
-      padding: 18px 0 0;
-      margin-top: 12px;
-      border-top: 1px dashed var(--line);
-      font-style: italic;
-    }
-
-    /* Read more — two-column links */
-    .more ul { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 32px; }
-    .more li { padding: 6px 0; break-inside: avoid; }
-    .more a { color: var(--ink-2); font-size: 15px; }
-    .more a:hover { color: var(--gold); }
-    @media (max-width: 600px) { .more ul { columns: 1; } }
-
-    /* Footer */
-    .ftr { padding: 48px 0 64px; border-top: 1px solid var(--line); }
-    .ftr__row {
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px;
-    }
-    .ftr .text { font-size: 13px; color: var(--dim); }
-    .ftr .text a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
-    .ftr .text a:hover { color: var(--gold); text-decoration-color: var(--gold); }
-    .lang-switch a {
-      padding: 6px 12px;
+      content: "->";
+      font-family: var(--font-mono);
       font-size: 12px;
-      letter-spacing: 0.1em;
+      position: absolute;
+      right: 0;
+      top: 18px;
+      transition: color 150ms ease-out, transform 150ms ease-out;
     }
-    .lang-switch { font-family: var(--font-mono); }
-
-    /* Mobile tightening */
-    @media (max-width: 720px) {
-      .hero2 { padding: 56px 0 40px; }
-      .sec2 { padding: 40px 0; }
+    .home-link:last-child { border-bottom: 1px solid var(--line); }
+    .home-link strong {
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 400;
+    }
+    .home-link span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      padding-right: 28px;
+    }
+    .home-link:hover strong,
+    .home-link:hover span { color: var(--gold); }
+    .home-link:hover::after {
+      color: var(--gold);
+      transform: translateX(3px);
+    }
+    .home-foot {
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 13px;
+      margin-top: 30px;
+      padding: 32px 0 52px;
     }
 
-    /* ============================================================
-       INTRO ANIMATION
-       Plays once per session. Builds the mark like a construction
-       drawing: scaffold first (dim nodes + beams), then the signed
-       record (gold G + Waage), then the page underneath reveals.
-       ============================================================ */
     .splash {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      z-index: 9999;
-      display: flex; align-items: center; justify-content: center;
+      align-items: center;
       animation: splash-out 0.6s ease 2.0s forwards;
+      background: var(--bg);
+      display: flex;
+      inset: 0;
+      justify-content: center;
+      position: fixed;
+      z-index: 9999;
     }
-    @keyframes splash-out {
-      to { opacity: 0; visibility: hidden; pointer-events: none; }
-    }
-    .splash__svg {
-      width: 280px;
-      height: auto;
-      max-width: 70vw;
-    }
-
-    /* Beams: staggered fade-in (scaffold rising) */
-    .splash__beam {
-      opacity: 0;
-      animation: dim-in 0.32s ease-out forwards;
-    }
-    @keyframes dim-in { to { opacity: 1; } }
-    .splash__beam:nth-child(1) { animation-delay: 0.00s; }
+    .splash__svg { height: auto; max-width: 70vw; width: 280px; }
+    .splash__beam { animation: dim-in 0.32s ease-out forwards; opacity: 0; }
+    .splash__beam:nth-child(1) { animation-delay: 0s; }
     .splash__beam:nth-child(2) { animation-delay: 0.07s; }
     .splash__beam:nth-child(3) { animation-delay: 0.14s; }
     .splash__beam:nth-child(4) { animation-delay: 0.21s; }
     .splash__beam:nth-child(5) { animation-delay: 0.28s; }
     .splash__beam:nth-child(6) { animation-delay: 0.35s; }
     .splash__beam:nth-child(7) { animation-delay: 0.42s; }
-    .splash__beam:nth-child(8) { animation-delay: 1.20s; } /* plumb string drops last */
-
-    /* Nodes: scale-pop in sequence */
+    .splash__beam:nth-child(8) { animation-delay: 1.2s; }
     .splash__node {
+      animation: node-pop 0.32s cubic-bezier(0.34, 1.4, 0.5, 1) forwards;
       opacity: 0;
       transform: scale(0);
-      transform-origin: center;
       transform-box: fill-box;
-      animation: node-pop 0.32s cubic-bezier(0.34, 1.4, 0.5, 1) forwards;
-    }
-    @keyframes node-pop {
-      0%   { opacity: 0; transform: scale(0); }
-      60%  { opacity: 1; transform: scale(1.35); }
-      100% { opacity: 1; transform: scale(1); }
+      transform-origin: center;
     }
     .splash__node:nth-child(1) { animation-delay: 0.06s; }
     .splash__node:nth-child(2) { animation-delay: 0.13s; }
-    .splash__node:nth-child(3) { animation-delay: 0.20s; }
+    .splash__node:nth-child(3) { animation-delay: 0.2s; }
     .splash__node:nth-child(4) { animation-delay: 0.27s; }
     .splash__node:nth-child(5) { animation-delay: 0.34s; }
     .splash__node:nth-child(6) { animation-delay: 0.41s; }
     .splash__node:nth-child(7) { animation-delay: 0.48s; }
     .splash__node:nth-child(8) { animation-delay: 0.55s; }
-    /* plumb bob: pulses in last, after the gold settles */
     .splash__node.bob { animation-delay: 1.55s; }
-
-    /* Gold G fades in over the scaffold */
-    .splash__g {
-      opacity: 0;
-      animation: gold-fade 0.5s ease-out 0.85s forwards;
-    }
-    @keyframes gold-fade { to { opacity: 0.78; } }
-
-    /* Bar slides down from above into Waage position */
+    .splash__g { animation: gold-fade 0.5s ease-out 0.85s forwards; opacity: 0; }
     .splash__bar {
+      animation: bar-in 0.4s ease-out 1.1s forwards;
       opacity: 0;
       transform: translateY(-12px);
       transform-box: fill-box;
-      animation: bar-in 0.4s ease-out 1.10s forwards;
     }
-    @keyframes bar-in { to { opacity: 0.78; transform: translateY(0); } }
-
-    /* Triangle drops from above the bar to its hanging position */
     .splash__tri {
+      animation: tri-drop 0.5s cubic-bezier(0.5, 0, 0.25, 1) 1.3s forwards;
       opacity: 0;
       transform: translateY(-32px);
       transform-box: fill-box;
-      animation: tri-drop 0.5s cubic-bezier(0.5, 0, 0.25, 1) 1.30s forwards;
     }
-    @keyframes tri-drop { to { opacity: 0.78; transform: translateY(0); } }
-
-    /* Page chrome fades in synchronised with splash dismissal */
     body:not(.no-splash) > header,
     body:not(.no-splash) > main,
     body:not(.no-splash) > footer {
+      animation: page-in 0.7s ease-out 2.2s forwards;
       opacity: 0;
-      animation: page-in 0.7s ease-out 2.20s forwards;
     }
-    @keyframes page-in { to { opacity: 1; } }
-
-    /* Subsequent visits in the same session: no splash, no fade */
-    body.no-splash .splash { display: none !important; }
+    body.no-splash .splash { display: none; }
     body.no-splash > header,
     body.no-splash > main,
     body.no-splash > footer {
-      opacity: 1;
       animation: none;
+      opacity: 1;
     }
-
-    /* Respect reduced-motion preference */
+    @keyframes dim-in { to { opacity: 1; } }
+    @keyframes node-pop {
+      0% { opacity: 0; transform: scale(0); }
+      60% { opacity: 1; transform: scale(1.35); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes gold-fade { to { opacity: 0.78; } }
+    @keyframes bar-in { to { opacity: 0.78; transform: translateY(0); } }
+    @keyframes tri-drop { to { opacity: 0.78; transform: translateY(0); } }
+    @keyframes page-in { to { opacity: 1; } }
+    @keyframes splash-out {
+      to { opacity: 0; pointer-events: none; visibility: hidden; }
+    }
+    @media (max-width: 680px) {
+      .home-wrap { padding: 0 18px; }
+      .home-hero { padding-top: 34px; }
+      .home-hero h1 { font-size: 40px; }
+      .home-hero p { font-size: 17px; }
+      .story-section {
+        display: block;
+        padding: 38px 0;
+      }
+      .home-link { grid-template-columns: 1fr; gap: 4px; }
+      .home-link::after { top: 17px; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .splash { display: none; }
-      body > header, body > main, body > footer { opacity: 1; animation: none; }
-      .splash__beam, .splash__node, .splash__g, .splash__bar, .splash__tri { animation: none; opacity: 1; transform: none; }
+      body > header,
+      body > main,
+      body > footer { animation: none; opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-<!-- ===================== INTRO SPLASH ===================== -->
 <div class="splash" id="splash" aria-hidden="true">
   <svg class="splash__svg" viewBox="0 0 240 290" aria-hidden="true">
-    <g class="splash__beams" stroke="#3f4d5b" stroke-width="1.5" stroke-linecap="square" fill="none">
+    <g stroke="#3f4d5b" stroke-width="1.5" stroke-linecap="square" fill="none">
       <line class="splash__beam" x1="55"  y1="50"  x2="185" y2="50"  />
       <line class="splash__beam" x1="185" y1="50"  x2="188" y2="122" />
       <line class="splash__beam" x1="188" y1="122" x2="130" y2="122" />
@@ -347,7 +233,7 @@
       <line class="splash__beam" x1="55"  y1="180" x2="55"  y2="50"  />
       <line class="splash__beam" x1="120" y1="180" x2="120" y2="242" />
     </g>
-    <g class="splash__nodes" fill="#3f4d5b">
+    <g fill="#3f4d5b">
       <circle class="splash__node" cx="55"  cy="50"  r="3" />
       <circle class="splash__node" cx="185" cy="50"  r="3" />
       <circle class="splash__node" cx="188" cy="122" r="3" />
@@ -370,7 +256,7 @@
 </div>
 
 <header class="topbar" data-screen-label="Top bar">
-  <div class="wrap topbar__inner">
+  <div class="wrap-hub topbar__inner">
     <a class="brand" href="./" aria-label="gemeinwert">
       <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
       <div>
@@ -379,224 +265,156 @@
       </div>
     </a>
     <nav class="nav" aria-label="Primary">
+      <a href="./" class="active">Home</a>
       <a href="#what">What it is</a>
-      <a href="#try">Tools</a>
-      <a href="standards.html">Standards</a>
-      <a href="../was-ist-bcf.html">Wiki</a>
-      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      <a href="#tools">Tools</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="bim-cvp.html">BIM-CVP</a>
+      <a href="about.html">About</a>
     </nav>
   </div>
 </header>
 
-<main>
+<main class="home-wrap">
+  <p class="crumb"><a href="./">gemeinwert</a> &nbsp;/&nbsp; home</p>
 
-  <!-- HERO -->
-  <section class="hero2" data-screen-label="Hero">
-    <div class="wrap">
-      <h1>Buildings last fifty years.<br />Software platforms <em>don&rsquo;t</em>.</h1>
-      <p class="lede">
-        Every building creates thousands of drawings, decisions and notes. Today most
-        of that lives inside vendor platforms with quarterly subscriptions. Gemeinwert
-        keeps the same records signed, portable, and readable for as long as the
-        building stands &mdash; with no platform in the middle.
-      </p>
-      <div class="cta-row">
-        <a class="btn-soft primary" href="#try">Try a tool <span class="arrow">&rarr;</span></a>
-        <a class="btn-soft ghost" href="../das-plattform-problem.html">Read why we&rsquo;re building it</a>
-      </div>
+  <section class="home-hero" data-screen-label="Home intro">
+    <h1>Buildings last fifty years. Software platforms <em>don&rsquo;t</em>.</h1>
+    <p>
+      Every building creates issues, approvals, requirements, model references and
+      handover records. Today those records are scattered across vendor platforms,
+      email threads and project folders that disappear long before the asset reaches
+      mid-life.
+    </p>
+    <p>
+      Gemeinwert is the recognizable DACH brand for BIM-CVP, the Common Value
+      Protocol: a signed, portable record layer for openBIM coordination.
+    </p>
+  </section>
+
+  <section class="story-section" id="what">
+    <h2>What the protocol does.</h2>
+    <p>
+      BIM-CVP does not replace authoring tools, CDEs or buildingSMART standards. It
+      records the coordination work around them: who created an issue, which IFC
+      element it refers to, what changed, who approved it and which requirement was
+      checked.
+    </p>
+    <ul>
+      <li>BCF topics, comments and viewpoints become signed coordination events.</li>
+      <li>IFC, IDS and document payloads stay normal files and are referenced by hash.</li>
+      <li>Project identity, authorship and audit history remain portable across tools.</li>
+    </ul>
+  </section>
+
+  <section class="story-section">
+    <h2>If BIM or Nostr is new to you.</h2>
+    <p>
+      BIM is the construction side: the building as structured data, not just a
+      drawing. IFC names the objects, BCF carries coordination issues, IDS defines
+      information requirements and ISO 19650 frames responsibility and approval.
+    </p>
+    <p>
+      Nostr is the record side: a person or tool signs a small event, publishes it
+      to relays and lets every reader verify the author, timestamp and referenced
+      file hash. BIM-CVP connects both worlds without changing the BIM standards.
+    </p>
+  </section>
+
+  <section class="story-section">
+    <h2>Why it matters.</h2>
+    <p>
+      Coordination is an economic knowledge problem. Architects, engineers,
+      contractors, operators and owners each know something different. A single
+      platform cannot own that knowledge without creating lock-in and information
+      asymmetry.
+    </p>
+    <p>
+      BIM-CVP follows the Austrian economics frame: value is contextual, discovered
+      through exchange and tied to responsibility. If a project claim matters, it
+      should be signed by the person or system making it.
+    </p>
+  </section>
+
+  <section class="story-section">
+    <h2>The standards frame.</h2>
+    <p>
+      buildingSMART International stays the core reference. IFC describes the model,
+      BCF describes coordination, IDS describes machine-checkable requirements, bSDD
+      keeps terms stable and openCDE defines integration boundaries.
+    </p>
+    <div class="home-links">
+      <a class="home-link" href="../wiki/standards/buildingsmart-international.html">
+        <strong>buildingSMART frame</strong>
+        <span>International openBIM standards and how BIM-CVP maps them to events.</span>
+      </a>
+      <a class="home-link" href="../wiki/nostr-mapping/bcf-events.html">
+        <strong>BCF events</strong>
+        <span>Detailed topic, comment, viewpoint and audit mapping.</span>
+      </a>
+      <a class="home-link" href="../wiki/nostr-mapping/alice-bob-max.html">
+        <strong>Alice, Bob, Max</strong>
+        <span>Worked example for signed project records and data sharing.</span>
+      </a>
     </div>
   </section>
 
-  <!-- WHAT IT IS -->
-  <section class="sec2" id="what" data-screen-label="What it is">
-    <div class="wrap">
-      <h2>What it is, in plain words.</h2>
-      <p>
-        Gemeinwert isn&rsquo;t a platform. It&rsquo;s a thin, open way for everyone
-        working on a building &mdash; architects, engineers, clients, contractors
-        &mdash; to share the records they already make. Coordination topics,
-        requirements, daily site logs, drawing approvals. The kinds of things that,
-        in a normal project, end up scattered across five different vendor portals.
-      </p>
-      <p>
-        Every record is <strong>signed</strong> by the person who made it, so you can
-        prove who said what and when, years later, without anyone&rsquo;s permission.
-        The data lives where <em>you</em> choose: on your own server, in your office,
-        or with a provider you pick. Switching providers is a config change, not a
-        rescue mission.
-      </p>
-      <p>
-        We don&rsquo;t replace IFC, BCF, IDS or any other building standard.
-        We use them, untouched. If Gemeinwert ever disappears, your records still open
-        in any tool that reads the standards.
-      </p>
+  <span id="tools"></span>
+  <section class="story-section" id="try">
+    <h2>Current entry points.</h2>
+    <p>
+      The current tools focus on identity, project setup and key management. The BCF
+      coordination interface will use the same protocol model.
+    </p>
+    <div class="home-links">
+      <a class="home-link" href="../character.html">
+        <strong>Create identity</strong>
+        <span>Generate a project identity and role.</span>
+      </a>
+      <a class="home-link" href="../admin.html">
+        <strong>Project admin</strong>
+        <span>Create a project and invite participants.</span>
+      </a>
+      <a class="home-link" href="../keys.html">
+        <strong>Key management</strong>
+        <span>Manage keys and profiles directly.</span>
+      </a>
+      <a class="home-link" href="bim-cvp.html">
+        <strong>BIM-CVP protocol</strong>
+        <span>English developer and standards framing.</span>
+      </a>
     </div>
   </section>
-
-  <!-- WHO IT'S FOR -->
-  <section class="sec2" data-screen-label="Who it's for">
-    <div class="wrap">
-      <h2>Who it&rsquo;s for.</h2>
-      <div class="aud2">
-        <article>
-          <h3>Owners and public clients</h3>
-          <p>
-            You&rsquo;re paying for a building that will outlive any software subscription.
-            We give you records that read on any tool, in any future, without trusting
-            whoever owns the platform this year.
-          </p>
-        </article>
-        <article>
-          <h3>Architects and planners</h3>
-          <p>
-            You coordinate in Revit, Archicad, Allplan and a dozen plug-ins already.
-            We make it possible to share BCF topics and IDS requirements directly with
-            the people you work with &mdash; no portal between you.
-          </p>
-        </article>
-        <article>
-          <h3>Developers and integrators</h3>
-          <p>
-            MIT-licensed, plain HTML, no framework. Read the kind registry, build a tool
-            on top, or fork the whole thing. The work is heading toward open standards
-            drafts you can implement.
-          </p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- TRY -->
-  <section class="sec2" id="try" data-screen-label="Try">
-    <div class="wrap">
-      <h2>What you can try today.</h2>
-      <div class="tools2">
-        <a href="../character.html">
-          <div>
-            <div class="name">Create your character</div>
-            <div class="desc">A friendly first step. Make a cryptographic identity and pick a role from the buildingSMART role list.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
-        <a href="../admin.html">
-          <div>
-            <div class="name">Project admin</div>
-            <div class="desc">Open a project and invite people with roles. Membership is a signed event you can audit.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
-        <a href="../keys.html">
-          <div>
-            <div class="name">Keys, the classical way</div>
-            <div class="desc">Sober key management for people who&rsquo;d rather skip the RPG onboarding.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
-        <a href="../was-ist-bcf.html">
-          <div>
-            <div class="name">What is BCF?</div>
-            <div class="desc">A short read about the standard planners use to flag issues in a 3D model. Ten minutes.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
-        <div class="roadmap-note">
-          More lands each week &mdash; the BCF Quickform, the site diary, the IFC viewer. Pilot status. Rough edges are real.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHO -->
-  <section class="sec2" data-screen-label="Who">
-    <div class="wrap">
-      <h2>Who&rsquo;s making it.</h2>
-      <p>
-        A small open-source project led by <strong>Felix Hitthaler</strong>. MIT-licensed code,
-        CC&nbsp;BY 4.0 content &mdash; the working bits are meant to become open standards drafts,
-        published the same way IFC and BCF were.
-      </p>
-    </div>
-  </section>
-
-  <!-- READ MORE -->
-  <section class="sec2 more" data-screen-label="Read more">
-    <div class="wrap">
-      <h2>Read more.</h2>
-      <ul>
-        <li><a href="../das-plattform-problem.html">The platform problem &mdash; long read</a></li>
-        <li><a href="standards.html">The standards we follow</a></li>
-        <li><a href="../was-ist-bcf.html">What is BCF?</a></li>
-        <li><a href="../wiki/">The wiki</a></li>
-        <li><a href="index-technical.html">The dense / technical view</a></li>
-        <li><a href="https://github.com" target="_blank" rel="noopener">GitHub repo</a></li>
-      </ul>
-    </div>
-  </section>
-
 </main>
 
-<footer class="ftr" data-screen-label="Footer">
-  <div class="wrap">
-    <div class="ftr__row">
-      <div class="text">
-        gemeinwert &middot; est. 2026 &middot; MIT license &middot; <a href="mailto:felix@bimbeam.it">felix@bimbeam.it</a>
-      </div>
-      <div class="lang-switch">
-        <a href="../en/" class="active">EN</a>
-        <a href="../de/">DE</a>
-        <a href="../it/">IT</a>
-      </div>
-    </div>
+<footer class="home-wrap">
+  <div class="home-foot">
+    gemeinwert / BIM-CVP &middot; MIT license &middot; CC BY 4.0 content &middot;
+    <a href="https://www.bimbeam.at" target="_blank" rel="noopener">www.bimbeam.at</a>
   </div>
 </footer>
 
-<!-- Tweaks panel stays available via the host toolbar toggle but starts hidden. -->
-<aside class="tweaks" id="tweaks" role="dialog" aria-label="Tweaks">
-  <div class="tweaks__head">
-    <h5>Tweaks</h5>
-    <button class="tweaks__close" id="tweaks-close" aria-label="Close">&times;</button>
-  </div>
-  <div class="tweaks__body">
-    <div class="tweak-row">
-      <label>Motto</label>
-      <div class="tweak-row__controls">
-        <button data-group="motto" data-value="en">EN</button>
-        <button data-group="motto" data-value="de">DE</button>
-        <button data-group="motto" data-value="it">IT</button>
-        <button data-group="motto" data-value="short">Signed.</button>
-      </div>
-    </div>
-    <div class="tweak-row">
-      <label>Accent</label>
-      <div class="tweak-row__controls">
-        <button data-group="accent" data-value="gold"><span class="swatch" style="background:#f4c430"></span>Gold</button>
-        <button data-group="accent" data-value="blue"><span class="swatch" style="background:#5b9bd5"></span>Blue</button>
-        <button data-group="accent" data-value="cyan"><span class="swatch" style="background:#00d4ff"></span>Cyan</button>
-        <button data-group="accent" data-value="orange"><span class="swatch" style="background:#ff5a1f"></span>Orange</button>
-      </div>
-    </div>
-  </div>
-</aside>
-
 <script>
-  // Show intro animation only on the first visit of this session.
   (function () {
-    var k = 'gemeinwert-splash-seen';
+    var key = 'gemeinwert-splash-v2-seen';
     try {
-      if (sessionStorage.getItem(k)) {
+      if (sessionStorage.getItem(key)) {
         document.body.classList.add('no-splash');
       } else {
-        sessionStorage.setItem(k, '1');
-        // Clean the splash out of the DOM after it has fully faded.
+        sessionStorage.setItem(key, '1');
         setTimeout(function () {
-          var s = document.getElementById('splash');
-          if (s && s.parentNode) s.parentNode.removeChild(s);
+          var splash = document.getElementById('splash');
+          if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
         }, 3000);
       }
-    } catch (e) { /* sessionStorage disabled — splash will simply play every time */ }
+    } catch (error) {
+      setTimeout(function () {
+        var splash = document.getElementById('splash');
+        if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+      }, 3000);
+    }
   })();
 </script>
 <script src="../assets/nodebg.js"></script>
-<script src="../assets/tweaks.js"></script>
 </body>
 </html>

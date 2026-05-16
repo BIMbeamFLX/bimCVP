@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Workflow Model &mdash; BIM-CVP Wiki</title>
+  <meta name="description" content="The theoretical end-to-end workflow for BIM-CVP: roles, states, events, model publishing, BCF coordination, approvals and export rules." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art-wide topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; mapping &nbsp;/&nbsp; workflow</p>
+
+    <header class="art-head">
+      <h1>Theoretical workflow model</h1>
+      <p class="art-lede">
+        The full process definition before implementation: who creates which
+        information container, which signed events are emitted, which checks
+        must pass, and how openBIM exchange remains possible at every step.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">Implementation principle</span>
+        <p>
+          Every user action creates or updates one signed event family. Files stay
+          files, standards stay standards, and the workflow is the deterministic
+          graph that links them.
+        </p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#layers">Layer model</a></li>
+          <li><a href="#roles">Roles and responsibilities</a></li>
+          <li><a href="#state-machine">State machine</a></li>
+          <li><a href="#happy-path">End-to-end happy path</a></li>
+          <li><a href="#issue-loop">BCF issue loop</a></li>
+          <li><a href="#approval-loop">Approval and publication loop</a></li>
+          <li><a href="#import-export">Import/export loops</a></li>
+          <li><a href="#implementation-order">Implementation order</a></li>
+          <li><a href="#acceptance">Acceptance criteria</a></li>
+        </ul>
+      </div>
+
+      <h2 id="layers">Layer model</h2>
+
+      <p>
+        The system has four layers. Keeping them separate is the main design rule:
+        a bug in the web client must not change the standards profile, and a file
+        upload must not pretend to be a BCF topic.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Owns</th><th>Examples</th><th>Implementation output</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Standards</td><td>Versioned semantics</td><td>IFC 4.3.2.0, BCF 3.0, IDS 1.0, ISO 19650</td><td>Docs, validators, value lists</td></tr>
+          <tr><td>Files</td><td>Binary artifacts</td><td>IFC, BCFZIP, snapshot PNG, IDS XML, PDF</td><td><code>kind:1063</code> file metadata + storage URL</td></tr>
+          <tr><td>Events</td><td>Signed workflow records</td><td>Project, topic, comment, audit, approval</td><td>Nostr events on project relays</td></tr>
+          <tr><td>Interfaces</td><td>User interaction</td><td>BCF form, thread view, project admin</td><td>Browser clients using NIP-07</td></tr>
+        </tbody>
+      </table>
+
+      <pre>Standards profile
+  -> constrains project extensions and validators
+
+Files
+  -> get hash, URL, MIME type, size
+  -> become kind:1063 records
+
+Signed events
+  -> link to files through e-tags
+  -> link to project through a-tags
+  -> link to people through p-tags
+
+Interfaces
+  -> create, read, validate and render those events</pre>
+
+      <h2 id="roles">Roles and responsibilities</h2>
+
+      <p>
+        The process uses two role axes: discipline and authority. Discipline says
+        what a person knows; authority says what they may change.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Role</th><th>Typical authority</th><th>Can create</th><th>Can approve</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Appointing party / client</td><td><code>appointing-party</code></td><td>PIR, approval requests, formal decisions</td><td>Published state, phase gate</td></tr>
+          <tr><td>Information manager</td><td><code>info-manager</code></td><td>Project extensions, role mapping, validation rules</td><td>Shared gate, CDE export</td></tr>
+          <tr><td>Lead appointed party</td><td><code>lead-appointed</code></td><td>BEP/BAP, coordination topics, model packages</td><td>Discipline package release</td></tr>
+          <tr><td>Task team member</td><td><code>appointed</code></td><td>Comments, viewpoints, model file references</td><td>Own task output only</td></tr>
+          <tr><td>Reviewer / checker</td><td><code>reviewer</code></td><td>IDS results, BCF comments, issue decisions</td><td>Review status, not client publication</td></tr>
+          <tr><td>CDE admin</td><td><code>cde-admin</code></td><td>Relay/storage configuration, export authorization</td><td>Technical export, not technical content</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="state-machine">State machine</h2>
+
+      <p>
+        ISO 19650 gives the container states. BCF gives issue status. The workflow
+        keeps both: container state tells whether an information container may be
+        relied on; BCF status tells what happened to a coordination problem.
+      </p>
+
+      <div class="state-flow">
+        <div class="state-box">
+          <div class="state-box__name">WIP</div>
+          <div class="state-box__desc">Private team work. Draft files and draft events.</div>
+        </div>
+        <div class="state-box">
+          <div class="state-box__name">Shared</div>
+          <div class="state-box__desc">Visible to other task teams. Coordination starts.</div>
+        </div>
+        <div class="state-box">
+          <div class="state-box__name">Published</div>
+          <div class="state-box__desc">Approved output. Can be used contractually.</div>
+        </div>
+        <div class="state-box">
+          <div class="state-box__name">Archive</div>
+          <div class="state-box__desc">Frozen record. No mutation, only references.</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Transition</th><th>Required event</th><th>Validation gate</th><th>Failure mode</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>WIP to Shared</td><td><code>kind:30970</code> approval or package release</td><td>File hash, schema, required metadata</td><td>Package remains WIP</td></tr>
+          <tr><td>Shared to Published</td><td><code>kind:30970</code> formal approval</td><td>Open critical BCF topics, IDS result, signer policy</td><td>Publication blocked</td></tr>
+          <tr><td>Published to Archive</td><td>Archive manifest</td><td>All referenced files reachable and hash-valid</td><td>Archive incomplete</td></tr>
+          <tr><td>Published correction</td><td>New revision + audit</td><td>Reason, affected files, approval chain</td><td>No silent overwrite</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="happy-path">End-to-end happy path</h2>
+
+      <p>
+        This is the theoretical baseline that each implementation slice should
+        follow. If an interface cannot support one step yet, it must not fake it; it
+        should emit the events it can and leave the rest explicit.
+        The same flow is shown with people and payload examples in
+        <a href="alice-bob-max.html">Alice, Bob, Max</a>.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Step</th><th>User action</th><th>Events/files</th><th>Checks</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Create project</td><td><code>kind:30902</code></td><td>Unique <code>d</code>, extension lists present</td></tr>
+          <tr><td>2</td><td>Add members and roles</td><td>Updated <code>30902</code>, optional NIP-29 events</td><td>Each <code>p</code> has discipline + authority</td></tr>
+          <tr><td>3</td><td>Define requirements</td><td><code>30880</code> PIR/EIR, <code>30810</code> IDS, <code>30811</code> LOIN</td><td>Requirement IDs stable, language tags set</td></tr>
+          <tr><td>4</td><td>Upload model/file</td><td><code>1063</code> file metadata, <code>30904</code> IFC file reference</td><td>Hash, MIME, schema, MVD, discipline</td></tr>
+          <tr><td>5</td><td>Validate delivery</td><td><code>1180</code> IDS validation result</td><td>Report hash, result, failed requirements</td></tr>
+          <tr><td>6</td><td>Create coordination issue</td><td><code>1063</code> snapshot, <code>30901</code> viewpoint, <code>30900</code> topic</td><td>BCF GUIDs, IFC GUIDs, status list</td></tr>
+          <tr><td>7</td><td>Discuss and update</td><td><code>1170</code> comments, <code>1171</code> audit, replacement <code>30900</code></td><td>Status changes never happen without audit</td></tr>
+          <tr><td>8</td><td>Resolve issue</td><td>Replacement <code>30900</code>, <code>1171</code> audit</td><td>Assignee, reason and affected model version known</td></tr>
+          <tr><td>9</td><td>Approve package</td><td><code>30970</code> approval</td><td>Signer policy, open critical topics, validation status</td></tr>
+          <tr><td>10</td><td>Export to BCF/CDE/archive</td><td>BCFZIP, Documents API upload, archive manifest</td><td>Round-trip and hash checks pass</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="issue-loop">BCF issue loop</h2>
+
+      <p>
+        The issue loop is the first workflow to prove because it covers the
+        core architecture: a normal browser can create a standards-compatible
+        coordination object without owning the whole CDE.
+      </p>
+
+      <pre>create viewpoint
+  -> kind:1063 snapshot file metadata
+  -> kind:30901 immutable viewpoint
+
+create topic
+  -> kind:30900 current BCF topic
+
+comment
+  -> kind:1170 append-only comment
+
+change status / assignee / priority
+  -> kind:1171 audit event
+  -> new kind:30900 with same d-tag
+
+close
+  -> kind:1171 audit event
+  -> new kind:30900 status Resolved or Closed</pre>
+
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>Reason</th><th>Implementation implication</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Topic current state is replaceable</td><td>BCF topics change over time</td><td>Query latest <code>30900</code> per <code>d</code></td></tr>
+          <tr><td>Comments are append-only</td><td>Authorship must remain visible</td><td>Edit means replacement comment, not mutation</td></tr>
+          <tr><td>Viewpoints are immutable</td><td>BCF API treats them as frozen context</td><td>Any camera/selection change creates new <code>30901</code></td></tr>
+          <tr><td>Status changes need audit</td><td>Current state alone is not evidence</td><td>UI must create <code>1171</code> before or with replacement topic</td></tr>
+          <tr><td>Files are hash-bound</td><td>Snapshots and IFC files need integrity</td><td>Always create <code>1063</code> for binary artifacts</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="approval-loop">Approval and publication loop</h2>
+
+      <p>
+        Publication is not a button that changes a label. It is a signed decision
+        that references the information containers being published.
+      </p>
+
+      <pre>package selected
+  -> collect IFC file refs, IDS results, unresolved BCF topics
+
+preflight check
+  -> no critical open topics
+  -> required IDS checks passed or explicitly waived
+  -> all file hashes available
+
+approval
+  -> kind:30970 with signer policy
+  -> optional OpenTimestamps proof
+
+publication
+  -> update container state on relevant file/document records
+  -> archive export manifest</pre>
+
+      <table>
+        <thead>
+          <tr><th>Approval target</th><th>References</th><th>Minimum metadata</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Model package</td><td><code>30904</code> IFC refs, <code>1180</code> validations</td><td>Stage, discipline, revision, signer policy</td></tr>
+          <tr><td>BCF decision</td><td><code>30900</code> topic, <code>1170</code> final comment</td><td>Decision text, status, responsible signer</td></tr>
+          <tr><td>Phase gate</td><td>All package refs in the gate</td><td>Target ISO state, target stage, signers</td></tr>
+          <tr><td>External export</td><td>Documents API target, BCFZIP, IFC files</td><td>Remote CDE, export reason, hashes</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="import-export">Import/export loops</h2>
+
+      <p>
+        Interoperability is a hard requirement. The event graph must be able to
+        import and export normal openBIM artifacts without losing meaning.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Direction</th><th>Input</th><th>Output</th><th>Loss rule</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>BCFZIP to events</td><td><code>.bcfzip</code></td><td><code>30902</code>, <code>30900</code>, <code>30901</code>, <code>1170</code>, <code>1063</code></td><td>Unknown BCF extensions go to content JSON</td></tr>
+          <tr><td>Events to BCFZIP</td><td>Project event graph</td><td><code>.bcfzip</code></td><td>Nostr-only metadata becomes extension data or export note</td></tr>
+          <tr><td>IFC upload</td><td><code>.ifc</code></td><td><code>1063</code> + <code>30904</code></td><td>No model mutation, metadata only</td></tr>
+          <tr><td>IDS validation</td><td><code>30904</code> + <code>30810</code></td><td><code>1180</code> + report file</td><td>Validator must sign tool identity</td></tr>
+          <tr><td>CDE export</td><td>Event package</td><td>Documents API upload or BCF API calls</td><td>Remote IDs stored as tags, not as canonical IDs</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="implementation-order">Implementation order</h2>
+
+      <p>
+        The implementation should follow dependency order, not UI excitement.
+        Each step produces a testable event corpus for the next one.
+      </p>
+
+      <ol>
+        <li><strong>Schema constants.</strong> Define event kinds, required tags, value lists and JSON content schemas.</li>
+        <li><strong>Project admin.</strong> Create <code>30902</code>, members, roles and extension lists.</li>
+        <li><strong>File records.</strong> Create <code>1063</code> and <code>30904</code> from referenced files.</li>
+        <li><strong>BCF form.</strong> Create minimal <code>30900</code> topics with valid tags.</li>
+        <li><strong>Viewpoint support.</strong> Add snapshot/file metadata and immutable <code>30901</code> records.</li>
+        <li><strong>Thread view.</strong> Query topic, comments, audit, viewpoint and snapshot together.</li>
+        <li><strong>Status transitions.</strong> Add <code>1171</code> audit plus replacement topic state.</li>
+        <li><strong>BCFZIP import/export.</strong> Prove round-trip with fixture files.</li>
+        <li><strong>IDS validation.</strong> Attach requirements and results to model packages.</li>
+        <li><strong>Approval gate.</strong> Add <code>30970</code> and publication/export preflight.</li>
+      </ol>
+
+      <h2 id="acceptance">Acceptance criteria</h2>
+
+      <p>
+        This is the practical checklist for deciding whether the theory is clear
+        enough to implement.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Question</th><th>Must be answerable from the event graph</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Who owns this project?</td><td><code>30902</code> project event and member <code>p</code> tags</td></tr>
+          <tr><td>Which standards profile applies?</td><td>Project extension lists and standards profile links</td></tr>
+          <tr><td>Which model file is being discussed?</td><td><code>30904</code> file reference from topic/viewpoint</td></tr>
+          <tr><td>Which IFC elements are affected?</td><td><code>ifc</code> tags and viewpoint component selection</td></tr>
+          <tr><td>What is the current issue status?</td><td>Latest <code>30900</code> for the topic <code>d</code></td></tr>
+          <tr><td>Who changed the status and why?</td><td><code>1171</code> audit event with signer and reason</td></tr>
+          <tr><td>What was approved?</td><td><code>30970</code> references to topics, files and validations</td></tr>
+          <tr><td>Can this leave the system?</td><td>BCFZIP export and hash-valid files without hidden state</td></tr>
+        </tbody>
+      </table>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="alice-bob-max.html">Alice, Bob, Max</a> &mdash; concrete data-sharing story</li>
+          <li><a href="bcf-events.html">BCF to Nostr events</a> &mdash; detailed event mapping and examples</li>
+          <li><a href="kind-mapping.html">Kind mapping</a> &mdash; complete kind registry</li>
+          <li><a href="../koordination/bcf.html">BCF primer</a> &mdash; coordination model before event mapping</li>
+          <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; process states and roles</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://github.com/buildingSMART/BCF-API" target="_blank" rel="noopener">buildingSMART BCF API 3.0 repository</a></li>
+        <li><a href="https://github.com/buildingSMART/BCF-XML" target="_blank" rel="noopener">buildingSMART BCF XML repository</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/01.md" target="_blank" rel="noopener">Nostr NIP-01 event and tag model</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/94.md" target="_blank" rel="noopener">Nostr NIP-94 file metadata</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Mapping &middot; Workflow Model</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

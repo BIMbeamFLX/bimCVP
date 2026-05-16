@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IDS — Gemeinwert Wiki</title>
+  <title>IDS — BIM-CVP Wiki</title>
   <meta name="description" content="Information Delivery Specification 1.0 — buildingSMART standard for machine-checkable information requirements on IFC models." />
   <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
@@ -86,7 +86,7 @@
           <tr>
             <td>Pre-1.0 versions (beta)</td>
             <td>2022&ndash;2024</td>
-            <td>Not official, do not use in production</td>
+            <td>Not official, do not use as a stable requirement source</td>
           </tr>
         </tbody>
       </table>
@@ -127,7 +127,7 @@
       <pre>&lt;ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;ids:info&gt;
-    &lt;ids:title&gt;Fire-rating requirements, pilot project&lt;/ids:title&gt;
+    &lt;ids:title&gt;Fire-rating requirements, sample project&lt;/ids:title&gt;
     &lt;ids:version&gt;1.0&lt;/ids:version&gt;
     &lt;ids:author&gt;bauamt@example.org&lt;/ids:author&gt;
     &lt;ids:date&gt;2026-04-15&lt;/ids:date&gt;
@@ -244,12 +244,12 @@
 
       <h2>Mapping to signed events</h2>
 
-      <p>Gemeinwert models IDS specs as parameterised replaceable events:</p>
+      <p>BIM-CVP models IDS specs as parameterised replaceable events:</p>
 
       <pre>kind:30810  IDS Specification (replaceable)
   d: &lt;spec-guid&gt;
   tags: [
-    ["title",         "Fire-rating requirements, pilot project"],
+    ["title",         "Fire-rating requirements, sample project"],
     ["a",             "&lt;project-ref&gt;"],
     ["ids-version",   "1.0"],
     ["ifc-version",   "IFC4X3"],

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Docs &mdash; Gemeinwert</title>
+  <meta name="description" content="Curated static HTML documentation for Gemeinwert BIM CVP." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-hub topbar__inner">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="../en/standards.html">Standards</a>
+      <a href="./" class="active">Docs</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap-hub" data-screen-label="Docs intro">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; docs</p>
+    <div class="hub-intro">
+      <h1>Implementation docs.</h1>
+      <p>
+        Curated HTML documents for the public static site. Raw research notes stay
+        in the repository; this deploy folder exposes only pages that fit the
+        current English structure.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap-hub hub-sec" data-screen-label="Core docs">
+    <p class="hub-sec__eyebrow">Core</p>
+    <h2 class="hub-sec__title">Build from here</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="PRINCIPLES.html" data-status="live">
+        <h3>Design principles</h3>
+        <p>The architectural rules: use mature open-source parts, keep data verifiable, and avoid platform lock-in.</p>
+        <span class="hub-card__meta">architecture</span>
+      </a>
+      <a class="hub-card" href="KIND-REGISTRY.html" data-status="live">
+        <h3>Kind registry</h3>
+        <p>Event kind allocation and tag conventions for BCF, IFC, IDS, approvals, lifecycle and product data.</p>
+        <span class="hub-card__meta">event model</span>
+      </a>
+      <a class="hub-card" href="STANDARDS-PROFILE.html" data-status="live">
+        <h3>Standards profile</h3>
+        <p>Pinned versions for IFC, BCF, IDS, ISO 19650, openCDE, bSDD, LOIN and sustainability requirements.</p>
+        <span class="hub-card__meta">version policy</span>
+      </a>
+      <a class="hub-card" href="bcf-nostr-nip-research.html" data-status="live">
+        <h3>BCF + Nostr research</h3>
+        <p>Technical research draft for representing BCF topics, comments, viewpoints and audit events as signed records.</p>
+        <span class="hub-card__meta">spec research</span>
+      </a>
+      <a class="hub-card" href="building-pilot-build-plan.html" data-status="live">
+        <h3>Pilot build plan</h3>
+        <p>Implementation plan for the first static tools, modules and proof-of-concept workflow.</p>
+        <span class="hub-card__meta">pilot</span>
+      </a>
+      <a class="hub-card" href="bsi-international-update-may-2026.html" data-status="live">
+        <h3>buildingSMART freshness check</h3>
+        <p>May 2026 check against current buildingSMART releases, working groups and roadmap updates.</p>
+        <span class="hub-card__meta">standards watch</span>
+      </a>
+      <a class="hub-card" href="BRAND.html" data-status="live">
+        <h3>Brand concept</h3>
+        <p>Name, acronym, visual tone and usage rules for Gemeinwert / BIM CVP.</p>
+        <span class="hub-card__meta">identity</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap-hub" style="border-top: 1px solid var(--line); padding-top: 32px; padding-bottom: 48px; margin-top: 32px;">
+  <span style="font-size:13px; color:var(--dim);">Docs &middot; static HTML &middot; curated public set</span>
+</footer>
+
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>
