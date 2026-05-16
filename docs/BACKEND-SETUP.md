@@ -670,4 +670,81 @@ Danach kann Felix:
 
 ---
 
+## 16. Pilot-Zielarchitektur (freigegeben 2026-05)
+
+Ersetzt das Laptop-+-Tailscale-Setup. Verbindlich ergänzend zu
+`identity-architecture.md`. Laptop/Tailscale entfällt fürs Backend; Tailscale
+bleibt höchstens Admin-Zugang zum VPS.
+
+### 16.1 Server & Storage
+
+- **Hetzner Cloud CX23** (2 vCPU x86, 4 GB RAM, 40 GB, ≈ €4,49/Mon),
+  Ubuntu 24.04 + Docker. EU-Standort (DSGVO/DSFA — Custodial-Keys bleiben in der EU).
+- **Hetzner Volume bei Bedarf** (~€0,044/GB/Mon) für Blossom/IFC-Blobs, erst
+  angehängt wenn das Blob-Wachstum es braucht. Hält große IFC-Daten getrennt von
+  Relay-DB / LNbits / phoenixd — Blob-Wachstum kann die Money-/Key-Box nie
+  volllaufen lassen. Server-Resize (RAM/CPU) später möglich; x86 gewählt, weil
+  ARM↔x86 nicht tauschbar.
+
+### 16.2 DNS (Domains bei World4You; `bimbeam.at` NICHT anfassen — Mail)
+
+Domain-Split (deckt sich mit `BRAND.md`): **gemeinwert.com** = Marken-Website
+(DACH, menschliches Publikum). **bimcvp.com** = Protokoll/Identity/Services
+(international, Dev/NIP). Kein 301 — sie cross-linken. Beide via demselben
+Hetzner-Caddy.
+
+| Record | Ziel |
+|---|---|
+| `gemeinwert.com` @ / `www`  A | VPS-IP (Marken-Website) |
+| `bimcvp.com` @ / `www`  A     | VPS-IP (Protokoll-Hub + NIP-05) |
+| `relay.bimcvp.com`  A         | VPS-IP |
+| `pay.bimcvp.com`    A         | VPS-IP |
+| `blossom.bimcvp.com` A        | VPS-IP |
+| `bunker.bimcvp.com` A         | VPS-IP (Phase 2) |
+
+NIP-05/Lightning-Address-Handles sind `name@bimcvp.com` (well-known auf dem
+bimcvp.com-Apex via Caddy → LNbits `nostrnip5`). Caddy macht Auto-TLS für alle.
+
+### 16.3 Container auf dem VPS
+
+- `caddy` — Reverse Proxy / TLS; serviert `gemeinwert.com` (statische Site) und
+  `bimcvp.com` (Protokoll-Hub + NIP-05). Kein GitHub Pages.
+- `strfry` **public** → `wss://relay.bimcvp.com`, **Write-Policy-Plugin aktiv**
+  (nur Pilot-Pubkeys bzw. Events mit Projekt-`a`-Tag `30902:<pubkey>:<guid>`;
+  vgl. Abschnitt strfry `writePolicy`). Pflicht bevor öffentlich.
+- `strfry` **private** (optional, anfangs aufschiebbar) — 2. Container, nur
+  localhost/tailnet, eigene DB + Write-Policy. Interner WIP-Layer (PRINCIPLES §4).
+- `lnbits` → `https://pay.bimcvp.com` — **stock, reine Wallet-Engine** (kein Fork).
+  Backend `LNBITS_BACKEND_WALLET_CLASS=PhoenixdWallet` → `http://phoenixd:9740`.
+  Extensions aktiv: `usermanager`, `nostrnwc`, `lnurlp`, `nostrnip5`
+  (bestehende `invoices, satspay, splitpayments, cashu` bleiben). Nicht
+  aktivierte Extensions sind inert — nichts zu „strippen", kein Fork.
+- `bunker` — NIP-46-Signer → `wss://bunker.bimcvp.com`, custodiert Tier-1-Keys.
+  Pilot: `nak bunker` (fiatjaf `nak`); abstrahiert, damit Knox/nsec.app es ohne
+  Frontend-Änderung ersetzen kann. Bei ~5–10 Usern Ansatz re-validieren.
+- `blossom` → `https://blossom.bimcvp.com` (Blobs ggf. auf Volume).
+- `phoenixd` — LNbits-Funding, nur intern `:9740`. Minimal mit Test-Sats funden.
+
+### 16.4 Per-User-Provisioning (Tier 1)
+
+Ein dünner server-seitiger `provision`-Glue (einzige Eigenbau-Komponente, **nicht
+im public Web-Repo**) erzeugt in einem Flow: LNbits-User+Wallet (UserManager-API)
+→ Managed Nostr-Key im Bunker → Lightning-Address `name@bimcvp.com`
+(lnurlp+nostrnip5 auf dem bimcvp.com-Apex, dient auch als NIP-05)
+→ NWC-Connection (`nostrnwc`).
+Mapping-Tabelle nur Identity-Plumbing: `lnbits_user_id ↔ npub ↔ bunker_ref ↔
+lightning_address` — keine Rollen, keine BIM-Daten (Projekt-Mitgliedschaft bleibt
+event-definiert in `kind:30902`). Keystore verschlüsselt, Operator-Key offline →
+das ist die Trust-Boundary (siehe `identity-architecture.md`; DSFA Abschnitt 3
+ergänzen: Datenkategorie „custodial Nostr-Keys", Operator als Verarbeiter).
+
+### 16.5 Recovery (Kurzfassung — Details in identity-architecture.md)
+
+Key verloren ≠ Key kompromittiert. Verlust: LNbits-Login → neuer Bunker-Token →
+**gleicher npub**, Admin kann LNbits-Credential resetten (UserManager), Key bleibt.
+Kompromittierung: neuer npub + Admin-Re-Link in `kind:30902` (Path-C-Semantik) —
+dieser Pfad bleibt implementiert und getestet.
+
+---
+
 *Stand: v0.1. Pilot-tauglich. Production-Hardening (Backups offsite, Monitoring, automated Updates) im Phase-2-Plan.*

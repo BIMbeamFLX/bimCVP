@@ -13,7 +13,7 @@
 | Kind | Name | `d`-Tag | Content | Status |
 |---|---|---|---|---|
 | 30900 | BCF Topic | topic-guid | current state | in testing |
-| 30901 | BCF Viewpoint | viewpoint-guid | camera + components | in testing |
+| 30901 | BCF Viewpoint | viewpoint-guid | immutable camera + components | in testing |
 | 30902 | BCF Project | project-guid | project metadata | in testing |
 | 30903 | Document Reference | doc-guid | external document | reserved |
 | 30904 | IFC File Reference | file-guid | IFC or other model | in testing |
@@ -33,6 +33,11 @@
 | 30972 | Export Authorization | export-id | publish-to-external-CDE manifest | reserved |
 
 ## Own range 1170–1179 (regular, immutable)
+
+**BCF viewpoint profile rule.** `30901` lives in the addressable range so a
+viewer can look up a viewpoint by BCF GUID, but the pilot profile forbids
+republishing the same `d` value. BCF viewpoints are immutable; a changed camera,
+selection, clipping plane or snapshot gets a new BCF viewpoint GUID.
 
 | Kind | Name | Content |
 |---|---|---|
@@ -72,7 +77,9 @@
 | `h` | NIP-29 group ID (if project in a group) | when present |
 | `e` | event reference (topic, viewpoint, file, parent comment) | per relationship |
 | `p` | pubkey of a participant (assignee, reporter, watcher) | when applicable |
+| `s` | indexed mirror of `bcf-status` for relay filtering | yes for 30900 |
 | `t` | free tag or BCF label | optional |
+| `bcf-guid` | original BCF GUID preserved for round-trip | yes for 30900 + 30901 |
 | `bcf-version` | buildingSMART BCF version that the event semantically represents: `3.0` (default) or `2.1` (fallback) | yes for 309xx |
 | `bcf-status` | topic status (BCF 3.0 Project Extensions value list) | yes for 30900 |
 | `bcf-type` | topic type (Issue, Clash, RFI, …) | yes for 30900 |
@@ -146,6 +153,22 @@ Usage example on a `kind:30970` Approval event:
 ```
 
 The Approval is publicly signed and auditable. The pre-discussion remains in the MLS group. The Real Bill is anchored on Bitcredit and references the same approval as its underwriting source. Three protocols, one event.
+
+### Identity & handle (managed vs sovereign)
+
+Binding model: `identity-architecture.md`. The `npub` is always the identity
+root; the tier (managed Tier-1 via NIP-46 bunker, sovereign Tier-2 via NIP-07,
+throwaway Tier-3) is **not** encoded in BIM events — events are signer-agnostic.
+Human discoverability is via NIP-05, served by the LNbits `nostrnip5` extension:
+
+| Tag / field | Values | Meaning |
+|---|---|---|
+| `nip05` (in kind:0 profile) | `name@bimcvp.com` | Human handle = the user's Lightning Address; resolves npub without hex (PRINCIPLES §2). Well-known on the bimcvp.com apex. |
+| `lnurl-pay` (existing, above) | `name@bimcvp.com` | Same address as a payment endpoint (lnurlp). One string, identity + money. |
+
+No `tier`/`custodial`/`nip46` tag is added to public events: custody is an
+access-layer property, not an on-ledger fact. Recovery never changes the npub
+(loss) or, on compromise, re-links membership in `kind:30902` (Path-C).
 
 ### CAM Edilizia 2025 tags
 

@@ -105,6 +105,33 @@ Der Admin sieht keine Hex-Strings, keine LN-Channels, keine Routing-Details. LNb
 
 LNbits hat eingebaute Transaction-Liste mit Filter + CSV-Export. Für Honorar-Berichte oder Steuer-Vorbereitung können wir einfach via LNbits-API alle Zahlungen pro Wallet ziehen + auf Nostr-Events joinen (welche BCF-Topic hat welchen Sat-Eingang erzeugt).
 
+### 7. Managed-Identity-Provisioning (Tier 1)
+
+Freigegeben 2026-05. Verbindlich: `identity-architecture.md`. LNbits ist hier
+**reine Wallet-Engine + Account/Login**, *nicht* die Identity-System-of-Record —
+die ist der NIP-46-Bunker + eine minimale Mapping-Tabelle. Kein Fork; nicht
+aktivierte Extensions sind inert.
+
+Aktive Extensions: `usermanager`, `nostrnwc`, `lnurlp`, `nostrnip5`.
+
+Ein Flow legt pro Pilot-User an:
+
+1. **LNbits-User + Wallet** via UserManager-API → das Login/Konto.
+2. **Managed Nostr-Key** im Bunker registriert (`nak bunker` im Pilot).
+3. **Lightning-Address** `name@bimcvp.com` (lnurlp + nostrnip5, well-known auf
+   dem bimcvp.com-Apex) — menschlicher
+   Handle, dient zugleich als **NIP-05** (Discovery ohne Hex, PRINCIPLES §2).
+4. **NWC-Connection** (`nostr+walletconnect://…`, `nostrnwc`) — derselbe npub
+   kann zappen/zahlen.
+
+Mapping-Tabelle nur Identity-Plumbing:
+`lnbits_user_id ↔ npub ↔ bunker_ref ↔ lightning_address` — keine Rollen, keine
+BIM-Daten (Projekt-Mitgliedschaft bleibt `kind:30902`).
+
+Recovery: Key verloren ≠ kompromittiert. Verlust → LNbits-Login → neuer
+Bunker-Token → **gleicher npub**; Admin reset Credential via UserManager, Key
+bleibt. Kompromittierung → neuer npub + Re-Link in `kind:30902`.
+
 ---
 
 ## Was unsere Verkabelungs-Tools sein müssen
@@ -117,8 +144,9 @@ Pro Integrationspunkt brauchen wir genau einen Adapter — alle klein:
 | `lnbits-webhook.py` | Webhook empfangen → Nostr-Event publishen | ~50 LoC |
 | `nwc-helper.js` | NWC-URI parsen, Pay-Request senden | NDK kann das bereits |
 | `wallet-provisioning.py` | Admin-API für Wallet-Anlage | ~60 LoC |
+| `provision` (server-seitig) | UserManager + Bunker-Key + lnaddress + NWC + Mapping; einzige Eigenbau-Komponente, **nicht im public Web-Repo** | klein, sicherheitskritisch |
 
-Insgesamt unter 250 Zeilen Klebstoff.
+Insgesamt unter 250 Zeilen Klebstoff (der `provision`-Glue separat, server-seitig).
 
 ---
 
@@ -160,7 +188,7 @@ LNbits-URL: `http://localhost:5000`. Caddy davor für TLS sobald öffentlich nö
 ## Open Questions
 
 1. **Wallet-Backend-Wahl** — Phoenixd (selbsthostend, simpel, automatisches Channel-Management) vs. eigener LND (mehr Kontrolle, mehr Aufwand) vs. Voltage Cloud (gehostet, schnell, kostet)? Empfehlung für Pilot: Phoenixd.
-2. **Wer hostet LNbits für den Pilot?** Felix' Laptop ist OK für Test. Für Provinz-Bozen-Demo lieber auf einen Hetzner-Mini-VPS oder NOI-Techpark-Hosting umziehen — Stromausfall an deinem Schreibtisch sollte nicht den Pilot abschießen.
+2. **Wer hostet LNbits für den Pilot?** ENTSCHIEDEN (2026-05): Hetzner Cloud CX23 (≈ €4,49/Mon, EU/DSGVO), zusammen mit strfry/bunker/blossom/phoenixd/caddy. Laptop/Tailscale entfällt. Details: `BACKEND-SETUP.md` §16.
 3. **Cashu sofort oder später?** Cashu-Mint via LNbits-Extension ist mit wenig Aufwand machbar. Use-Case: anonyme Sub-Zahlungen im Büro, Bedarfsplanungs-DVM-Escrow. Empfehlung: nicht im Sprint, aber als Phase-2-Knopf bereithalten.
 4. **DSFA für LNbits?** Wenn nur die Adminin und Tester drauf sind: kein personenbezogenes Datenproblem. Bei realen Beteiligten muss in der DSFA stehen, dass LN-Zahlungs-Metadaten anfallen.
 

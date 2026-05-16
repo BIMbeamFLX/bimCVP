@@ -72,6 +72,31 @@ Private-key backup is the unsolved UX problem of all sovereign tech. We don't tr
 
 Until then: not our problem. Period.
 
+### 3a. Amendment — bounded custodial recovery for the pilot (2026-05)
+
+Field reality overrode the absolutist version above: the pilot's real users are
+non-technical construction people who *will* lose keys, and "make a new npub" is
+unacceptable UX for them. The pilot therefore adds a **fourth, default path** on
+top of A/B/C — without removing them:
+
+- **Path D — managed identity (Tier 1, pilot default).** A server-side NIP-46
+  bunker custodies the key; the user logs in via LNbits and gets a fresh bunker
+  connect token, **same npub**, on any new device. The browser still never sees
+  an nsec. Paths A/B stay available for power users (sovereign, no custody);
+  Path C stays for throwaway demos.
+
+This is a **deliberate, bounded, documented deviation**, not a reversal:
+
+- Custody protects against *loss*, not *compromise*. A compromised key still
+  falls back to "new npub + admin re-link" (Path C semantics).
+- It is bounded to a *named* pilot circle, behind an encrypted keystore with the
+  operator key offline, and must be written into the DSFA.
+- "When backup matters again" (above) is unchanged: post-pilot, Tier-1 users
+  migrate to their own NIP-07/NIP-46 or FROST/Frostr multi-sig.
+
+Full model, recovery semantics and trust boundary: **`identity-architecture.md`**
+(binding). §1, §2 and §4 are unaffected.
+
 ---
 
 ## 4. Public ledger, private conversation
