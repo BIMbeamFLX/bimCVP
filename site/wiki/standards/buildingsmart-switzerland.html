@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>buildingSMART Switzerland &mdash; BIM-CVP Wiki</title>
+  <meta name="description" content="Swiss openBIM reference frame: Bauen digital Schweiz / buildingSMART Switzerland, BIM-Abwicklungsmodell, KBOB, National Glossary, BIM2FM and how BIM-CVP maps them to events." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art-wide topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; standards &nbsp;/&nbsp; buildingSMART Switzerland</p>
+
+    <header class="art-head">
+      <h1>buildingSMART Switzerland</h1>
+      <p class="art-lede">
+        The Swiss implementation reference as an optional regional profile: Bauen digital
+        Schweiz / buildingSMART Switzerland, KBOB, BIM-Abwicklungsmodell, national
+        terminology and BIM2FM handover logic.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">Regional profile</span>
+        <p>
+          Switzerland is useful as a regional adapter because the Swiss
+          references combine ISO 19650 terminology, national glossary work, public
+          procurement guidance and operation-oriented BIM2FM practice.
+        </p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#why-switzerland">Why Switzerland is useful</a></li>
+          <li><a href="#reference-stack">Reference stack</a></li>
+          <li><a href="#bim-abwicklungsmodell">BIM-Abwicklungsmodell</a></li>
+          <li><a href="#kbob">KBOB and public clients</a></li>
+          <li><a href="#glossary">National Glossary</a></li>
+          <li><a href="#bim2fm">BIM2FM and AIM</a></li>
+          <li><a href="#event-mapping">Event mapping</a></li>
+          <li><a href="#source-links">Direct source links</a></li>
+        </ul>
+      </div>
+
+      <h2 id="why-switzerland">Why Switzerland is useful</h2>
+
+      <p>
+        Switzerland is useful as a regional profile because it is multilingual,
+        procurement-aware and lifecycle-oriented. It also sits between German,
+        French and Italian terminology, which makes it a good example for local
+        terminology and procurement adapters.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Need</th><th>Swiss reference</th><th>How we use it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Common terminology</td><td>National Glossary by BdCH/bSCH, CRB, SBB, SIA.</td><td>Language tags and glossary pages.</td></tr>
+          <tr><td>Process model</td><td>BIM-Abwicklungsmodell.</td><td>Workflow model and role/state naming.</td></tr>
+          <tr><td>Public clients</td><td>KBOB recommendations on BIM.</td><td>Procurement and data-sovereignty arguments.</td></tr>
+          <tr><td>Operation handover</td><td>BIM2FM, AIM, data field catalogue.</td><td>Lifecycle event families beyond BCF.</td></tr>
+          <tr><td>International fit</td><td>SN EN ISO 19650, EN 17412, buildingSMART standards.</td><td>Compatibility with broader openBIM tooling.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="reference-stack">Reference stack</h2>
+
+      <p>
+        The Swiss stack is not a replacement for buildingSMART International.
+        It is the national process layer on top of the international standards.
+      </p>
+
+      <pre>buildingSMART International
+  -> IFC, BCF, IDS, bSDD, openCDE
+
+ISO / EN / SN EN
+  -> ISO 19650, EN 17412, EN ISO 29481
+
+Bauen digital Schweiz / buildingSMART Switzerland
+  -> BIM-Abwicklungsmodell, National Glossary, Stufenplan, Expert Groups
+
+KBOB
+  -> public-client BIM recommendations
+
+Gemeinwert / BIM-CVP
+  -> signed event workflow and interoperable clients</pre>
+
+      <h2 id="bim-abwicklungsmodell">BIM-Abwicklungsmodell</h2>
+
+      <p>
+        The BIM-Abwicklungsmodell explains information management in digital
+        planning, construction and operation across the life cycle. For this wiki,
+        its most useful contribution is structure: it separates organisation,
+        project and asset/operator layers and links information requirements to
+        use cases, information delivery and CDE workflow.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Concept</th><th>Workflow meaning</th><th>Event implication</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Organisation needs</td><td>Strategic information requirements above one project.</td><td><code>30880</code> reusable requirement sets.</td></tr>
+          <tr><td>Project delivery</td><td>PIM and project-specific delivery rules.</td><td><code>30902</code>, <code>30904</code>, <code>30970</code>.</td></tr>
+          <tr><td>Asset operation</td><td>AIM handover and operation information.</td><td>Lifecycle and maintenance event families.</td></tr>
+          <tr><td>Use cases / IDM</td><td>Define why information is exchanged.</td><td>Project use-case tags and IDS references.</td></tr>
+          <tr><td>CDE workflow</td><td>Stateful information containers.</td><td>ISO state tags and approval events.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="kbob">KBOB and public clients</h2>
+
+      <p>
+        KBOB is important because it frames BIM for public and institutional
+        clients. For BIM-CVP, KBOB-style requirements translate into explicit
+        contract annexes: open standards, structured data delivery, data ownership,
+        security, liability and clear handover rules.
+      </p>
+
+      <div class="map-note">
+        Procurement rule for this project: a CDE requirement should never say only
+        "use platform X". It should require exportable IFC, BCF, IDS/openCDE
+        workflows, auditability, role model and data handover.
+      </div>
+
+      <h2 id="glossary">National Glossary</h2>
+
+      <p>
+        The National Glossary matters more than it looks. If German, French and
+        Italian teams use different words for the same role or state, the software
+        must not silently collapse them. BIM-CVP should store stable internal
+        codes and render national labels per language.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Internal code</th><th>Swiss/ISO-facing label</th><th>Why code wins</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>appointing-party</code></td><td>Client / Auftraggeberseite</td><td>Same role can render differently by country.</td></tr>
+          <tr><td><code>lead-appointed</code></td><td>Lead appointed party</td><td>ISO-compatible for international projects.</td></tr>
+          <tr><td><code>info-manager</code></td><td>Information manager / BIM manager context</td><td>Country-specific title, stable permission group.</td></tr>
+          <tr><td><code>Shared</code></td><td>Shared / geteilt / condiviso</td><td>State machine must not depend on UI language.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="bim2fm">BIM2FM and AIM</h2>
+
+      <p>
+        BIM2FM is where the workflow stops being only planning coordination. The
+        owner needs an Asset Information Model, data fields for operation, and a
+        way to connect project information to facility management. In the event
+        model this means BCF is only the first workflow; maintenance, product data,
+        site diary, LCA and approvals are the next layers.
+      </p>
+
+      <pre>PIM during design/construction
+  -> IFC file references
+  -> BCF topics
+  -> IDS validation
+  -> approval
+
+handover
+  -> AIM package
+  -> operation data field catalogue
+  -> maintenance cycles
+  -> product data and evidence links</pre>
+
+      <h2 id="event-mapping">Event mapping</h2>
+
+      <table>
+        <thead>
+          <tr><th>Swiss process object</th><th>Event mapping</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>BIM-Abwicklungsmodell profile</td><td><code>30902</code> project extensions</td><td>Value lists, roles, stage naming, language policy.</td></tr>
+          <tr><td>KBOB public-client requirements</td><td><code>30880</code>, <code>30970</code></td><td>Requirement sets and formal approvals.</td></tr>
+          <tr><td>National glossary term</td><td><code>lang</code> tags, content label maps</td><td>Stable internal code, multilingual rendering.</td></tr>
+          <tr><td>BIM2FM data field</td><td><code>30881</code>, <code>30962</code>, product data events</td><td>Handover and operation data.</td></tr>
+          <tr><td>CDE state</td><td><code>iso19650-state</code>, <code>30970</code></td><td>State transition requires signed approval.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="buildingsmart-international.html">buildingSMART International</a> &mdash; global standards layer</li>
+          <li><a href="../nostr-mapping/workflow.html">Workflow model</a> &mdash; implementation process</li>
+          <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; state and role model</li>
+          <li><a href="../field-guide.html#switzerland">Field guide: Switzerland</a></li>
+        </ul>
+      </div>
+
+      <h2 id="source-links">Direct source links</h2>
+      <ul>
+        <li><a href="https://bauen-digital.ch/" target="_blank" rel="noopener">Bauen digital Schweiz / buildingSMART Switzerland</a></li>
+        <li><a href="https://bauen-digital.ch/publikationen/" target="_blank" rel="noopener">BdCH / bSCH publications</a></li>
+        <li><a href="https://bauen-digital.ch/ueber-uns/" target="_blank" rel="noopener">BdCH / bSCH about page</a></li>
+        <li><a href="https://www.szff.ch/userdata/files/news/2022-01-publikation-bim-abwicklungsmodell-v22.01-de-003.pdf" target="_blank" rel="noopener">BIM-Abwicklungsmodell V2022.01 PDF</a></li>
+        <li><a href="https://www.kbob.admin.ch/de/digitalisierung-und-bim" target="_blank" rel="noopener">KBOB &mdash; Digitalisierung und BIM</a></li>
+        <li><a href="https://bauen-digital.ch/thema/bim2fm/" target="_blank" rel="noopener">BdCH / bSCH BIM2FM working group</a></li>
+        <li><a href="https://bauen-digital.ch/aktuell/neuauflage-des-nationalen-glossars-zur-digitalisierung-in-der-bau-und-immobilienwirtschaft/" target="_blank" rel="noopener">National Glossary update</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Standards &middot; buildingSMART Switzerland</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

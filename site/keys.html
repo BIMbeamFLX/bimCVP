@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gemeinwert — Identität</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #5a5a5a;
+      --bg: #fafafa;
+      --card: #ffffff;
+      --line: #e0e0e0;
+      --accent: #0b5394;
+      --warn: #c0392b;
+      --ok: #2e7d32;
+      --code-bg: #f0f0f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      margin: 0; padding: 2rem 1rem;
+      background: var(--bg); color: var(--ink);
+      line-height: 1.5;
+    }
+    main {
+      max-width: 720px; margin: 0 auto;
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 .25rem; color: var(--accent); }
+    h2 { font-size: 1.1rem; margin: 1.5rem 0 .5rem; }
+    p  { margin: .5rem 0; }
+    .sub { color: var(--muted); margin-bottom: 1.5rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .warn {
+      background: #fff5f3;
+      border: 1px solid var(--warn);
+      color: var(--warn);
+      border-radius: 6px;
+      padding: .75rem 1rem;
+      margin: 1rem 0;
+      font-size: .9rem;
+    }
+    button {
+      background: var(--accent); color: white;
+      border: 0; border-radius: 4px;
+      padding: .6rem 1rem;
+      font-size: .95rem;
+      cursor: pointer;
+      margin: .25rem .25rem .25rem 0;
+    }
+    button.secondary { background: white; color: var(--accent); border: 1px solid var(--accent); }
+    button.warn { background: var(--warn); }
+    button:disabled { opacity: .4; cursor: not-allowed; }
+    input, textarea {
+      width: 100%;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: .85rem;
+      padding: .5rem;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      margin: .25rem 0;
+    }
+    label { display: block; font-size: .85rem; color: var(--muted); margin-top: .5rem; }
+    code, .mono {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      background: var(--code-bg);
+      padding: .15rem .35rem;
+      border-radius: 3px;
+      font-size: .85rem;
+      word-break: break-all;
+    }
+    .status { font-size: .85rem; color: var(--muted); margin: .5rem 0; }
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--warn); }
+    footer { margin-top: 3rem; font-size: .8rem; color: var(--muted); text-align: center; }
+  </style>
+</head>
+<body>
+<main>
+
+  <h1>Gemeinwert — Identität</h1>
+  <p class="sub">Generiere oder importiere deinen Nostr-Schlüssel. Konfiguriere Relay + Blossom. Setze dein Profil.</p>
+
+  <div class="warn">
+    <strong>Dev-Tool.</strong> Schlüssel wird im lokalen Browser-Storage gehalten. Für den Pilot OK, für Produktion auf NIP-07 (Alby, nos2x) oder Bunker-Signer umstellen. Wenn du den Browser-Cache löschst, ist der Schlüssel weg — backup beachten.
+  </div>
+
+  <!-- Identity Section -->
+  <div class="card">
+    <h2>1. Identität</h2>
+    <p id="ident-state">Lade…</p>
+
+    <div id="no-key">
+      <button id="btn-generate">Neuen Schlüssel erzeugen</button>
+      <button id="btn-show-import" class="secondary">Vorhandenen Schlüssel importieren</button>
+    </div>
+
+    <div id="import-box" style="display:none">
+      <label>nsec (geheim, beginnt mit nsec1…)</label>
+      <input id="nsec-input" placeholder="nsec1…" />
+      <button id="btn-import">Importieren</button>
+    </div>
+
+    <div id="key-info" style="display:none">
+      <label>npub (öffentlich, teilbar)</label>
+      <div class="mono" id="npub-display"></div>
+      <label>nsec (geheim — NIEMALS teilen)</label>
+      <div class="mono" id="nsec-display"></div>
+      <p style="margin-top:1rem">
+        <button id="btn-copy-npub" class="secondary">npub kopieren</button>
+        <button id="btn-download-nsec" class="secondary">nsec als Datei sichern</button>
+        <button id="btn-forget" class="warn">Schlüssel vergessen</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="card">
+    <h2>2. Relay + Blossom</h2>
+    <label>Relay-URLs (komma-getrennt)</label>
+    <input id="relay-input" placeholder="ws://localhost:7777,wss://relay.damus.io" />
+    <label>Blossom-Server-URL</label>
+    <input id="blossom-input" placeholder="http://localhost:3000" />
+    <p><button id="btn-save-settings" class="secondary">Speichern</button> <span id="settings-status" class="status"></span></p>
+  </div>
+
+  <!-- Profile -->
+  <div class="card">
+    <h2>3. Profil (kind:0)</h2>
+    <label>Anzeigename</label>
+    <input id="profile-name" placeholder="Felix Hitthaler" />
+    <label>Über mich</label>
+    <textarea id="profile-about" rows="3" placeholder="HKLS/MEP + BIM Engineer, Südtirol"></textarea>
+    <label>Bild-URL (optional)</label>
+    <input id="profile-picture" placeholder="https://…" />
+    <label>NIP-05 (optional)</label>
+    <input id="profile-nip05" placeholder="felix@bimbeam.at" />
+    <p>
+      <button id="btn-publish-profile">Profil publishen</button>
+      <span id="profile-status" class="status"></span>
+    </p>
+  </div>
+
+  <!-- Connection Check -->
+  <div class="card">
+    <h2>4. Verbindungs-Check</h2>
+    <p>Verbindet sich mit deinen Relays und Blossom, meldet Status zurück.</p>
+    <button id="btn-check" class="secondary">Verbinden + prüfen</button>
+    <pre id="check-output" style="white-space:pre-wrap; font-size:.8rem; margin-top:.5rem;"></pre>
+  </div>
+
+  <footer>
+    gemeinwert / keys.html / v0.1 — alle Tools <a href="admin.html" id="link-admin">→ Admin-Panel</a>
+  </footer>
+
+</main>
+
+<script type="module">
+  import NDK, { NDKEvent, NDKPrivateKeySigner } from "https://esm.sh/@nostr-dev-kit/ndk@2.10.0";
+
+  // -- storage helpers ----------------------------------------------------
+  const LS_KEY_NSEC      = "sov-aec-nsec";
+  const LS_KEY_RELAYS    = "sov-aec-relays";
+  const LS_KEY_BLOSSOM   = "sov-aec-blossom";
+
+  const getNsec   = () => localStorage.getItem(LS_KEY_NSEC);
+  const setNsec   = (v) => localStorage.setItem(LS_KEY_NSEC, v);
+  const clearNsec = () => localStorage.removeItem(LS_KEY_NSEC);
+
+  const getRelays = () => (localStorage.getItem(LS_KEY_RELAYS) || "ws://localhost:7777").split(",").map(s => s.trim()).filter(Boolean);
+  const getBlossom= () => localStorage.getItem(LS_KEY_BLOSSOM) || "http://localhost:3000";
+
+  // -- ndk lifecycle ------------------------------------------------------
+  let ndk = null;
+  let signer = null;
+
+  async function ensureNdk() {
+    const nsec = getNsec();
+    if (!nsec) return null;
+    signer = new NDKPrivateKeySigner(nsec);
+    ndk = new NDK({ explicitRelayUrls: getRelays(), signer });
+    await ndk.connect(2500);
+    return ndk;
+  }
+
+  // -- ui refs -----------------------------------------------------------
+  const $ = (id) => document.getElementById(id);
+  const identState = $("ident-state");
+  const noKey       = $("no-key");
+  const importBox   = $("import-box");
+  const keyInfo     = $("key-info");
+  const npubDisplay = $("npub-display");
+  const nsecDisplay = $("nsec-display");
+
+  function renderIdentity() {
+    const nsec = getNsec();
+    if (nsec) {
+      noKey.style.display = "none";
+      importBox.style.display = "none";
+      keyInfo.style.display = "block";
+      try {
+        const s = new NDKPrivateKeySigner(nsec);
+        npubDisplay.textContent = s.npub;
+        nsecDisplay.textContent = nsec;
+        identState.textContent = "Aktiver Schlüssel geladen.";
+        identState.className = "status ok";
+      } catch (e) {
+        identState.textContent = "Schlüssel ungültig — bitte erneut importieren.";
+        identState.className = "status err";
+      }
+    } else {
+      noKey.style.display = "block";
+      keyInfo.style.display = "none";
+      identState.textContent = "Kein Schlüssel hinterlegt.";
+      identState.className = "status";
+    }
+  }
+
+  function loadSettings() {
+    $("relay-input").value   = localStorage.getItem(LS_KEY_RELAYS) || "";
+    $("blossom-input").value = localStorage.getItem(LS_KEY_BLOSSOM) || "";
+  }
+
+  // -- event handlers ----------------------------------------------------
+  $("btn-generate").onclick = () => {
+    const s = NDKPrivateKeySigner.generate();
+    setNsec(s.nsec);
+    renderIdentity();
+  };
+
+  $("btn-show-import").onclick = () => {
+    importBox.style.display = "block";
+  };
+
+  $("btn-import").onclick = () => {
+    const v = $("nsec-input").value.trim();
+    if (!v.startsWith("nsec1")) {
+      alert("Erwartet nsec1… Format.");
+      return;
+    }
+    try {
+      new NDKPrivateKeySigner(v); // validate
+      setNsec(v);
+      renderIdentity();
+    } catch (e) {
+      alert("Ungültiger nsec: " + e.message);
+    }
+  };
+
+  $("btn-copy-npub").onclick = () => {
+    navigator.clipboard.writeText(npubDisplay.textContent);
+    $("btn-copy-npub").textContent = "kopiert ✓";
+    setTimeout(() => $("btn-copy-npub").textContent = "npub kopieren", 1500);
+  };
+
+  $("btn-download-nsec").onclick = () => {
+    const nsec = getNsec();
+    const blob = new Blob([nsec + "\n"], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "nsec-backup.txt";
+    a.click();
+  };
+
+  $("btn-forget").onclick = () => {
+    if (!confirm("Schlüssel wirklich aus dem Browser-Storage entfernen? Du brauchst dann das Backup.")) return;
+    clearNsec();
+    renderIdentity();
+  };
+
+  $("btn-save-settings").onclick = () => {
+    localStorage.setItem(LS_KEY_RELAYS, $("relay-input").value);
+    localStorage.setItem(LS_KEY_BLOSSOM, $("blossom-input").value);
+    const status = $("settings-status");
+    status.textContent = "gespeichert ✓";
+    status.className = "status ok";
+    setTimeout(() => { status.textContent = ""; }, 1500);
+  };
+
+  $("btn-publish-profile").onclick = async () => {
+    const status = $("profile-status");
+    status.textContent = "publishe…";
+    status.className = "status";
+    try {
+      await ensureNdk();
+      if (!ndk) throw new Error("Kein Schlüssel.");
+      const ev = new NDKEvent(ndk);
+      ev.kind = 0;
+      ev.content = JSON.stringify({
+        name:    $("profile-name").value || undefined,
+        about:   $("profile-about").value || undefined,
+        picture: $("profile-picture").value || undefined,
+        nip05:   $("profile-nip05").value || undefined,
+      });
+      await ev.publish();
+      status.textContent = "Profil publisht ✓ (" + ev.id.slice(0,12) + "…)";
+      status.className = "status ok";
+    } catch (e) {
+      status.textContent = "Fehler: " + e.message;
+      status.className = "status err";
+    }
+  };
+
+  $("btn-check").onclick = async () => {
+    const out = $("check-output");
+    out.textContent = "verbinde…\n";
+    const lines = [];
+    try {
+      await ensureNdk();
+      lines.push("Signer:   " + (signer ? signer.npub : "—"));
+    } catch (e) {
+      lines.push("Signer:   Fehler (" + e.message + ")");
+    }
+    for (const url of getRelays()) {
+      try {
+        const ws = new WebSocket(url);
+        const ok = await new Promise(r => {
+          ws.onopen = () => { r(true); ws.close(); };
+          ws.onerror = () => r(false);
+          setTimeout(() => r(false), 2500);
+        });
+        lines.push("Relay:    " + url + " " + (ok ? "✓" : "✗"));
+      } catch (e) {
+        lines.push("Relay:    " + url + " ✗ (" + e.message + ")");
+      }
+    }
+    const blossom = getBlossom();
+    try {
+      const r = await fetch(blossom + "/", { method: "GET" });
+      lines.push("Blossom:  " + blossom + " " + (r.ok ? "✓" : "HTTP " + r.status));
+    } catch (e) {
+      lines.push("Blossom:  " + blossom + " ✗ (" + e.message + ")");
+    }
+    out.textContent = lines.join("\n");
+  };
+
+  $("link-admin").onclick = (e) => { e.preventDefault(); alert("admin.html — kommt im nächsten Schritt."); };
+
+  // -- init --------------------------------------------------------------
+  loadSettings();
+  renderIdentity();
+</script>
+
+</body>
+</html>

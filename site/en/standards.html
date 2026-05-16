@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Standards — Gemeinwert</title>
-  <meta name="description" content="Which buildingSMART and ISO standards Gemeinwert pins to, with reasoning per choice. IFC 4.3.2.0, BCF API 3.0, IDS 1.0, ISO 19650, openCDE Foundation 1.1, bSDD, LOIN, CAM Edilizia 2025." />
+  <title>Standards — Gemeinwert / BIM-CVP</title>
+  <meta name="description" content="Which buildingSMART and ISO standards Gemeinwert pins for BIM-CVP, with reasoning per choice. IFC 4.3.2.0, BCF API 3.0, IDS 1.0, ISO 19650, openCDE Foundation 1.1, bSDD, LOIN and UCM." />
   <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
   <link rel="stylesheet" href="../assets/site.css" />
   <style>
@@ -148,7 +148,8 @@
       <a href="./#try">Tools</a>
       <a href="standards.html" style="color: var(--gold);">Standards</a>
       <a href="../wiki/" >Wiki</a>
-      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      <a href="bim-cvp.html">BIM-CVP</a>
+      <a href="about.html">About</a>
     </nav>
   </div>
 </header>
@@ -165,8 +166,8 @@
     <div class="wrap-narrow">
       <h1>The standards we follow.</h1>
       <p>
-        Gemeinwert sits on top of the open standards the building industry already
-        publishes &mdash; <strong>IFC</strong> for the model, <strong>BCF</strong>
+        Gemeinwert pins the open standards the BIM-CVP protocol depends on:
+        <strong>IFC</strong> for the model, <strong>BCF</strong>
         for coordination, <strong>IDS</strong> for requirements, <strong>ISO 19650</strong>
         for the lifecycle. We don&rsquo;t replace any of them.
       </p>
@@ -227,18 +228,18 @@
           <span class="std__status">Live</span>
         </article>
         <article class="std">
-          <div class="std__num">007 · LOIN</div>
-          <div class="std__title">SN EN 17412</div>
-          <div class="std__ver">2026 · CH default</div>
-          <p class="std__desc">Level of Information Need. Swiss KBOB profile as default; DE/AT/IT adapters layered on top.</p>
+          <div class="std__num">007 · INFORMATION NEED</div>
+          <div class="std__title">EN 17412 / LOIN</div>
+          <div class="std__ver">project profile</div>
+          <p class="std__desc">Defines the right information at the right time. Regional templates can adapt it without changing the core event model.</p>
           <span class="std__status">Final</span>
         </article>
         <article class="std">
-          <div class="std__num">008 · SUSTAIN</div>
-          <div class="std__title">CAM Edilizia</div>
-          <div class="std__ver">2025 · IT</div>
-          <p class="std__desc">EN 15804 EPDs, EN 15978 LCA, EN 16627 LCC. 70 % deconstruction quota. Provenance tags: model / verified / measured.</p>
-          <span class="std__status">Mandatory · 25.11.2025</span>
+          <div class="std__num">008 · USE CASES</div>
+          <div class="std__title">IDM / UCM</div>
+          <div class="std__ver">process references</div>
+          <p class="std__desc">Use cases and information exchanges explain why a model, IDS check or BCF topic exists in the workflow.</p>
+          <span class="std__status">buildingSMART</span>
         </article>
       </div>
     </div>
@@ -279,11 +280,11 @@
       <h2>The full profile.</h2>
       <p>
         The complete standards profile lists every MVD, the conditional support cases for
-        infrastructure projects, the OpenCDE API stack, the role model on both ISO 19650
+        infrastructure projects, the openCDE API stack, the role model on both ISO 19650
         and discipline axes, the rights and policy model, the audit and privacy obligations,
-        and the regional adapters for CH, DE, AT, and IT. About fifteen pages.
+        and optional regional profile adapters. About fifteen pages.
       </p>
-      <a class="btn-soft" href="/docs/STANDARDS-PROFILE.md">Read the full profile &rarr;</a>
+      <a class="btn-soft" href="/docs/STANDARDS-PROFILE.html">Read the full profile &rarr;</a>
     </div>
   </section>
 
@@ -293,12 +294,11 @@
   <div class="wrap-narrow">
     <div class="ftr__row">
       <div class="text">
-        gemeinwert &middot; est. 2026 &middot; MIT license &middot; <a href="mailto:felix@bimbeam.it">felix@bimbeam.it</a>
+        gemeinwert / BIM-CVP &middot; MIT license &middot; <a href="https://www.bimbeam.at" target="_blank" rel="noopener">www.bimbeam.at</a>
       </div>
       <div class="lang-switch">
-        <a href="./" class="active">EN</a>
-        <a href="../de/">DE</a>
-        <a href="../it/">IT</a>
+        <a href="../wiki/">WIKI</a>
+        <a href="../docs/">DOCS</a>
       </div>
     </div>
   </div>

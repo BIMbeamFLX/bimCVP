@@ -6,6 +6,7 @@
 .env
 .env.local
 .env.*.local
+.claude/
 backend/.env
 backend/lnbits/.env
 backend/strfry/.env
@@ -125,6 +126,9 @@ $RECYCLE.BIN/
 *.log
 logs/
 saec-backup.log
+*.db
+*.sqlite
+*.sqlite3
 
 # ============================================================
 # Backups

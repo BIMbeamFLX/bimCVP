@@ -87,7 +87,7 @@ BCF-Topics ändern sich (Status, Assignee, Priority). Drei Optionen:
 
 ### 3.3 Viewpoints
 
-Viewpoints sind technisch eigene Artefakte mit eigener GUID, in BCF schon entkoppelt. Logisch parameterized replaceable (`kind:30901`, `d=viewpoint-guid`), referenziert vom Topic via `viewpoint`-Tag. Snapshot ist ein File (NIP-94, siehe 3.5).
+Viewpoints sind technisch eigene Artefakte mit eigener GUID, in BCF schon entkoppelt. Wir nutzen `kind:30901` mit `d=viewpoint-guid` für adressierbares Lookup, verbieten aber das erneute Publizieren derselben `d`-Identität: Viewpoints sind im BCF-Profil unveränderlich. Eine geänderte Kamera, Selektion, Schnittebene oder Snapshot-Referenz erzeugt einen neuen Viewpoint-GUID. Snapshot ist ein File (NIP-94, siehe 3.5).
 
 ### 3.4 Projektkontext
 
@@ -130,7 +130,7 @@ BCF-GUIDs (UUID v4) müssen erhalten bleiben. Wir benutzen sie als `d`-Tag-Werte
 | Kind | Name | Replaceable? | Zweck |
 |---|---|---|---|
 | `30900` | BCF Topic | parameterized replaceable | aktueller Topic-Zustand |
-| `30901` | BCF Viewpoint | parameterized replaceable | Viewpoint-Definition |
+| `30901` | BCF Viewpoint | addressable, no republish | Viewpoint-Definition |
 | `30902` | BCF Project | parameterized replaceable | Projekt-Metadaten + Extension-Schema |
 | `30903` | BCF Document Reference | parameterized replaceable | externes Dokument (DocumentReferences-Pendant) |
 | `30904` | BCF File Reference | parameterized replaceable | IFC-/Modell-Datei-Referenz mit Hash, IfcProject, IfcSpatialStructureElement |
@@ -152,14 +152,16 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 | `e` | event-id (parent/topic/viewpoint/file) | Verknüpfung | Comment → Topic: ja |
 | `p` | pubkey | beteiligte Personen (Assignee, Reporter, Watcher) | wo zutreffend |
 | `t` | string | BCF-Label oder freier Tag | optional |
+| `s` | string | indexierter Spiegel von `bcf-status` | bei 30900 ja |
+| `bcf-guid` | UUID | originaler BCF-GUID für Round-trip | bei 30900/30901 ja |
 | `bcf-status` | string | aktueller Status (Open, InProgress, Resolved, Closed, …) | bei 30900 ja |
 | `bcf-type` | string | TopicType (Issue, Clash, RFI, …) | bei 30900 ja |
 | `bcf-priority` | string | Priorität (Low, Normal, High, Critical) | optional |
 | `bcf-stage` | string | Projektphase | optional |
 | `bcf-due` | unix-ts | DueDate | optional |
 | `bcf-index` | int | Index | optional |
-| `viewpoint` | event-id | Viewpoint-Referenz für Topic/Comment | optional |
-| `snapshot` | url + sha256 | Schnellzugriff auf Snapshot | optional |
+| `e` mit Marker `viewpoint` | event-id | Viewpoint-Referenz für Topic/Comment | optional |
+| `e` mit Marker `snapshot` | event-id | Snapshot-Referenz auf kind:1063 | optional |
 | `ifc` | IFC-GUID | referenziertes IFC-Element | mehrfach erlaubt |
 | `ifc-file` | event-id (kind 30904) | referenzierte Modelldatei | mehrfach erlaubt |
 | `audit-field` | string | bei 1171: welches Feld geändert wurde | bei 1171 ja |
@@ -211,7 +213,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 | `Topic.DocumentReferences/DocumentReference` | `e`-Tag(s) → kind 30903 |
 | `Topic.RelatedTopics/RelatedTopic` | `e`-Tag → andere kind:30900 mit Marker „related" |
 | `Topic.Comments` | nicht eingebettet — Comments sind eigene Events (kind:1170) mit `e`-Tag auf Topic |
-| `Topic.Viewpoints` | `viewpoint`-Tags → kind:30901 |
+| `Topic.Viewpoints` | `e`-Tags mit Marker `viewpoint` → kind:30901 |
 | `Header.Files/File` | `ifc-file`-Tags → kind:30904 |
 
 ### 6.3 Comment → `kind:1170`
@@ -222,7 +224,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 | `Comment.Date` | Event-`created_at` |
 | `Comment.Author` | Event-`pubkey` (+ `content.author_email` für Round-trip) |
 | `Comment.Comment` | `content.text` |
-| `Comment.Viewpoint @Guid` | `viewpoint`-Tag → kind:30901 Event-id |
+| `Comment.Viewpoint @Guid` | `e`-Tag mit Marker `viewpoint` → kind:30901 Event-id |
 | `Comment.ModifiedDate` | bei Edit: separates kind:1170-Event mit `e`-Tag „replaces" auf Vorgänger; Original via NIP-09-Delete entfernen (siehe 8.3) |
 | `Comment.ModifiedAuthor` | Event-`pubkey` der neuen Version |
 
@@ -240,7 +242,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 | `Lines/Line[]` | `content.lines[]` |
 | `ClippingPlanes/ClippingPlane[]` | `content.clipping_planes[]` |
 | `Bitmaps/Bitmap[]` | `content.bitmaps[]` (mit Blossom-Hash-Referenzen) |
-| `snapshot.png` | `snapshot`-Tag (url + sha256) oder `e`-Tag → NIP-94-Event |
+| `snapshot.png` | `e`-Tag mit Marker `snapshot` → NIP-94-Event |
 
 ### 6.5 IFC-File-Referenz → `kind:30904`
 
@@ -294,9 +296,11 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["d", "8b1f7a9b-2c3d-4e5f-9c3b-4a5c1d6e4a2b"],
     ["a", "30902:<group-pubkey>:9c3b4a5c-1d6e-4a2b-8b1f-7a9b2c3d4e5f"],
     ["h", "proj-rueckhaltebecken-st-pauli"],
+    ["bcf-guid", "8b1f7a9b-2c3d-4e5f-9c3b-4a5c1d6e4a2b"],
     ["bcf-version", "3.0"],
     ["bcf-type", "Clash"],
     ["bcf-status", "Open"],
+    ["s", "Open"],
     ["bcf-priority", "High"],
     ["bcf-index", "42"],
     ["bcf-due", "1749600000"],
@@ -306,8 +310,8 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["p", "<assignee-pubkey>", "", "assignee"],
     ["ifc", "0aB1cD2eF3gH4iJ5kL6mN7"],
     ["ifc-file", "<kind-30904-event-id>"],
-    ["viewpoint", "<kind-30901-event-id>"],
-    ["snapshot", "https://blossom.example/abc123.png", "sha256:abc123…"]
+    ["e", "<kind-30901-event-id>", "", "viewpoint"],
+    ["e", "<nip94-snapshot-event-id>", "", "snapshot"]
   ],
   "content": "{\"title\":\"Lüftungsleitung kreuzt Hauptträger Achse 4\",\"description\":\"Kollision im Bereich Decke EG bei Achse 4/B. Vorschlag: Lüftung auf -350 mm absenken, Träger-Voute prüfen.\",\"created_date\":\"2026-05-14T08:20:34Z\",\"created_author\":\"felix@bimbeam.example\",\"due_date\":\"2026-06-11T00:00:00Z\",\"server_assigned_id\":\"BSP-2026-042\"}",
   "pubkey": "<felix-pubkey>",
@@ -327,7 +331,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["a", "30902:<group-pubkey>:9c3b4a5c-1d6e-4a2b-8b1f-7a9b2c3d4e5f"],
     ["h", "proj-rueckhaltebecken-st-pauli"],
     ["p", "<felix-pubkey>"],
-    ["viewpoint", "<kind-30901-event-id>"]
+    ["e", "<kind-30901-event-id>", "", "viewpoint"]
   ],
   "content": "{\"text\":\"Träger kann nicht abgesenkt werden, Stahlbau ist freigegeben. Vorschlag: Lüftung über Träger führen, Querschnitt 800x300 → 600x400.\",\"guid\":\"7a9b2c3d-4e5f-9c3b-4a5c-1d6e4a2b8b1f\"}",
   "pubkey": "<statik-pubkey>",
@@ -365,7 +369,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
   "tags": [
     ["d", "5c1d6e4a-2b8b-1f7a-9b2c-3d4e5f9c3b4a"],
     ["a", "30902:<group-pubkey>:9c3b4a5c-1d6e-4a2b-8b1f-7a9b2c3d4e5f"],
-    ["snapshot", "https://blossom.example/abc123.png", "sha256:abc123…"]
+    ["e", "<nip94-snapshot-event-id>", "", "snapshot"]
   ],
   "content": "{\"camera\":{\"type\":\"perspective\",\"view_point\":{\"x\":12.5,\"y\":-8.3,\"z\":2.6},\"direction\":{\"x\":0.42,\"y\":0.86,\"z\":-0.27},\"up_vector\":{\"x\":0,\"y\":0,\"z\":1},\"field_of_view\":60},\"components\":{\"selection\":[{\"ifc_guid\":\"0aB1cD2eF3gH4iJ5kL6mN7\"}],\"visibility\":{\"default\":true,\"exceptions\":[]}}}",
   "pubkey": "<felix-pubkey>",
@@ -546,8 +550,7 @@ Damit ist Konformität messbar.
 Ein konkreter NIP-Draft sollte folgende Sektionen enthalten:
 
 ```
-NIP-XXX
-=======
+NIP-XXX: BCF over Nostr
 
 BCF — BIM Collaboration over Nostr
 ----------------------------------
@@ -576,8 +579,8 @@ Event Kinds
 
 Tags
 ~~~~
-d, a, h, e, p, t, bcf-status, bcf-type, bcf-priority, bcf-stage, bcf-due,
-bcf-index, viewpoint, snapshot, ifc, ifc-file, audit-field, audit-from,
+d, a, h, e, p, s, t, bcf-guid, bcf-status, bcf-type, bcf-priority, bcf-stage, bcf-due,
+bcf-index, e-marker:viewpoint, e-marker:snapshot, ifc, ifc-file, audit-field, audit-from,
 audit-to, bcf-version, client
 
 Schema (JSON, BCF 3.0 Mapping)

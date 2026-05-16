@@ -1,0 +1,78 @@
+bcf-quickform {
+  display: block;
+  max-width: 680px;
+}
+
+.bcf-qf {
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  padding: 20px;
+}
+
+.bcf-qf h3 {
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+
+.bcf-qf label {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 12px;
+}
+
+.bcf-qf span {
+  color: color-mix(in srgb, currentColor 72%, transparent);
+  font-size: 13px;
+}
+
+.bcf-qf input,
+.bcf-qf select,
+.bcf-qf textarea {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  color: inherit;
+  font: inherit;
+  min-height: 40px;
+  padding: 8px 10px;
+}
+
+.bcf-qf textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.bcf-qf__row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.bcf-qf button {
+  background: #f4c430;
+  border: 1px solid #f4c430;
+  color: #1a1208;
+  cursor: pointer;
+  font: inherit;
+  min-height: 42px;
+  padding: 0 18px;
+}
+
+.bcf-qf button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.bcf-qf output {
+  color: color-mix(in srgb, currentColor 76%, transparent);
+  display: block;
+  font-size: 13px;
+  margin-top: 12px;
+  min-height: 20px;
+}
+
+@media (max-width: 560px) {
+  .bcf-qf__row {
+    grid-template-columns: 1fr;
+  }
+}

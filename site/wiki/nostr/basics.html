@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nostr basics — Gemeinwert Wiki</title>
-  <meta name="description" content="Nostr explained for construction: keypairs, signed events, relays, NIP-07 signing, and the NIPs Gemeinwert uses to carry IFC, BCF and IDS as portable signed records." />
+  <title>Nostr basics — BIM-CVP Wiki</title>
+  <meta name="description" content="Nostr explained for construction: keypairs, signed events, relays, NIP-07 signing, and the NIPs BIM-CVP uses to carry IFC, BCF and IDS as portable signed records." />
   <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="../../assets/site.css" />
@@ -65,7 +65,7 @@
         fifty years; the platform does not. Nostr decouples the
         <em>record</em> from the <em>application</em>: the signed event is portable,
         independently verifiable, and survives any single tool or host. That is the
-        one missing layer openBIM never standardised &mdash; and all Gemeinwert adds.
+        one missing layer openBIM never standardised &mdash; and all BIM-CVP adds.
       </p>
 
       <h2>The keypair</h2>
@@ -81,8 +81,8 @@
       </table>
 
       <p>
-        The cryptography is Schnorr signatures over secp256k1 &mdash; the same curve
-        family Bitcoin uses, which causes a recurring misunderstanding:
+        The cryptography is Schnorr signatures over secp256k1, a widely used
+        public-key signature scheme. That causes a recurring misunderstanding:
         <strong>Nostr is not a blockchain, not a token, not a payment.</strong> It
         borrows one well-audited signature scheme and nothing else. The
         <code>npub</code>/<code>nsec</code> strings are just the raw keys in a
@@ -116,8 +116,8 @@
         websocket on request. Relays do not own identity and do not authenticate
         accounts &mdash; they store and filter. You publish the same event to several
         relays; readers subscribe to whichever they trust. If one relay disappears,
-        the record still exists on the others (the "outbox" pattern). Gemeinwert runs
-        its own relay for the pilot plus public fallbacks.
+        the record still exists on the others (the "outbox" pattern). BIM-CVP can
+        use project relays plus public fallbacks.
       </p>
 
       <h2>Signing &mdash; and why we never touch your nsec</h2>
@@ -134,12 +134,11 @@ window.nostr.signEvent(event)      // returns the event with a valid sig</pre>
       <p>
         The site builds the unsigned event, hands it to the signer, gets back a
         signed event, and publishes it. The <code>nsec</code> never enters the page,
-        the network, or our logs. For the pilot, key backup is deliberately
-        delegated to the signer (browser extension or mobile signer) &mdash; not our
-        responsibility to custody.
+        the network, or server logs. Key backup belongs to the signer or the project
+        key policy, not to a web page that happens to create an event.
       </p>
 
-      <h2>The NIPs Gemeinwert relies on</h2>
+      <h2>The NIPs BIM-CVP relies on</h2>
 
       <table>
         <thead>
@@ -165,21 +164,20 @@ window.nostr.signEvent(event)      // returns the event with a valid sig</pre>
         signed, and made portable.
       </p>
 
-      <div class="callout" style="border:1px solid var(--line); border-radius:8px; padding:16px 20px; margin:28px 0;">
-        <strong>Coming on this site.</strong> Two tools build directly on this page:
-        a browser <em>key-generation &amp; identity</em> flow (create or connect a
-        Nostr key, no nsec ever sent to a server), and a <em>simple BCF platform</em>
-        that creates and reads BCF coordination as signed events. This page is the
-        mental model for both.
-      </div>
+      <p>
+        In BIM-CVP, this same mechanism signs project setup, file references, BCF
+        topics, comments, validation results and approvals. The event stays small;
+        the IFC, BCFZIP, IDS report or snapshot stays a normal file referenced by
+        hash.
+      </p>
 
       <h2>Practical pitfalls</h2>
 
       <ul>
         <li><strong>nsec in a text box.</strong> Never. If a site asks you to paste an nsec, it is wrong. Use a NIP-07 signer.</li>
         <li><strong>One relay only.</strong> Single point of failure. Always publish to several.</li>
-        <li><strong>Losing the key in the pilot.</strong> Acceptable &mdash; create a new identity, the admin re-adds you. Production key management is a later phase.</li>
-        <li><strong>Confusing Nostr with crypto-currency.</strong> Shared signature math, nothing else. No chain, no token required to use Gemeinwert.</li>
+        <li><strong>Losing the key.</strong> Key backup and recovery must be explicit project policy, not an afterthought.</li>
+        <li><strong>Confusing Nostr with crypto-currency.</strong> Shared signature math, nothing else. No chain, no token required to use BIM-CVP.</li>
       </ul>
 
       <div class="art-next">

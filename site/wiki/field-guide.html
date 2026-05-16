@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>openBIM Field Guide &mdash; BIM-CVP Wiki</title>
+  <meta name="description" content="Compact field guide for the openBIM topics not yet split into deep-dive pages: IFC layers, BCF, openCDE, IDS, ISO 19650, bSDD, regional profiles, lifecycle and event mapping." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../en/bim-cvp.html">BIM-CVP</a>
+      <a href="./" class="active">Wiki</a>
+      <a href="../en/standards.html">Standards</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="./">wiki</a> &nbsp;/&nbsp; field guide</p>
+
+    <header class="art-head">
+      <h1>openBIM field guide</h1>
+      <p class="art-lede">
+        Compact explanations for the standards pages that do not yet need their own
+        full article. Each section defines the term, the version we pin to, and how it
+        maps to signed BIM-CVP events.
+      </p>
+    </header>
+
+    <article class="art">
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>
+          The core stack is IFC for model semantics, BCF for coordination, IDS and LOIN
+          for requirements, ISO 19650 for process states, openCDE for CDE interoperability,
+          and Nostr events for signatures and traceability.
+        </p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#ifc-layers">IFC layers</a></li>
+          <li><a href="#core-entities">Core IFC entities</a></li>
+          <li><a href="#property-sets">Property and quantity sets</a></li>
+          <li><a href="#mvds">MVDs</a></li>
+          <li><a href="#bcf-xml">BCF-XML</a></li>
+          <li><a href="#bcf-api">BCF-API</a></li>
+          <li><a href="#opencde">openCDE initiative</a></li>
+          <li><a href="#loin">LOIN</a></li>
+          <li><a href="#pir-eir-air">PIR / EIR / AIR / OIR</a></li>
+          <li><a href="#idm">IDM</a></li>
+          <li><a href="#lifecycle-states">WIP / Shared / Published / Archive</a></li>
+          <li><a href="#bim-roles">BIM roles</a></li>
+          <li><a href="#rbac-abac">RBAC + ABAC</a></li>
+          <li><a href="#bsdd">bSDD</a></li>
+          <li><a href="#bsdd-uris">bSDD URIs</a></li>
+          <li><a href="#classification-systems">Classification systems</a></li>
+          <li><a href="#buildingsmart-international">buildingSMART International</a></li>
+          <li><a href="#dach-comparison">Regional profiles</a></li>
+          <li><a href="#switzerland">Switzerland</a></li>
+          <li><a href="#germany">Germany</a></li>
+          <li><a href="#austria">Austria</a></li>
+          <li><a href="#italy">Italy</a></li>
+          <li><a href="#aim">AIM</a></li>
+          <li><a href="#bim2fm">BIM2FM</a></li>
+          <li><a href="#building-logbook">Building logbook</a></li>
+          <li><a href="#dpp">Digital Product Passport</a></li>
+          <li><a href="#tag-mapping">Tag mapping</a></li>
+          <li><a href="#bcf-on-nostr">BCF on Nostr</a></li>
+        </ul>
+      </div>
+
+      <h2 id="ifc-layers">IFC layers</h2>
+      <p>
+        IFC is organised in layers so generic geometry and units do not have to be
+        redefined for every wall, pipe or bridge segment. The Resource layer holds
+        geometry, dates, measures and materials. The Core layer defines identity,
+        ownership, products, processes and controls. Interoperability adds shared
+        building concepts such as walls, spaces and systems. Domain layers add
+        discipline-specific classes.
+      </p>
+      <p>
+        Event mapping: the layer usually stays implicit. We record the schema version,
+        entity type and stable GlobalId; consumers can derive the layer from the IFC
+        schema.
+      </p>
+
+      <h2 id="core-entities">Core IFC entities</h2>
+      <table>
+        <thead><tr><th>Entity</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><code>IfcRoot</code></td><td>Common identity: GlobalId, owner history, name, description.</td></tr>
+          <tr><td><code>IfcProject</code></td><td>Top-level project context, units and representation contexts.</td></tr>
+          <tr><td><code>IfcObjectDefinition</code></td><td>Base for products, groups, systems and process objects.</td></tr>
+          <tr><td><code>IfcProduct</code></td><td>Anything placed in space: element, space, opening, annotation.</td></tr>
+          <tr><td><code>IfcRelAggregates</code></td><td>Whole-part hierarchy such as project / site / building / storey.</td></tr>
+          <tr><td><code>IfcRelDefinesByProperties</code></td><td>Connects objects to property sets and quantity sets.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="property-sets">Property and quantity sets</h2>
+      <p>
+        Property sets carry alphanumeric information. Standard sets use names like
+        <code>Pset_WallCommon</code>; quantities use names like <code>Qto_WallBaseQuantities</code>.
+        Custom sets are valid, but they need stable naming and documentation or they
+        become tool-specific noise.
+      </p>
+      <p>
+        BIM-CVP events should never flatten properties into arbitrary text. Reference
+        the IFC file, the element GUID, the property set name, the property name and,
+        where possible, a bSDD URI.
+      </p>
+
+      <h2 id="mvds">MVDs</h2>
+      <p>
+        A Model View Definition is a constrained use of IFC for a specific exchange.
+        The pinned implementation profile is IFC 4.3.2.0 with Reference View 1.2 where a
+        lightweight, coordination-safe model is enough. Legacy projects still need IFC2x3
+        Coordination View support on the read path.
+      </p>
+      <p>
+        Event mapping: record the MVD as a tag on the IFC file reference when it is known,
+        for example <code>["mvd", "Reference View 1.2"]</code>.
+      </p>
+
+      <h2 id="bcf-xml">BCF-XML</h2>
+      <p>
+        BCF-XML is the portable file shape of BCF: a <code>.bcfzip</code> with topic
+        folders. Each folder contains <code>markup.bcf</code>, optional viewpoint files
+        and snapshots. It is good for exchange and archiving, but weak for live concurrent
+        editing.
+      </p>
+      <p>
+        Event mapping: a BCF-XML import becomes a signed topic event, viewpoint events,
+        comment events and file-reference events for snapshots.
+      </p>
+
+      <h2 id="bcf-api">BCF-API</h2>
+      <p>
+        BCF-API exposes projects, topics, comments, viewpoints and authorizations over
+        HTTP. Version 3.0 is the target; 2.1 remains important because many tools still
+        implement it. The useful idea for BIM-CVP is per-entity authorization: a user
+        may read a topic but not close it.
+      </p>
+      <p>
+        Event mapping: the API resource becomes a signed event, and permission decisions
+        become project membership, role and authorization tags.
+      </p>
+
+      <h2 id="opencde">openCDE initiative</h2>
+      <p>
+        openCDE is buildingSMART's API family for vendor-neutral CDE integration.
+        Foundation defines discovery, auth, errors and common conventions. Documents API
+        handles document upload, download and metadata. BCF-API connects issue workflows.
+      </p>
+      <p>
+        BIM-CVP should treat openCDE as an adapter boundary: signed events are the
+        internal record, openCDE is how classical platforms are pushed or mirrored.
+      </p>
+
+      <h2 id="loin">LOIN</h2>
+      <p>
+        LOIN is Level of Information Need, standardised as EN 17412-1. It defines the
+        required geometry, alphanumeric information and documentation for a purpose,
+        actor and project phase. It prevents the common failure mode "more detail" by
+        asking "what information is needed for this decision".
+      </p>
+      <p>
+        Event mapping: use <code>kind:30811</code> for LOIN definitions and link them to
+        IDS specifications and project phases.
+      </p>
+
+      <h2 id="pir-eir-air">PIR / EIR / AIR / OIR</h2>
+      <table>
+        <thead><tr><th>Term</th><th>Meaning</th><th>Event use</th></tr></thead>
+        <tbody>
+          <tr><td>OIR</td><td>Organisational information requirements</td><td>Reusable owner-level policy.</td></tr>
+          <tr><td>AIR</td><td>Asset information requirements</td><td>Operations and FM requirements for assets.</td></tr>
+          <tr><td>PIR</td><td>Project information requirements</td><td>Project-specific client needs.</td></tr>
+          <tr><td>EIR</td><td>Exchange information requirements</td><td>Delivery rules for exchanges; often expressed technically with IDS.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="idm">IDM</h2>
+      <p>
+        IDM is Information Delivery Manual, standardised as ISO 29481. It describes who
+        delivers which information at which process step. IDS checks data; IDM describes
+        the process context around that data.
+      </p>
+      <p>
+        Event mapping: IDM steps become process references on EIR, IDS, BCF and approval
+        events, not a competing data schema.
+      </p>
+
+      <h2 id="lifecycle-states">WIP / Shared / Published / Archive</h2>
+      <div class="state-flow">
+        <div class="state-box"><div class="state-box__name">WIP</div><div class="state-box__desc">Work inside a task team.</div></div>
+        <div class="state-box"><div class="state-box__name">Shared</div><div class="state-box__desc">Available for coordination.</div></div>
+        <div class="state-box"><div class="state-box__name">Published</div><div class="state-box__desc">Authorized contractual information.</div></div>
+        <div class="state-box"><div class="state-box__name">Archive</div><div class="state-box__desc">Frozen record for traceability.</div></div>
+      </div>
+      <p>
+        Event mapping: use a <code>cde-state</code> tag and separate approval events.
+        Writing a file and approving it are different powers.
+      </p>
+
+      <h2 id="bim-roles">BIM roles</h2>
+      <p>
+        ISO 19650 separates appointing party, lead appointed party, appointed parties
+        and task teams. Local markets add titles such as BIM manager, BIM coordinator,
+        information manager and CDE manager. Do not encode those as one flat role list.
+      </p>
+      <p>
+        Event mapping: membership events should carry both discipline and authority:
+        for example MEP + reviewer, architect + approver, client + appointing-party.
+      </p>
+
+      <h2 id="rbac-abac">RBAC + ABAC</h2>
+      <p>
+        RBAC answers "what role does this key have". ABAC answers "is this action allowed
+        on this object in this state". BIM needs both: a coordinator role is not enough
+        to publish a WIP file, and a reviewer may comment on one topic but not close it.
+      </p>
+      <p>
+        Event mapping: roles live on project membership events; attributes live on the
+        target object: discipline, phase, state, package, topic status and visibility.
+      </p>
+
+      <h2 id="bsdd">bSDD</h2>
+      <p>
+        bSDD is the buildingSMART Data Dictionary. It provides multilingual identifiers
+        for classes, properties, materials and classification concepts. It is not a file
+        format; it is a reference service for stable meaning.
+      </p>
+      <p>
+        Event mapping: add bSDD URIs to properties, PDTs, IDS requirements and material
+        records instead of translating labels by hand.
+      </p>
+
+      <h2 id="bsdd-uris">bSDD URIs</h2>
+      <p>
+        A URI is useful because it remains stable across languages and display names.
+        "Fire rating", "Brandschutzklasse" and an Italian label can point to the same
+        concept. Store the URI, display the local label.
+      </p>
+      <pre>["bsdd", "https://identifier.buildingsmart.org/uri/..."]</pre>
+
+      <h2 id="classification-systems">Classification systems</h2>
+      <p>
+        Classification systems serve different markets. Uniclass is common in the UK,
+        OmniClass in North America, eBKP-H in Switzerland, ETIM in product and MEP
+        contexts, and regional price-book codes are common in public procurement.
+      </p>
+      <p>
+        Event mapping: record both the system and the code, for example
+        <code>["classification", "ETIM", "EC011023"]</code>.
+      </p>
+
+      <h2 id="buildingsmart-international">buildingSMART International</h2>
+      <p>
+        buildingSMART International is the upstream source for the openBIM standard
+        family. BIM-CVP treats it as the normative base: IFC defines model data,
+        BCF defines issue coordination, IDS defines machine-checkable requirements,
+        bSDD defines stable terminology, and openCDE defines API patterns for CDE
+        interoperability.
+      </p>
+      <p>
+        The implementation rule is simple: do not fork the standard. Store original
+        IFC, BCF, IDS and document payloads as files with hashes, then publish signed
+        Nostr events that point to those payloads and add workflow state, approval and
+        audit metadata.
+      </p>
+      <p>
+        Detailed source map:
+        <a href="standards/buildingsmart-international.html">buildingSMART International</a>.
+      </p>
+
+      <h2 id="dach-comparison">Regional profiles</h2>
+      <p>
+        Regional guidance is useful, but it is not the product frame. The technical
+        core stays buildingSMART International plus ISO 19650. Country-specific
+        material should be implemented as profile metadata: role labels, naming
+        conventions, procurement references, accepted classification systems and
+        client-specific exchange gates.
+      </p>
+
+      <p>
+        That keeps the event model portable while still allowing a Swiss, German,
+        Austrian, Italian or UK project to feel native at the contract and user-interface
+        layer.
+      </p>
+
+      <h2 id="switzerland">Switzerland</h2>
+      <p>
+        Switzerland is a useful example profile: KBOB-style appendices, BIM
+        Abwicklungsmodell, LOIN material, AIM guidance and BIM2FM data fields. It gives
+        enough structure for a real adapter without locking the technical core to one
+        country.
+      </p>
+
+      <p>
+        Swiss projects are useful for an early BIM-CVP profile because
+        the market already connects public-client guidance, ISO 19650 language, national
+        glossary work and operations handover. In event terms this means: project setup
+        must carry the applicable KBOB/BAP references, issue events must stay BCF-native,
+        and handover events must be traceable to AIM/BIM2FM fields instead of generic
+        "model delivered" statements.
+      </p>
+      <p>
+        Detailed source map:
+        <a href="standards/buildingsmart-switzerland.html">buildingSMART Switzerland</a>.
+      </p>
+
+      <h2 id="germany">Germany</h2>
+      <p>
+        Germany maps ISO 19650 into AIA, BAP, DIN and VDI practice. For BIM-CVP the
+        important part is the procurement language: requirements must be clear enough
+        to become IDS and LOIN, not only PDF prose.
+      </p>
+
+      <h2 id="austria">Austria</h2>
+      <p>
+        Austria's ÖNORM A 6241 family gives a strong normative BIM frame. For practical
+        event mapping, keep the same technical core and add Austrian naming, role and
+        exchange-package conventions as profile tags.
+      </p>
+
+      <h2 id="italy">Italy</h2>
+      <p>
+        Italy adds UNI 11337, ACDat language, the Capitolato Informativo and CAM Edilizia
+        2025. CAM is strategically important because it turns maintenance, deconstruction,
+        LCA and LCC evidence into public-procurement requirements.
+      </p>
+
+      <h2 id="aim">AIM</h2>
+      <p>
+        AIM is the Asset Information Model: the information set that remains useful after
+        handover. It is not the same as the design model. It contains the verified asset
+        records required for operation, maintenance, compliance and renovation.
+      </p>
+
+      <h2 id="bim2fm">BIM2FM</h2>
+      <p>
+        BIM2FM is the handover bridge from planning into facility management. The Swiss
+        data-field catalogue is a practical starting point: it names the fields FM teams
+        actually need instead of asking for "the full BIM model".
+      </p>
+
+      <h2 id="building-logbook">Building logbook</h2>
+      <p>
+        A building logbook is the long-lived record of a building: base data, models,
+        products, maintenance, energy information, renovations and proof documents.
+        EPBD recast makes this direction politically unavoidable in Europe.
+      </p>
+      <p>
+        Event mapping: generate the logbook from signed source events; every statement
+        should point back to the model, document, approval or diary entry it came from.
+      </p>
+
+      <h2 id="dpp">Digital Product Passport</h2>
+      <p>
+        The Digital Product Passport under ESPR is the product-side equivalent of building
+        traceability. Construction products will need material, origin, maintenance,
+        reuse and compliance data. BIM-CVP should reference product passports, not
+        duplicate them.
+      </p>
+
+      <h2 id="tag-mapping">Tag mapping</h2>
+      <table>
+        <thead><tr><th>Tag</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>d</code></td><td>Stable replaceable identifier.</td></tr>
+          <tr><td><code>a</code></td><td>Parent project, topic, model or requirement reference.</td></tr>
+          <tr><td><code>x</code></td><td>SHA-256 hash of a file-backed payload.</td></tr>
+          <tr><td><code>url</code></td><td>Download location for IFC, IDS, BCF, PDF or snapshot.</td></tr>
+          <tr><td><code>ifc</code></td><td>Element reference inside an IFC model.</td></tr>
+          <tr><td><code>bcf-status</code></td><td>BCF topic status.</td></tr>
+          <tr><td><code>cde-state</code></td><td>ISO 19650 container state.</td></tr>
+          <tr><td><code>bsdd</code></td><td>Stable semantic URI.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="bcf-on-nostr">BCF on Nostr</h2>
+      <p>
+        BCF maps cleanly because it is already event-like: a topic has a current
+        state, comments are append-only, viewpoints reference files and IFC GUIDs,
+        and status changes need an audit trail. Nostr supplies signatures and
+        ordering without a single CDE owning the conversation.
+      </p>
+      <pre>kind:30900  BCF topic
+kind:30901  BCF viewpoint (immutable by profile)
+kind:1170   BCF comment
+kind:1171   BCF audit event</pre>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="modell/ifc.html">IFC deep dive</a></li>
+          <li><a href="koordination/bcf.html">BCF deep dive</a></li>
+          <li><a href="anforderungen/ids.html">IDS deep dive</a></li>
+          <li><a href="standards/buildingsmart-international.html">buildingSMART International source map</a></li>
+          <li><a href="../en/standards.html">Pinned standards profile</a></li>
+          <li><a href="standards/buildingsmart-switzerland.html">Optional regional profile: Switzerland</a></li>
+          <li><a href="nostr-mapping/workflow.html">Workflow model</a></li>
+          <li><a href="nostr-mapping/alice-bob-max.html">Alice, Bob, Max example</a></li>
+          <li><a href="nostr-mapping/bcf-events.html">BCF to Nostr event spec</a></li>
+          <li><a href="nostr-mapping/kind-mapping.html">Full kind mapping</a></li>
+        </ul>
+      </div>
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; openBIM field guide</span>
+      <a href="./">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

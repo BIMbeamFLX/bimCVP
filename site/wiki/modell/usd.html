@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>USD / OpenUSD — Gemeinwert Wiki</title>
-  <meta name="description" content="OpenUSD (Universal Scene Description) as a model format for AEC: composition, layers, stages, file types, how it relates to IFC and IFC 5, and how Gemeinwert carries it as a signed file." />
+  <title>USD / OpenUSD — BIM-CVP Wiki</title>
+  <meta name="description" content="OpenUSD (Universal Scene Description) as a model format for AEC: composition, layers, stages, file types, how it relates to IFC and IFC 5, and how BIM-CVP carries it as a signed file." />
   <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
   <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
   <link rel="stylesheet" href="../../assets/site.css" />
@@ -129,7 +129,7 @@
         building semantics as an IFC schema on top, with a JSON-based serialisation.
         Read it as: <em>USD for the scene, IFC for the meaning</em>. This validates
         treating USD and IFC as complementary layers rather than rivals &mdash; and it
-        means a future-proof CDE should leave room for a USD-backed schema target
+        means a long-lived CDE should leave room for a USD-backed schema target
         without abandoning today's IFC&nbsp;4.3.2.0 foundation.
       </p>
 
@@ -151,7 +151,7 @@
       <h2>Mapping to signed events</h2>
 
       <p>
-        Gemeinwert treats a USD deliverable exactly like an IFC deliverable: a
+        BIM-CVP treats a USD deliverable exactly like an IFC deliverable: a
         <strong>signed file container with a metadata event</strong>, not a stream of
         prims. Millions of prims as individual events would be unusable and
         semantically pointless &mdash; USD is already a complete self-contained scene.
@@ -187,7 +187,7 @@ kind:30904  File reference (parameterised replaceable)
 
       <ul>
         <li><strong>Treating USD as a BIM model.</strong> It has no <code>IfcWall</code>, no property sets, no IDS binding. Use it for geometry/coordination/visualisation, keep IFC as the data source of truth.</li>
-        <li><strong>Specifying IFC&nbsp;5 / USD in a tender today.</strong> IFC&nbsp;5 is alpha. Pilot only; production stays on IFC&nbsp;4.3.2.0.</li>
+        <li><strong>Specifying IFC&nbsp;5 / USD in a tender today.</strong> IFC&nbsp;5 is alpha. Stable exchange stays on IFC&nbsp;4.3.2.0.</li>
         <li><strong>Broken payloads on transfer.</strong> Layers with external references/payloads break if assets are not packaged &mdash; deliver <code>.usdz</code> for hand-off, keep layered <code>.usd</code> for authoring.</li>
         <li><strong>Unit and up-axis mismatch.</strong> USD scenes carry metersPerUnit and upAxis metadata; agree them in the BAP or coordination drifts silently.</li>
       </ul>
@@ -198,7 +198,7 @@ kind:30904  File reference (parameterised replaceable)
           <li><a href="ifc.html">IFC</a> &mdash; the building semantics USD does not carry</li>
           <li><a href="../grundlagen/openbim.html">What is BIM &amp; openBIM</a> &mdash; how the formats fit together</li>
           <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; how files become signed events</li>
-          <li><a href="../../en/standards.html">Standards profile</a> &mdash; what Gemeinwert supports exactly today</li>
+          <li><a href="../../en/standards.html">Standards profile</a> &mdash; what BIM-CVP supports exactly today</li>
         </ul>
       </div>
 
