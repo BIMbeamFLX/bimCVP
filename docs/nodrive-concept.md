@@ -3,7 +3,7 @@
 **Tagline.** A Google-Drive replacement assembled from three existing open-source pieces: hashtree (storage), gitworkshop/NIP-34 (collaboration), FIPS (mesh transport). Identity over Nostr (npub), encryption on by default.
 
 **Status:** discussion sketch, May 2026
-**Author:** the maintainer
+**Author:** Felix
 
 ---
 

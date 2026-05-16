@@ -103,7 +103,7 @@ Infra         OTS-Bautagebuch         HKLS-Twin               Konferenz
 **Empfehlung.** Lesart (b) für AEC-Relevanz, weil sie auf BCF-Prototyp (1.2) aufsetzt — minimaler Mehraufwand, doppelter Hebel.
 **Stack.** Web-Client, abonniert BCF-Tribes, rendert Dashboard.
 **Deliverable.** Web-Demo mit echtem BCF-Datenstrom aus 1.2.
-**the maintainer, klär bitte:** welche Lesart trifft deine Idee?
+**Felix, klär bitte:** welche Lesart trifft deine Idee?
 
 ### 1.5 OTS-Bautagebuch (Wochenend-Spike) 🟢 ★★ · S
 **Was.** Tagebucheintrag (Wetter, Personal, Lieferungen, Vorkommnisse) als signiertes Nostr-Event + OpenTimestamps-Anker auf der Timechain. Gerichtsfeste Beweissicherung.

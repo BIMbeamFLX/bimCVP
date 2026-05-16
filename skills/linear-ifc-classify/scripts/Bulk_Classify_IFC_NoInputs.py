@@ -20,7 +20,7 @@
 #    DRY_RUN unten in der KONFIG-Sektion auf True (Sicherheit) oder False setzen,
 #    Skript speichern, neu Run klicken.
 #
-#  Stand 2026-05-16 — Bimbeam — Bimbeam — CC BY 4.0
+#  Stand 2026-05-16 — Bimbeam — Felix Hitthaler — CC BY 4.0
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ╔════════════════════════════════════════════════════════════════════════════╗

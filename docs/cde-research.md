@@ -313,7 +313,7 @@ Aus UNI 11337-7 und ANAC-Linien-Guida verbindlich:
 
 **Position:** Open-Source-Projektmanagement-Tool (deutsch), seit einigen Jahren mit BIM-Modul.
 **Stärken:** ISO-19650-State (WIP/Shared/Published/Archive), BCF-Import/Export, IFC-Viewer via xeokit.
-**Bewertung:** für the maintainer's Bürokratie-Toaster-Zielgruppe **interessant als Referenz-UI**, weil es deutsche Sprache, klassische Project-Management-UX und BIM-Integration kombiniert.
+**Bewertung:** für Felix' Bürokratie-Toaster-Zielgruppe **interessant als Referenz-UI**, weil es deutsche Sprache, klassische Project-Management-UX und BIM-Integration kombiniert.
 
 ### 6.6 xeokit (Library, nicht Plattform)
 

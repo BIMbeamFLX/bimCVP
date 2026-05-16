@@ -144,7 +144,7 @@ Vision and roadmap:
 
 **Track A — open infrastructure (Gemeinwert / BIM CVP).** MIT-licensed, give-it-away. Standards adoption is the goal. We want to be copied by ACCA usBIM, Catenda Hub, Autodesk Construction Cloud, BIMcollab — because when they adopt signed events as native mode, the market we serve emerges.
 
-**Track B — DVM marketplace (Bimbeam).** Commercial service track. NIP-90-based marketplace for HKLS/MEP planning, CAM-Edilizia audit, Bauherrenberatung, BIM setup consulting. Captures economic value on top of the open infrastructure.
+**Track B — DVM marketplace (Bimbeam).** Felix's commercial service track. NIP-90-based marketplace for HKLS/MEP planning, CAM-Edilizia audit, Bauherrenberatung, BIM setup consulting. Captures economic value on top of the open infrastructure.
 
 Linux + Red Hat pattern. Gemeinwert is the protocol everyone can use. Bimbeam is one accredited service provider on top — others welcome.
 
@@ -152,7 +152,7 @@ Linux + Red Hat pattern. Gemeinwert is the protocol everyone can use. Bimbeam is
 
 ## Contributors
 
-Currently a solo build by Bimbeam (HKLS/MEP + BIM engineering, South Tyrol).
+Currently a solo build by Felix Hitthaler (HKLS/MEP + BIM engineer, South Tyrol).
 
 Contributions welcome especially in:
 
@@ -161,7 +161,7 @@ Contributions welcome especially in:
 - **Standards discussion.** Before any NIP PR, we want sondierung with the buildingSMART OSS community.
 - **Pilot sponsorship.** NOI Techpark / Eurac as hosting partners for the Provincia di Bolzano real pilot.
 
-Contact: via Nostr (npub TBD, follows once relay is live) or `info@bimbeam.at`.
+Contact: via Nostr (npub TBD, follows once relay is live) or `hitthaler@bimbeam.at`.
 
 ---
 

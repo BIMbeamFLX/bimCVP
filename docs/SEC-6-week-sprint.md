@@ -183,7 +183,7 @@ W6     polish + landing        Pitch-Ready                      Konsolidierung
 | Signing | NIP-07 default, nsec-Fallback mit Warnung |
 | Storage | Blossom-URLs als Tag-Werte, kein eigener Server |
 | Deploy | GitHub Pages oder Cloudflare Pages |
-| Domain | <unterprojekt>.bimbeam.at oder example.gh.io/<projekt> |
+| Domain | <unterprojekt>.bimbeam.at oder felix.gh.io/<projekt> |
 | Lizenz | MIT |
 
 ---

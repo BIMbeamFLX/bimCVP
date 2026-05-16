@@ -128,7 +128,7 @@ doc = SimpleDocTemplate(
     leftMargin=2.0*cm, rightMargin=2.0*cm,
     topMargin=2.0*cm, bottomMargin=2.2*cm,
     title="openBIM-Standards × Nostr — NIP-Eignung",
-    author="Bimbeam",
+    author="Felix Hitthaler",
 )
 
 def on_page(canvas, doc):
@@ -154,7 +154,7 @@ story.append(P("Research-Vorlauf zur Identifikation realistischer NIP-Kandidaten
                "eigenständige NIPs (Nostr Implementation Possibility) sinnvoll sind, "
                "samt Event-Skizzen und offenen Fragen."))
 story.append(gap(30))
-story.append(Paragraph("<b>Autor</b>&nbsp;&nbsp;Bimbeam", meta))
+story.append(Paragraph("<b>Autor</b>&nbsp;&nbsp;Felix Hitthaler", meta))
 story.append(Paragraph("<b>Stand</b>&nbsp;&nbsp;Mai 2026", meta))
 story.append(Paragraph("<b>Status</b>&nbsp;&nbsp;Diskussionsentwurf", meta))
 story.append(Paragraph("<b>Bezug</b>&nbsp;&nbsp;openbimstandards.org · "

@@ -94,7 +94,7 @@ EOF
 chmod 600 .env
 ```
 
-**Aktion vor weiter:** the maintainer's Admin-pubkey eintragen. Falls noch nicht da:
+**Aktion vor weiter:** Felix' Admin-pubkey eintragen. Falls noch nicht da:
 
 ```bash
 # In keys.html (Browser) generieren ODER mit nostril:
@@ -458,7 +458,7 @@ Erwartet: liefert das eben gepostete Event zurück (eventuell mehr, falls Multi-
 Aus dem Browser einfacher — mit `keys.html` oder über die LNbits-Wallet-UI mit der Blossom-Extension. CLI-Test:
 
 ```bash
-# Mit the maintainer's Admin-nsec (kurz eintippen, danach `history -d $((HISTCMD-1))` zum löschen)
+# Mit Felix's Admin-nsec (kurz eintippen, danach `history -d $((HISTCMD-1))` zum löschen)
 read -s -p "ADMIN-NSEC: " NSEC
 echo
 
@@ -479,7 +479,7 @@ cat > DSFA.md <<'EOF'
 # Datenschutz-Folgenabschätzung — Sovereign AEC Pilot
 
 ## 1. Verantwortlicher
-Bimbeam, [Adresse], info@bimbeam.at
+Felix Hitthaler, [Adresse], hitthaler@bimbeam.at
 
 ## 2. Zweck der Verarbeitung
 Koordinations- und Dokumentationsdaten eines Bauprojekts (Pilot Raulassen).
@@ -653,7 +653,7 @@ crontab -e
 
 ## 15. Nächste Schritte (nach erfolgreichem Setup)
 
-OpenClaw soll the maintainer berichten:
+OpenClaw soll Felix berichten:
 
 1. **Status-Übersicht** — alle vier Container laufen, Verifikations-Tests grün.
 2. **LNbits-User-ID** — gesichert in `.env`, Bookmark in Browser.
@@ -661,7 +661,7 @@ OpenClaw soll the maintainer berichten:
 4. **DSFA.md** — Skeleton vorhanden, Lücken für Pilotpartner markiert.
 5. **Offene Konfig-Punkte** — falls etwas im Setup übersprungen werden musste.
 
-Danach kann the maintainer:
+Danach kann Felix:
 
 - `character.html` aufrufen, Relay-URL = `ws://localhost:7777`, Blossom-URL = `http://localhost:3000` eintragen
 - `admin.html` öffnen, erstes Projekt anlegen

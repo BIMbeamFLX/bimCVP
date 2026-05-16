@@ -138,6 +138,6 @@ The point of an open protocol is that you do not need permission to use it. Brin
 
 ## Imprint
 
-Built by Bimbeam — engineer in HKLS/MEP and BIM, sustainable building and circular economy, working across Italy, Austria and Germany. Reachable as a Nostr npub on the project tribe.
+Built by Felix Hitthaler — engineer in HKLS/MEP and BIM, sustainable building and circular economy, working across Italy, Austria and Germany. Reachable as a Nostr npub on the project tribe.
 
 License: MIT for code, CC BY 4.0 for written content. Specifications proposed for inclusion in `nostr-protocol/nips` once stable.

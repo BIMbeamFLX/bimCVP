@@ -93,7 +93,7 @@ The next-generation IFC is sometimes called **"IFC X"** in buildingSMART interna
 - ACCA = dominant Italian openBIM software house (usBIM.platform)
 - Bagnoli Irpino = inside Italian openBIM heartland
 - Our pilot context = Provincia di Bolzano (also Italy)
-- If the maintainer attends the next Implementers Assembly, direct access to: ACCA, italian buildingSMART chapter, peer implementers, IFC X discussion
+- If Felix attends the next Implementers Assembly, direct access to: ACCA, italian buildingSMART chapter, peer implementers, IFC X discussion
 
 **Action:** check registration link, evaluate attendance.
 
@@ -199,7 +199,7 @@ Update the IFC versions table to add IFC 5 alpha as "released, alpha" and IFC 4.
 
 ---
 
-## 9. Decisions that need the maintainer's call
+## 9. Decisions that need Felix's call
 
 1. **Implementers Assembly attendance** — Bagnoli Irpino, Italy, registration open. Strategic value: direct access to ACCA + italian bSI chapter + IFC X discussion. Cost: travel + registration. Decision: go or skip.
 

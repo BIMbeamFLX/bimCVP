@@ -1,7 +1,7 @@
 # BCF over Nostr — Research für einen NIP-Draft
 
 **Status:** Research-Vorlauf für ein NIP („BCF — BIM Collaboration over Nostr")
-**Autor:** the maintainer (npub tbd) — Diskussionsentwurf
+**Autor:** Felix (npub tbd) — Diskussionsentwurf
 **Stand:** 2026-05-14
 **Bezug:** buildingSMART BCF 3.0 (XML + REST API), Nostr Protocol (NIP-01 ff.)
 
@@ -309,8 +309,8 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["viewpoint", "<kind-30901-event-id>"],
     ["snapshot", "https://blossom.example/abc123.png", "sha256:abc123…"]
   ],
-  "content": "{\"title\":\"Lüftungsleitung kreuzt Hauptträger Achse 4\",\"description\":\"Kollision im Bereich Decke EG bei Achse 4/B. Vorschlag: Lüftung auf -350 mm absenken, Träger-Voute prüfen.\",\"created_date\":\"2026-05-14T08:20:34Z\",\"created_author\":\"planner@example.org\",\"due_date\":\"2026-06-11T00:00:00Z\",\"server_assigned_id\":\"BSP-2026-042\"}",
-  "pubkey": "<author-pubkey>",
+  "content": "{\"title\":\"Lüftungsleitung kreuzt Hauptträger Achse 4\",\"description\":\"Kollision im Bereich Decke EG bei Achse 4/B. Vorschlag: Lüftung auf -350 mm absenken, Träger-Voute prüfen.\",\"created_date\":\"2026-05-14T08:20:34Z\",\"created_author\":\"felix@bimbeam.example\",\"due_date\":\"2026-06-11T00:00:00Z\",\"server_assigned_id\":\"BSP-2026-042\"}",
+  "pubkey": "<felix-pubkey>",
   "id": "<sha256>",
   "sig": "<schnorr-sig>"
 }
@@ -326,7 +326,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["e", "<topic-event-id>", "", "root"],
     ["a", "30902:<group-pubkey>:9c3b4a5c-1d6e-4a2b-8b1f-7a9b2c3d4e5f"],
     ["h", "proj-rueckhaltebecken-st-pauli"],
-    ["p", "<author-pubkey>"],
+    ["p", "<felix-pubkey>"],
     ["viewpoint", "<kind-30901-event-id>"]
   ],
   "content": "{\"text\":\"Träger kann nicht abgesenkt werden, Stahlbau ist freigegeben. Vorschlag: Lüftung über Träger führen, Querschnitt 800x300 → 600x400.\",\"guid\":\"7a9b2c3d-4e5f-9c3b-4a5c-1d6e4a2b8b1f\"}",
@@ -368,7 +368,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["snapshot", "https://blossom.example/abc123.png", "sha256:abc123…"]
   ],
   "content": "{\"camera\":{\"type\":\"perspective\",\"view_point\":{\"x\":12.5,\"y\":-8.3,\"z\":2.6},\"direction\":{\"x\":0.42,\"y\":0.86,\"z\":-0.27},\"up_vector\":{\"x\":0,\"y\":0,\"z\":1},\"field_of_view\":60},\"components\":{\"selection\":[{\"ifc_guid\":\"0aB1cD2eF3gH4iJ5kL6mN7\"}],\"visibility\":{\"default\":true,\"exceptions\":[]}}}",
-  "pubkey": "<author-pubkey>",
+  "pubkey": "<felix-pubkey>",
   "id": "<sha256>",
   "sig": "<schnorr-sig>"
 }
@@ -552,7 +552,7 @@ NIP-XXX
 BCF — BIM Collaboration over Nostr
 ----------------------------------
 
-`draft` `optional` `author:maintainer`
+`draft` `optional` `author:felix`
 
 Abstract
 ~~~~~~~~

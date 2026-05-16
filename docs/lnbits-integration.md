@@ -160,7 +160,7 @@ LNbits-URL: `http://localhost:5000`. Caddy davor für TLS sobald öffentlich nö
 ## Open Questions
 
 1. **Wallet-Backend-Wahl** — Phoenixd (selbsthostend, simpel, automatisches Channel-Management) vs. eigener LND (mehr Kontrolle, mehr Aufwand) vs. Voltage Cloud (gehostet, schnell, kostet)? Empfehlung für Pilot: Phoenixd.
-2. **Wer hostet LNbits für den Pilot?** the maintainer's Laptop ist OK für Test. Für Provinz-Bozen-Demo lieber auf einen Hetzner-Mini-VPS oder NOI-Techpark-Hosting umziehen — Stromausfall an deinem Schreibtisch sollte nicht den Pilot abschießen.
+2. **Wer hostet LNbits für den Pilot?** Felix' Laptop ist OK für Test. Für Provinz-Bozen-Demo lieber auf einen Hetzner-Mini-VPS oder NOI-Techpark-Hosting umziehen — Stromausfall an deinem Schreibtisch sollte nicht den Pilot abschießen.
 3. **Cashu sofort oder später?** Cashu-Mint via LNbits-Extension ist mit wenig Aufwand machbar. Use-Case: anonyme Sub-Zahlungen im Büro, Bedarfsplanungs-DVM-Escrow. Empfehlung: nicht im Sprint, aber als Phase-2-Knopf bereithalten.
 4. **DSFA für LNbits?** Wenn nur die Adminin und Tester drauf sind: kein personenbezogenes Datenproblem. Bei realen Beteiligten muss in der DSFA stehen, dass LN-Zahlungs-Metadaten anfallen.
 

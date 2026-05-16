@@ -60,7 +60,7 @@ Gemeinwert / BIM CVP            — platform / standards / movement
   ├─ tools                      — character / admin / keys / more HTML tools
   ├─ marketplace                — DVM listings (NIP-90-based)
   └─ providers
-       ├─ Bimbeam               — the maintainer's services: HKLS / MEP / CAM
+       ├─ Bimbeam               — Felix's services: HKLS / MEP / CAM
        └─ (more)                — other providers join over time
 ```
 
