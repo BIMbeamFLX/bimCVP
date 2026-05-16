@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>USD / OpenUSD — Gemeinwert Wiki</title>
+  <meta name="description" content="OpenUSD (Universal Scene Description) as a model format for AEC: composition, layers, stages, file types, how it relates to IFC and IFC 5, and how Gemeinwert carries it as a signed file." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; model &nbsp;/&nbsp; usd</p>
+
+    <header class="art-head">
+      <h1>USD &mdash; Universal Scene Description</h1>
+      <p class="art-lede">
+        OpenUSD is a scene-graph and composition system born at Pixar for film, now
+        the emerging interchange layer for large 3D scenes in AEC. It is the
+        geometry and visualisation companion to IFC &mdash; not a replacement for
+        IFC's building semantics.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>
+          USD describes <em>what a scene looks like and how scenes compose</em>;
+          IFC describes <em>what a building is</em>. IFC&nbsp;5 brings them together
+          by adopting USD for the geometry and serialisation layer.
+        </p>
+      </div>
+
+      <h2>Where it comes from</h2>
+
+      <p>
+        Universal Scene Description was developed by Pixar and open-sourced in 2016.
+        In 2023 it moved under the <strong>Alliance for OpenUSD (AOUSD)</strong>
+        (Pixar, Adobe, Apple, Autodesk, NVIDIA and others) to drive a vendor-neutral
+        specification. Its strength is not a single geometry kernel but
+        <em>composition</em>: assembling huge scenes from many independently authored,
+        referenceable, override-able layers &mdash; exactly the problem a multi-discipline
+        building model has.
+      </p>
+
+      <h2>The concepts that matter</h2>
+
+      <table>
+        <thead>
+          <tr><th>Concept</th><th>What it is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Stage</strong></td><td>The composed, final scene a tool actually sees &mdash; the result of evaluating all layers.</td></tr>
+          <tr><td><strong>Layer</strong></td><td>A single <code>.usd</code> file contributing data. Layers stack and override like non-destructive edits.</td></tr>
+          <tr><td><strong>Prim</strong></td><td>"Primitive" &mdash; a node in the scene graph (a mesh, an xform, a light, a discipline subtree).</td></tr>
+          <tr><td><strong>Composition arcs</strong></td><td><code>sublayers</code>, <code>references</code>, <code>payloads</code>, <code>variants</code>, <code>inherits</code> &mdash; the rules that merge layers into a stage.</td></tr>
+          <tr><td><strong>Payload</strong></td><td>A deferred reference: heavy geometry loads only on demand. Essential for site-scale models.</td></tr>
+          <tr><td><strong>Variant set</strong></td><td>Switchable options inside one prim (design option, LOD, construction phase).</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        The practical consequence: an architecture layer, a structure layer and an
+        MEP layer can each be authored separately and composed into one coordinated
+        stage without flattening &mdash; conceptually close to how a federated IFC
+        model is assembled, but with a strong override and variant system.
+      </p>
+
+      <h2>File formats</h2>
+
+      <table>
+        <thead>
+          <tr><th>Extension</th><th>Format</th><th>For</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>.usda</code></td><td>ASCII text</td><td>Human-readable, diffable, good for small layers and review.</td></tr>
+          <tr><td><code>.usdc</code></td><td>Binary "crate"</td><td>Compact, fast to load. Default for heavy geometry.</td></tr>
+          <tr><td><code>.usd</code></td><td>Either of the above</td><td>Generic extension; container can be ASCII or binary.</td></tr>
+          <tr><td><code>.usdz</code></td><td>Uncompressed ZIP package</td><td>Single-file delivery bundling stage + textures. The shareable artefact.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>USD vs IFC &mdash; not a competition</h2>
+
+      <table>
+        <thead>
+          <tr><th>Topic</th><th>IFC</th><th>USD</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Primary purpose</td><td>Building <em>semantics</em> &mdash; what objects are and how they relate</td><td>Scene <em>composition</em> &mdash; geometry, look, assembly at scale</td></tr>
+          <tr><td>Strength</td><td>Typed entities, property sets, classification, life-cycle data</td><td>Huge scenes, non-destructive layers, variants, real-time visualisation</td></tr>
+          <tr><td>Weakness</td><td>Heavy for pure visualisation / DCC pipelines</td><td>No native construction semantics (no <code>IfcWall</code>, no Pset, no IDS)</td></tr>
+          <tr><td>Governance</td><td>buildingSMART / ISO 16739-1</td><td>Alliance for OpenUSD (AOUSD)</td></tr>
+          <tr><td>Role here</td><td>Source of truth for building data</td><td>Geometry / serialisation layer, esp. under IFC&nbsp;5</td></tr>
+        </tbody>
+      </table>
+
+      <h2>The IFC 5 connection</h2>
+
+      <p>
+        IFC&nbsp;5 (in development, <strong>alpha &mdash; do not specify in tenders</strong>)
+        is the key reason USD belongs in a BIM wiki. The IFC&nbsp;5 direction adopts
+        USD as the geometry and scene-composition substrate while keeping the
+        building semantics as an IFC schema on top, with a JSON-based serialisation.
+        Read it as: <em>USD for the scene, IFC for the meaning</em>. This validates
+        treating USD and IFC as complementary layers rather than rivals &mdash; and it
+        means a future-proof CDE should leave room for a USD-backed schema target
+        without abandoning today's IFC&nbsp;4.3.2.0 foundation.
+      </p>
+
+      <h2>Tooling (2026, indicative)</h2>
+
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>USD role</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>usdview / usdcat (OpenUSD)</td><td>Reference viewer and inspector, ground truth for composition</td></tr>
+          <tr><td>NVIDIA Omniverse</td><td>USD-native collaboration and real-time aggregation</td></tr>
+          <tr><td>Blender</td><td>USD import/export, growing layer support</td></tr>
+          <tr><td>Autodesk (Revit/3ds Max ecosystem)</td><td>USD export paths, AOUSD member</td></tr>
+          <tr><td>Apple Quick Look</td><td><code>.usdz</code> AR preview on iOS/macOS</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Mapping to signed events</h2>
+
+      <p>
+        Gemeinwert treats a USD deliverable exactly like an IFC deliverable: a
+        <strong>signed file container with a metadata event</strong>, not a stream of
+        prims. Millions of prims as individual events would be unusable and
+        semantically pointless &mdash; USD is already a complete self-contained scene.
+      </p>
+
+      <pre>kind:1063  NIP-94 File metadata
+  tags: [
+    ["url",   "https://blossom.example/&lt;sha256&gt;"],
+    ["m",     "model/vnd.usdz+zip"],          # or model/vnd.usd
+    ["x",     "&lt;sha256&gt;"],
+    ["size",  "&lt;bytes&gt;"],
+    ["schema",         "USDZ"],               # USD, USDC, USDA
+    ["authoring-tool", "Omniverse"],          # Blender, …
+    ["discipline",     "coordination"],       # architecture, mep, …
+    ["iso19650-state", "Shared"],             # WIP / Shared / Published / Archive
+    ["a",              "&lt;project-ref&gt;"]
+  ]
+  content: { stage_name, prim_count, notes }
+
+kind:30904  File reference (parameterised replaceable)
+  d: &lt;file-guid&gt;
+  Links the NIP-94 event, adds project-specific fields
+  (replacement version, stage, paired IFC file-guid)</pre>
+
+      <p>
+        Where a USD scene is the visualisation twin of an IFC model, the
+        <code>kind:30904</code> reference carries the paired IFC <code>file-guid</code>
+        so the semantic model and its scene stay provably linked by hash and
+        signature.
+      </p>
+
+      <h2>Practical pitfalls</h2>
+
+      <ul>
+        <li><strong>Treating USD as a BIM model.</strong> It has no <code>IfcWall</code>, no property sets, no IDS binding. Use it for geometry/coordination/visualisation, keep IFC as the data source of truth.</li>
+        <li><strong>Specifying IFC&nbsp;5 / USD in a tender today.</strong> IFC&nbsp;5 is alpha. Pilot only; production stays on IFC&nbsp;4.3.2.0.</li>
+        <li><strong>Broken payloads on transfer.</strong> Layers with external references/payloads break if assets are not packaged &mdash; deliver <code>.usdz</code> for hand-off, keep layered <code>.usd</code> for authoring.</li>
+        <li><strong>Unit and up-axis mismatch.</strong> USD scenes carry metersPerUnit and upAxis metadata; agree them in the BAP or coordination drifts silently.</li>
+      </ul>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="ifc.html">IFC</a> &mdash; the building semantics USD does not carry</li>
+          <li><a href="../grundlagen/openbim.html">What is BIM &amp; openBIM</a> &mdash; how the formats fit together</li>
+          <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; how files become signed events</li>
+          <li><a href="../../en/standards.html">Standards profile</a> &mdash; what Gemeinwert supports exactly today</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://openusd.org/release/index.html" target="_blank" rel="noopener">OpenUSD documentation (Pixar/AOUSD)</a></li>
+        <li><a href="https://aousd.org/" target="_blank" rel="noopener">Alliance for OpenUSD</a></li>
+        <li><a href="https://github.com/PixarAnimationStudios/OpenUSD" target="_blank" rel="noopener">OpenUSD source repository</a></li>
+        <li><a href="https://technical.buildingsmart.org/standards/ifc/" target="_blank" rel="noopener">buildingSMART IFC standards (incl. IFC 5 direction)</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Model &middot; USD</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

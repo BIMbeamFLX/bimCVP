@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>What is BIM &amp; openBIM — Gemeinwert Wiki</title>
+  <meta name="description" content="BIM and openBIM explained in plain language: model vs file, the buildingSMART standards landscape, why vendor-neutral data matters across a fifty-year building life." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; basics &nbsp;/&nbsp; openBIM</p>
+
+    <header class="art-head">
+      <h1>What is BIM &amp; openBIM</h1>
+      <p class="art-lede">
+        BIM is not a 3D drawing and not a piece of software. It is a structured,
+        machine-readable model of a building &mdash; and openBIM is the agreement
+        that this model stays readable without asking any vendor for permission.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>
+          <strong>BIM</strong> is the building described as data, not as lines;
+          <strong>openBIM</strong> is that data expressed in published, vendor-neutral
+          standards so it survives the tools, the platforms and the decades.
+        </p>
+      </div>
+
+      <h2>BIM vs CAD &mdash; the actual difference</h2>
+
+      <p>
+        CAD draws geometry: a wall is two lines and a hatch. BIM models objects:
+        a wall is an <code>IfcWall</code> that knows its type, layers, fire rating,
+        load-bearing flag, the storey it sits in and the rooms it bounds. The drawing
+        is then a <em>view</em> of the model, not the source of truth.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th></th><th>CAD</th><th>BIM</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Primary content</td><td>Geometry + annotation</td><td>Objects + properties + relationships</td></tr>
+          <tr><td>A wall is</td><td>Lines on a layer</td><td>A typed object with semantics</td></tr>
+          <tr><td>Change a storey height</td><td>Redraw every affected line</td><td>Model updates, views regenerate</td></tr>
+          <tr><td>Quantities</td><td>Manual take-off</td><td>Derived from the model</td></tr>
+          <tr><td>Coordination</td><td>Overlay plots</td><td>Clash + issue tracking on objects</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Closed BIM vs openBIM</h2>
+
+      <p>
+        <strong>Closed BIM</strong> keeps the model inside one vendor's native format
+        (e.g. a single tool's project file). It is fast inside that ecosystem and a
+        dead end outside it. <strong>openBIM</strong> exchanges the model through
+        published standards governed by <a href="https://www.buildingsmart.org/" target="_blank" rel="noopener">buildingSMART&nbsp;International</a>,
+        so an architect on tool A, an engineer on tool B and an owner on tool C work
+        on the same building without converting through anyone's proprietary bridge.
+      </p>
+
+      <p>
+        This is not ideology. A building stands for fifty years; the software that
+        authored it will not. openBIM is the bet that the <em>data</em> outlives the
+        <em>application</em> &mdash; the same reason this project signs records on an
+        open protocol instead of a platform.
+      </p>
+
+      <h2>The standards landscape in one map</h2>
+
+      <p>
+        Beginners drown because the acronyms are taught as a list. They are not a
+        list &mdash; each answers one question in the project life cycle:
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Question</th><th>Standard</th><th>One line</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What <em>is</em> the building?</td>
+            <td><a href="../modell/ifc.html"><code>IFC</code></a></td>
+            <td>The data model &mdash; objects, properties, relationships, geometry.</td>
+          </tr>
+          <tr>
+            <td>How is geometry / scene described?</td>
+            <td><a href="../modell/usd.html"><code>USD</code></a></td>
+            <td>Scene-graph and visualisation layer; the geometry side of IFC&nbsp;5.</td>
+          </tr>
+          <tr>
+            <td>What must be delivered?</td>
+            <td><a href="../anforderungen/ids.html"><code>IDS</code></a></td>
+            <td>Machine-checkable information requirements bound to IFC.</td>
+          </tr>
+          <tr>
+            <td>What is the issue in the model?</td>
+            <td><a href="../koordination/bcf.html"><code>BCF</code></a></td>
+            <td>Coordination: topics, comments, viewpoints, snapshots.</td>
+          </tr>
+          <tr>
+            <td>What do the words mean?</td>
+            <td><code>bSDD</code></td>
+            <td>buildingSMART Data Dictionary &mdash; classes, properties, URIs, multilingual.</td>
+          </tr>
+          <tr>
+            <td>How do systems exchange it?</td>
+            <td><code>openCDE</code></td>
+            <td>Foundation + Documents APIs between common data environments.</td>
+          </tr>
+          <tr>
+            <td>Who does what, when, signed by whom?</td>
+            <td><a href="../prozess/iso-19650.html"><code>ISO&nbsp;19650</code></a></td>
+            <td>The information-management process across the whole life cycle.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Geometry detail vs information need</h2>
+
+      <p>
+        Two scales are constantly confused. <strong>Geometric detail</strong>
+        (often called LOD/LOG) is how precisely a thing is drawn.
+        <strong>Level of Information Need</strong> (LOIN, per EN&nbsp;17412-1) is how
+        much non-geometric data a deliverable must carry for a defined purpose.
+        A heat pump for an energy calculation needs little geometry and a lot of
+        property data; the same pump for a clash check needs the opposite. Specify
+        the <em>purpose</em>, then the need &mdash; not a global "LOD 400" blanket.
+      </p>
+
+      <h2>The honest weaknesses of openBIM</h2>
+
+      <ul>
+        <li><strong>Round-trip loss.</strong> Native &rarr; IFC &rarr; native is not lossless. openBIM is an exchange and coordination layer, not a shared authoring file.</li>
+        <li><strong>Implementation drift.</strong> "Supports IFC 4.3" means different things per vendor. Always verify with a real proof-of-concept, IDS test cases and a BCF round-trip.</li>
+        <li><strong>Discipline cost.</strong> Stable GUIDs, clean property sets and correct spatial assignment require modelling rules in the BAP &mdash; openBIM rewards process, not just file format.</li>
+      </ul>
+
+      <h2>Where Gemeinwert sits</h2>
+
+      <p>
+        Gemeinwert adds nothing to the model standards and reimplements none of them.
+        It supplies the one layer openBIM never standardised: a
+        <strong>signed, platform-neutral record</strong> of who delivered which
+        model, raised which issue and approved which requirement &mdash; portable
+        across tools and outliving any single CDE. IFC, BCF, IDS stay exactly as
+        buildingSMART defines them; they are simply carried as signed events.
+      </p>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../modell/ifc.html">IFC</a> &mdash; the building as a structured model</li>
+          <li><a href="../modell/usd.html">USD</a> &mdash; the geometry / scene layer and IFC 5</li>
+          <li><a href="../anforderungen/ids.html">IDS</a> &mdash; requirements made machine-checkable</li>
+          <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; the process frame around all of it</li>
+          <li><a href="../nostr/basics.html">Nostr basics</a> &mdash; the signed-record layer Gemeinwert uses</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.buildingsmart.org/about/openbim/" target="_blank" rel="noopener">buildingSMART &mdash; openBIM definition</a></li>
+        <li><a href="https://technical.buildingsmart.org/" target="_blank" rel="noopener">buildingSMART technical standards portal</a></li>
+        <li><a href="https://www.iso.org/standard/68078.html" target="_blank" rel="noopener">ISO 19650-1 (concepts and principles)</a></li>
+        <li><a href="https://www.iso.org/standard/84123.html" target="_blank" rel="noopener">ISO 16739-1:2024 (IFC)</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Basics &middot; openBIM</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

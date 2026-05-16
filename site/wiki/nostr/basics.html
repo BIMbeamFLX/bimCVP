@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nostr basics — Gemeinwert Wiki</title>
+  <meta name="description" content="Nostr explained for construction: keypairs, signed events, relays, NIP-07 signing, and the NIPs Gemeinwert uses to carry IFC, BCF and IDS as portable signed records." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; nostr &nbsp;/&nbsp; basics</p>
+
+    <header class="art-head">
+      <h1>Nostr basics</h1>
+      <p class="art-lede">
+        Nostr is the smallest possible way to publish a record that anyone can
+        verify and no one can silently alter. No platform account, no central
+        server, no blockchain &mdash; just a keypair, a signed message and a relay
+        that stores it.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>
+          A Nostr <strong>event</strong> is a small JSON object signed by your
+          private key; <strong>relays</strong> are dumb stores that hold and serve
+          it &mdash; provenance lives in the signature, not in the server.
+        </p>
+      </div>
+
+      <h2>Why a construction project cares</h2>
+
+      <p>
+        Coordination today lives inside a platform. When the contract ends, the
+        subscription lapses or the vendor pivots, the record of who delivered which
+        model and who approved which issue is trapped or gone. A building lasts
+        fifty years; the platform does not. Nostr decouples the
+        <em>record</em> from the <em>application</em>: the signed event is portable,
+        independently verifiable, and survives any single tool or host. That is the
+        one missing layer openBIM never standardised &mdash; and all Gemeinwert adds.
+      </p>
+
+      <h2>The keypair</h2>
+
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Prefix</th><th>Is</th><th>Rule</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Public key</td><td><code>npub1…</code></td><td>Your identity. Share freely.</td><td>Others verify your signatures with it.</td></tr>
+          <tr><td>Private key</td><td><code>nsec1…</code></td><td>The secret that signs.</td><td>Never paste into a website. Anyone holding it <em>is</em> you.</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        The cryptography is Schnorr signatures over secp256k1 &mdash; the same curve
+        family Bitcoin uses, which causes a recurring misunderstanding:
+        <strong>Nostr is not a blockchain, not a token, not a payment.</strong> It
+        borrows one well-audited signature scheme and nothing else. The
+        <code>npub</code>/<code>nsec</code> strings are just the raw keys in a
+        human-checkable encoding (bech32, NIP-19).
+      </p>
+
+      <h2>The event</h2>
+
+      <p>Every Nostr message has the same shape:</p>
+
+      <pre>{
+  "id":      "&lt;sha256 of the serialised event&gt;",
+  "pubkey":  "&lt;author public key, hex&gt;",
+  "created_at": 1747000000,
+  "kind":    1063,                 // what type of thing this is
+  "tags":    [ ["x","&lt;sha256&gt;"], ["m","application/x-step"] ],
+  "content": "&lt;free text or JSON payload&gt;",
+  "sig":     "&lt;Schnorr signature over id&gt;"
+}</pre>
+
+      <ul>
+        <li><strong>kind</strong> &mdash; an integer that decides how the event is interpreted. Ranges matter: <code>1</code> is a note, <code>1063</code> is file metadata (NIP-94), <code>30000&ndash;39999</code> are <em>addressable</em> events (replaceable by a <code>d</code> tag &mdash; how a "current version" works).</li>
+        <li><strong>tags</strong> &mdash; structured indexable fields. This is where standard data is carried (file hash, schema, project reference, ISO 19650 state).</li>
+        <li><strong>id + sig</strong> &mdash; tamper-evidence. Change one byte and the id no longer matches; forge nothing without the private key.</li>
+      </ul>
+
+      <h2>Relays</h2>
+
+      <p>
+        A relay is a small server that accepts signed events and serves them over a
+        websocket on request. Relays do not own identity and do not authenticate
+        accounts &mdash; they store and filter. You publish the same event to several
+        relays; readers subscribe to whichever they trust. If one relay disappears,
+        the record still exists on the others (the "outbox" pattern). Gemeinwert runs
+        its own relay for the pilot plus public fallbacks.
+      </p>
+
+      <h2>Signing &mdash; and why we never touch your nsec</h2>
+
+      <p>
+        Signing must happen where the private key lives, never in our page. A
+        <strong>NIP-07</strong> browser signer (a wallet extension) exposes only two
+        calls to a web app:
+      </p>
+
+      <pre>window.nostr.getPublicKey()        // returns your npub-derived pubkey
+window.nostr.signEvent(event)      // returns the event with a valid sig</pre>
+
+      <p>
+        The site builds the unsigned event, hands it to the signer, gets back a
+        signed event, and publishes it. The <code>nsec</code> never enters the page,
+        the network, or our logs. For the pilot, key backup is deliberately
+        delegated to the signer (browser extension or mobile signer) &mdash; not our
+        responsibility to custody.
+      </p>
+
+      <h2>The NIPs Gemeinwert relies on</h2>
+
+      <table>
+        <thead>
+          <tr><th>NIP</th><th>What</th><th>Used for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>NIP-01</td><td>Event + relay protocol</td><td>The base everything sits on</td></tr>
+          <tr><td>NIP-07</td><td>Browser signing API</td><td>Sign without exposing the nsec</td></tr>
+          <tr><td>NIP-19</td><td>bech32 entities</td><td><code>npub</code>/<code>nsec</code>/<code>naddr</code> encoding</td></tr>
+          <tr><td>NIP-94</td><td>File metadata (kind 1063)</td><td>Carry IFC / USD / BCF files by hash + signature</td></tr>
+          <tr><td>Addressable</td><td>kinds 30000&ndash;39999</td><td>Replaceable "current version" of a project, file, topic</td></tr>
+          <tr><td>NIP-90</td><td>Data Vending Machines</td><td>The later DVM marketplace track (paid services)</td></tr>
+        </tbody>
+      </table>
+
+      <h2>How a BCF issue becomes an event</h2>
+
+      <p>
+        A BCF topic, comment and viewpoint map onto signed addressable events; the
+        snapshot and any attached file ride along as NIP-94 file events referenced
+        by hash. The full field-by-field mapping has its own page &mdash; the point
+        here is only that nothing in BCF or IFC is reinvented; it is carried,
+        signed, and made portable.
+      </p>
+
+      <div class="callout" style="border:1px solid var(--line); border-radius:8px; padding:16px 20px; margin:28px 0;">
+        <strong>Coming on this site.</strong> Two tools build directly on this page:
+        a browser <em>key-generation &amp; identity</em> flow (create or connect a
+        Nostr key, no nsec ever sent to a server), and a <em>simple BCF platform</em>
+        that creates and reads BCF coordination as signed events. This page is the
+        mental model for both.
+      </div>
+
+      <h2>Practical pitfalls</h2>
+
+      <ul>
+        <li><strong>nsec in a text box.</strong> Never. If a site asks you to paste an nsec, it is wrong. Use a NIP-07 signer.</li>
+        <li><strong>One relay only.</strong> Single point of failure. Always publish to several.</li>
+        <li><strong>Losing the key in the pilot.</strong> Acceptable &mdash; create a new identity, the admin re-adds you. Production key management is a later phase.</li>
+        <li><strong>Confusing Nostr with crypto-currency.</strong> Shared signature math, nothing else. No chain, no token required to use Gemeinwert.</li>
+      </ul>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; which standard maps to which event kind</li>
+          <li><a href="../grundlagen/openbim.html">What is BIM &amp; openBIM</a> &mdash; the layer Nostr completes</li>
+          <li><a href="../koordination/bcf.html">What is BCF</a> &mdash; the coordination format carried as events</li>
+          <li><a href="../../en/standards.html">Standards profile</a> &mdash; exact versions and kinds</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://github.com/nostr-protocol/nips" target="_blank" rel="noopener">Nostr Implementation Possibilities (NIPs)</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/01.md" target="_blank" rel="noopener">NIP-01 &mdash; basic protocol</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/07.md" target="_blank" rel="noopener">NIP-07 &mdash; browser signing</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/94.md" target="_blank" rel="noopener">NIP-94 &mdash; file metadata</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Nostr &middot; Basics</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

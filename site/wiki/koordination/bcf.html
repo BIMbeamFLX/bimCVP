@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BCF — Gemeinwert Wiki</title>
+  <meta name="description" content="BIM Collaboration Format explained: topics, comments, viewpoints, the BCF-XML container and BCF-API, versions 2.1 and 3.0, and how Gemeinwert carries BCF as signed events." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="wrap-art topbar__inner" style="max-width: 1080px;">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/#try">Tools</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; coordination &nbsp;/&nbsp; bcf</p>
+
+    <header class="art-head">
+      <h1>BCF &mdash; BIM Collaboration Format</h1>
+      <p class="art-lede">
+        BCF is how planners argue about a model without sending the model. It
+        carries the issue, the exact camera, the highlighted components and the
+        thread &mdash; not gigabytes of geometry.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>
+          A BCF item is a <em>pointer into a model plus a conversation</em>:
+          a topic, the components it concerns, a saved viewpoint, and the comment
+          thread &mdash; referencing IFC by GUID, never embedding it.
+        </p>
+      </div>
+
+      <h2>The three things BCF moves</h2>
+
+      <table>
+        <thead>
+          <tr><th>Part</th><th>Is</th><th>Key fields</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Topic</strong></td><td>The issue itself</td><td>title, status, type, priority, assigned-to, due date, GUID</td></tr>
+          <tr><td><strong>Comment</strong></td><td>One message in the thread</td><td>author, date, text, references its topic and optionally a viewpoint</td></tr>
+          <tr><td><strong>Viewpoint</strong></td><td>The saved camera + selection</td><td>camera, visible/selected components (by IFC GUID), snapshot image</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        The viewpoint is what makes BCF more than a ticket system: it pins the
+        exact components &mdash; <em>by IFC GlobalId</em> &mdash; so the recipient
+        opens the model on the same problem, not a screenshot of it. Stable GUIDs
+        across model versions are the prerequisite; see
+        <a href="../modell/ifc.html">IFC</a>.
+      </p>
+
+      <h2>Two transport shapes</h2>
+
+      <table>
+        <thead>
+          <tr><th></th><th>BCF-XML</th><th>BCF-API</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Form</td><td>A <code>.bcfzip</code> file you send</td><td>A REST service you call</td></tr>
+          <tr><td>Inside</td><td><code>markup.bcf</code>, <code>viewpoint.bcfv</code>, <code>snapshot.png</code> per topic folder</td><td>Topic / comment / viewpoint resources with per-entity authorization</td></tr>
+          <tr><td>Good for</td><td>Offline exchange, archiving, hand-off</td><td>Live coordination inside a CDE</td></tr>
+          <tr><td>Weakness</td><td>No live state, merge conflicts on round-trip</td><td>Needs a hosted server everyone can reach</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Versions</h2>
+
+      <table>
+        <thead>
+          <tr><th>Version</th><th>Status</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>BCF 3.0</code></td><td>Current (June 2021)</td><td>Target version &mdash; XML and API aligned, richer metadata.</td></tr>
+          <tr><td><code>BCF 2.1</code></td><td>Widely deployed</td><td>In practice still the interoperability floor &mdash; support both directions.</td></tr>
+          <tr><td><code>BCF 2.0 / 1.0</code></td><td>Legacy</td><td>Read path only.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Why BCF exists at all</h2>
+
+      <p>
+        Without BCF, model coordination degrades into emailed screenshots and
+        "the wall near the stair on the second floor". BCF replaces that with a
+        portable, tool-neutral object that any compliant viewer can open on the
+        exact geometry. It is the openBIM answer to the question
+        <em>"what is wrong, where, who owns it, and what was decided"</em> &mdash;
+        the human layer on top of <a href="../modell/ifc.html">IFC</a>.
+      </p>
+
+      <h2>Mapping to signed events</h2>
+
+      <p>
+        Gemeinwert carries BCF as <strong>signed addressable events</strong>, not as
+        a file locked in one CDE. The topic is the durable, replaceable record;
+        comments are append-only references to it; the snapshot and any attachment
+        ride along as NIP-94 file events keyed by hash.
+      </p>
+
+      <pre>kind:30900  BCF Topic (addressable, replaceable)
+  d: &lt;topic-guid&gt;
+  tags: [
+    ["a",        "&lt;project-ref&gt;"],
+    ["status",   "Active"],            # Closed, ReadyForReview, …
+    ["priority", "High"],
+    ["p",        "&lt;assignee-pubkey&gt;"]
+  ]
+  content: { title, description, type, due_date }
+
+kind:30901  Viewpoint   → camera + selected IFC GUIDs + snapshot hash
+kind:1111   Comment      → references the topic, signed by its author
+kind:1063   Snapshot/att → NIP-94 file event, integrity by sha256</pre>
+
+      <p>
+        Every state change is a new signed event by a known key: the audit trail is
+        the signature chain, not a database row anyone can edit. The exact kind and
+        tag registry is on the <a href="../nostr-mapping/kind-mapping.html">kind
+        mapping</a> page; the signing model is in
+        <a href="../nostr/basics.html">Nostr basics</a>.
+      </p>
+
+      <div class="callout" style="border:1px solid var(--line); border-radius:8px; padding:16px 20px; margin:28px 0;">
+        <strong>Coming on this site.</strong> A simple BCF platform that creates and
+        reads these topics, comments and viewpoints as signed events directly in the
+        browser &mdash; this page is its data model.
+      </div>
+
+      <h2>Practical pitfalls</h2>
+
+      <ul>
+        <li><strong>GUID churn.</strong> If the authoring tool regenerates IFC GlobalIds on re-export, every BCF viewpoint loses its component binding. Fix the GUID discipline in the BAP first.</li>
+        <li><strong>Version mismatch.</strong> Sender writes 3.0, receiver reads 2.1. Negotiate the BCF version explicitly, support both.</li>
+        <li><strong>Snapshot-only topics.</strong> A picture with no selected components is a screenshot, not a viewpoint &mdash; always pin the GUIDs.</li>
+        <li><strong>Round-trip merges.</strong> Two parties edit the same exported <code>.bcfzip</code>. Prefer an API or signed-event flow where order and authorship are unambiguous.</li>
+      </ul>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../modell/ifc.html">IFC</a> &mdash; the GUIDs BCF points at</li>
+          <li><a href="../nostr/basics.html">Nostr basics</a> &mdash; how a topic becomes a signed event</li>
+          <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; the full event/tag registry</li>
+          <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; the state model BCF status fits into</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://technical.buildingsmart.org/standards/bcf/" target="_blank" rel="noopener">buildingSMART BCF standard</a></li>
+        <li><a href="https://github.com/buildingSMART/BCF-XML" target="_blank" rel="noopener">BCF-XML specification</a></li>
+        <li><a href="https://github.com/buildingSMART/BCF-API" target="_blank" rel="noopener">BCF-API specification</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Coordination &middot; BCF</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

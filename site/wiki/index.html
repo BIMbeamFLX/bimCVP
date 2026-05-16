@@ -49,6 +49,24 @@
     </div>
   </section>
 
+  <!-- BASICS -->
+  <section class="wrap-hub hub-sec" data-screen-label="Basics">
+    <p class="hub-sec__eyebrow">Basics</p>
+    <h2 class="hub-sec__title">Start here</h2>
+    <div class="hub-cards">
+      <a class="hub-card" href="grundlagen/openbim.html" data-status="live">
+        <h3>What is BIM &amp; openBIM</h3>
+        <p>Model vs file, closed vs open, and the whole standards landscape in one map.</p>
+        <span class="hub-card__meta">Plain-language primer</span>
+      </a>
+      <a class="hub-card" href="nostr/basics.html" data-status="live">
+        <h3>Nostr basics</h3>
+        <p>Keypairs, signed events, relays, NIP-07 signing &mdash; the record layer Gemeinwert uses.</p>
+        <span class="hub-card__meta">No blockchain · just signatures</span>
+      </a>
+    </div>
+  </section>
+
   <!-- MODEL -->
   <section class="wrap-hub hub-sec" data-screen-label="Model">
     <p class="hub-sec__eyebrow">Model</p>
@@ -58,6 +76,11 @@
         <h3>IFC</h3>
         <p>Industry Foundation Classes &mdash; the data model for buildings. Versions, layers, core entities.</p>
         <span class="hub-card__meta">4.3.2.0 · ISO 16739-1:2024</span>
+      </a>
+      <a class="hub-card" href="modell/usd.html" data-status="live">
+        <h3>USD / OpenUSD</h3>
+        <p>Universal Scene Description &mdash; the geometry/scene layer and the IFC&nbsp;5 connection.</p>
+        <span class="hub-card__meta">AOUSD · pairs with IFC</span>
       </a>
       <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
         <h3>IFC layers</h3>
@@ -84,7 +107,7 @@
     <p class="hub-sec__eyebrow">Coordination</p>
     <h2 class="hub-sec__title">Talking about issues in the model</h2>
     <div class="hub-cards">
-      <a class="hub-card" href="../was-ist-bcf.html" data-status="live">
+      <a class="hub-card" href="koordination/bcf.html" data-status="live">
         <h3>BCF</h3>
         <p>BIM Collaboration Format &mdash; how planners exchange issues, comments and viewpoints.</p>
         <span class="hub-card__meta">XML 3.0 · API 3.0</span>
@@ -231,9 +254,9 @@
     <p class="hub-sec__eyebrow">Mapping</p>
     <h2 class="hub-sec__title">Standards as signed events</h2>
     <div class="hub-cards">
-      <a class="hub-card" href="#" data-status="draft" onclick="alert('In progress'); return false;">
+      <a class="hub-card" href="nostr/basics.html" data-status="live">
         <h3>Why signed events</h3>
-        <p>Which missing layer the protocol closes for openBIM workflows.</p>
+        <p>Which missing layer the protocol closes for openBIM workflows &mdash; Nostr basics.</p>
       </a>
       <a class="hub-card" href="nostr-mapping/kind-mapping.html" data-status="live">
         <h3>Kind mapping</h3>
