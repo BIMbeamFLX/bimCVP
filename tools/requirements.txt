@@ -1,0 +1,29 @@
+# Sovereign AEC — Python tools dependencies
+# install via:   pip install -r requirements.txt
+
+# ----- IFC parsing -----
+ifcopenshell>=0.8.0       # IFC4.3 ADD2 schema support
+
+# ----- Nostr -----
+pynostr>=0.7.0            # client lib for events, relays, signing
+
+# ----- HTTP / Blossom upload -----
+requests>=2.32.0
+
+# ----- OpenTimestamps (for construction-log anchoring) -----
+opentimestamps-client>=0.7.0
+
+# ----- Optional: IFC validation -----
+# ifcopenshell-tools comes with ifcopenshell, includes bSI validator hooks
+
+# ----- Optional: template engine for building-book generator -----
+jinja2>=3.1.0
+python-docx>=1.1.0        # for DOCX export (phase 2)
+reportlab>=4.0.0          # for PDF rendering (also used in the NIP fitness PDF builder)
+
+# ----- Optional: bSDD queries -----
+# requests is enough for the REST API, no separate SDK needed
+
+# ----- Dev-Tools -----
+ruff>=0.6.0               # Lint + Format
+pytest>=8.0.0             # Tests

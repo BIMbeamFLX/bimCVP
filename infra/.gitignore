@@ -1,0 +1,11 @@
+# This bundle must never carry secrets into version control.
+.env
+lnbits/.env
+**/data/
+caddy/data/
+caddy/config/
+site-root/
+site-root.*/
+bunker/keystore/
+phoenixd/data/
+*.log

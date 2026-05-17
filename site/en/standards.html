@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Standards — Gemeinwert / BIM-CVP</title>
+  <meta name="description" content="Which buildingSMART and ISO standards Gemeinwert pins for BIM-CVP, with reasoning per choice. IFC 4.3.2.0, BCF API 3.0, IDS 1.0, ISO 19650, openCDE Foundation 1.1, bSDD, LOIN and UCM." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <style>
+    body::before { display: none; }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .wrap-narrow { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+    .crumb {
+      padding: 32px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .crumb a { color: var(--muted); }
+    .crumb a:hover { color: var(--gold); }
+
+    .lede2 { padding: 24px 0 56px; }
+    .lede2 h1 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin: 0 0 24px;
+      font-weight: 400;
+      text-wrap: balance;
+    }
+    .lede2 p {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      margin: 0 0 16px;
+      max-width: 64ch;
+    }
+    .lede2 p:last-child { margin-bottom: 0; }
+    .lede2 strong { color: var(--ink); font-weight: 600; }
+    .lede2 em { color: var(--gold); font-style: italic; }
+
+    .pinned {
+      padding: 24px 0 56px;
+      border-top: 1px solid var(--line);
+    }
+    .pinned h2 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      margin: 0 0 24px;
+      font-weight: 400;
+    }
+
+    .principles2 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding: 56px 0;
+      border-top: 1px solid var(--line);
+    }
+    .principles2 > div h3 {
+      font-family: var(--font-display);
+      font-size: 19px;
+      color: var(--gold);
+      margin: 0 0 8px;
+      font-weight: 400;
+    }
+    .principles2 > div p {
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.55;
+      margin: 0;
+    }
+    @media (max-width: 800px) { .principles2 { grid-template-columns: 1fr; gap: 24px; } }
+
+    .deeper {
+      padding: 56px 0;
+      border-top: 1px solid var(--line);
+    }
+    .deeper h2 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      margin: 0 0 16px;
+      font-weight: 400;
+    }
+    .deeper p {
+      font-size: 16px;
+      color: var(--ink-2);
+      line-height: 1.6;
+      max-width: 64ch;
+      margin: 0 0 24px;
+    }
+    .deeper a.btn-soft {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 44px;
+      padding: 0 22px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0;
+      text-transform: none;
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--ink);
+      text-decoration: none;
+      transition: all 150ms;
+    }
+    .deeper a.btn-soft:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+    .ftr { padding: 48px 0 64px; border-top: 1px solid var(--line); }
+    .ftr__row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .ftr .text { font-size: 13px; color: var(--dim); }
+    .ftr .text a { color: var(--muted); }
+    .ftr .text a:hover { color: var(--gold); }
+    .lang-switch { font-family: var(--font-mono); }
+    .lang-switch a { padding: 6px 12px; font-size: 12px; letter-spacing: 0.1em; }
+  </style>
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="./" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="./">Home</a>
+      <a href="standards.html" class="active">Standards</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="bim-cvp.html">BIM-CVP</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="wrap-narrow">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="./">gemeinwert</a> &nbsp;/&nbsp; standards
+    </nav>
+  </div>
+
+  <section class="lede2" data-screen-label="Lede">
+    <div class="wrap-narrow">
+      <h1>The standards we follow.</h1>
+      <p>
+        Gemeinwert pins the open standards the BIM-CVP protocol depends on:
+        <strong>IFC</strong> for the model, <strong>BCF</strong>
+        for coordination, <strong>IDS</strong> for requirements, <strong>ISO 19650</strong>
+        for the lifecycle. We don&rsquo;t replace any of them.
+      </p>
+      <p>
+        We <em>pin exact versions</em> instead of generic ones, because &ldquo;IFC4&rdquo;
+        isn&rsquo;t specific enough to write test vectors against, and we want every
+        implementer to know exactly which release we mean. The list below is the canonical
+        choice. Legacy versions are supported on a read path; future versions are watched
+        but not used until they are stable.
+      </p>
+    </div>
+  </section>
+
+  <section class="pinned" data-screen-label="Pinned versions">
+    <div class="wrap">
+      <h2>Pinned versions.</h2>
+      <div class="standards-grid">
+        <article class="std">
+          <div class="std__num">001 · MODEL</div>
+          <div class="std__title">IFC</div>
+          <div class="std__ver">4.3.2.0 · ADD2</div>
+          <p class="std__desc">Canonical model format. Buildings, bridges, road, rail, tunnel, ports. Identical to ISO 16739-1:2024.</p>
+          <span class="std__status">Final · Apr 2024</span>
+        </article>
+        <article class="std">
+          <div class="std__num">002 · COORDINATION</div>
+          <div class="std__title">BCF API</div>
+          <div class="std__ver">3.0 · XML 3.0</div>
+          <p class="std__desc">Topics, comments, viewpoints, audit. Server speaks 3.0 native; 2.1 round-trip for legacy tools.</p>
+          <span class="std__status">Final · Jun 2021</span>
+        </article>
+        <article class="std">
+          <div class="std__num">003 · REQUIREMENTS</div>
+          <div class="std__title">IDS</div>
+          <div class="std__ver">1.0</div>
+          <p class="std__desc">Machine-checkable information requirements. Replaces EIR PDFs. Versionable like code.</p>
+          <span class="std__status">Final · Jun 2024</span>
+        </article>
+        <article class="std">
+          <div class="std__num">004 · LIFECYCLE</div>
+          <div class="std__title">ISO 19650</div>
+          <div class="std__ver">parts 1–5</div>
+          <p class="std__desc">WIP · Shared · Published · Archive. Approver authority encoded as a separate permission, not a write right.</p>
+          <span class="std__status">Adopted</span>
+        </article>
+        <article class="std">
+          <div class="std__num">005 · CDE</div>
+          <div class="std__title">openCDE</div>
+          <div class="std__ver">Foundation 1.1</div>
+          <p class="std__desc">OAuth2, ETags, RFC3339, OData. Documents API 1.0 for binary handover. Client Credentials Grant intentionally not supported.</p>
+          <span class="std__status">Final · Dec 2023</span>
+        </article>
+        <article class="std">
+          <div class="std__num">006 · DICTIONARY</div>
+          <div class="std__title">bSDD</div>
+          <div class="std__ver">live service</div>
+          <p class="std__desc">Multilingual classifications, properties, materials. Referenced by URI &mdash; we never fork the dictionary.</p>
+          <span class="std__status">Live</span>
+        </article>
+        <article class="std">
+          <div class="std__num">007 · INFORMATION NEED</div>
+          <div class="std__title">EN 17412 / LOIN</div>
+          <div class="std__ver">project profile</div>
+          <p class="std__desc">Defines the right information at the right time. Regional templates can adapt it without changing the core event model.</p>
+          <span class="std__status">Final</span>
+        </article>
+        <article class="std">
+          <div class="std__num">008 · USE CASES</div>
+          <div class="std__title">IDM / UCM</div>
+          <div class="std__ver">process references</div>
+          <p class="std__desc">Use cases and information exchanges explain why a model, IDS check or BCF topic exists in the workflow.</p>
+          <span class="std__status">buildingSMART</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="principles2" data-screen-label="Why pin versions">
+    <div class="wrap-narrow" style="grid-column: 1 / -1;">
+      <h2 style="font-family: var(--font-display); font-size: 26px; font-weight: 400; margin: 0 0 32px;">Why we pin versions.</h2>
+    </div>
+    <div class="wrap" style="display: contents;">
+      <div>
+        <h3>Implementers stay in sync.</h3>
+        <p>
+          Two BCF clients both claiming to be &ldquo;BCF 3.0 compatible&rdquo; can still
+          fail to round-trip if one was written against an early draft and the other against
+          the final release. Pinning to 3.0 final, 18 June 2021, ends the argument.
+        </p>
+      </div>
+      <div>
+        <h3>Test vectors actually mean something.</h3>
+        <p>
+          You can&rsquo;t write a conformance test against &ldquo;IFC4.&rdquo; You can write
+          one against 4.3.2.0. The pinned version is what the test vectors validate.
+        </p>
+      </div>
+      <div>
+        <h3>Legacy projects still open.</h3>
+        <p>
+          IFC 2x3 TC1 and IFC4 ADD2 TC1 remain on the read path. A model from 2009 still
+          opens in a modern reader. We don&rsquo;t cut you off from your own building stock.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="deeper" data-screen-label="Read deeper">
+    <div class="wrap-narrow">
+      <h2>The full profile.</h2>
+      <p>
+        The complete standards profile lists every MVD, the conditional support cases for
+        infrastructure projects, the openCDE API stack, the role model on both ISO 19650
+        and discipline axes, the rights and policy model, the audit and privacy obligations,
+        and optional regional profile adapters. About fifteen pages.
+      </p>
+      <a class="btn-soft" href="/docs/STANDARDS-PROFILE.html">Read the full profile &rarr;</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ftr" data-screen-label="Footer">
+  <div class="wrap-narrow">
+    <div class="ftr__row">
+      <div class="text">
+        gemeinwert / BIM-CVP &middot; MIT license &middot; <a href="https://www.bimbeam.at" target="_blank" rel="noopener">www.bimbeam.at</a>
+      </div>
+      <div class="lang-switch">
+        <a href="../wiki/">WIKI</a>
+        <a href="../docs/">DOCS</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

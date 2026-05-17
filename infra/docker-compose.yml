@@ -1,0 +1,110 @@
+# Gemeinwert / BIM CVP — pilot backend stack
+# Server: a small VPS (~2 vCPU / 4 GB / 40 GB), Ubuntu 24.04 + Docker. EU region (GDPR).
+# THIS FOLDER IS SERVER-SIDE INFRA — never commit to the public web repo.
+# Real secrets live only in lnbits/.env and the (later) bunker keystore on the box.
+
+services:
+  strfry:
+    image: dockurr/strfry:latest
+    container_name: gw-strfry
+    restart: unless-stopped
+    expose:
+      - "7777"                       # internal only; Caddy is the public ingress
+    volumes:
+      - ./strfry/data:/app/strfry-db
+      - ./strfry/conf/strfry.conf:/etc/strfry.conf:ro
+      - ./strfry/plugin/whitelist.sh:/etc/whitelist.sh:ro
+    environment:
+      - STRFRY_CONFIG=/etc/strfry.conf
+
+  blossom:
+    image: ghcr.io/hzrd149/blossom-server:latest
+    container_name: gw-blossom
+    restart: unless-stopped
+    expose:
+      - "3000"
+    volumes:
+      - ./blossom/data:/app/data
+      - ./blossom/config/config.yml:/app/config.yml:ro
+
+  lnbits:
+    image: lnbitsdocker/lnbits-legend:latest
+    container_name: gw-lnbits
+    restart: unless-stopped
+    expose:
+      - "5000"
+    volumes:
+      - ./lnbits/data:/app/data
+    env_file:
+      - ./lnbits/.env
+
+  # Web UI to watch/restart containers + read logs without SSH.
+  # Powerful (mounts docker.sock = root-equivalent on this box) — kept behind
+  # Caddy TLS + Portainer's own admin password (+ optional Caddy basic_auth).
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: gw-portainer
+    restart: unless-stopped
+    expose:
+      - "9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer/data:/data
+
+  caddy:
+    image: caddy:2
+    container_name: gw-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./site-root:/srv/site:ro     # static site, populated by deploy-site.sh
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    depends_on:
+      - strfry
+      - blossom
+      - lnbits
+      - portainer
+
+  # --- PHASE 2: real Lightning backend (swap LNbits to PhoenixdWallet) ---
+  # Bring up after the box is stable and you have test sats. See README §6.
+  # phoenixd:
+  #   image: ghcr.io/acinq/phoenixd:latest   # confirm tag before enabling
+  #   container_name: gw-phoenixd
+  #   restart: unless-stopped
+  #   expose:
+  #     - "9740"
+  #   volumes:
+  #     - ./phoenixd/data:/phoenix/.phoenix
+
+  # --- PHASE 2: NIP-46 bunker (Tier-1 custodial identity) ---
+  # The bunker + the `provision` glue are the identity-custody phase.
+  # Built later per the approved plan (identity-architecture.md). Placeholder:
+  # bunker:
+  #   image: <nak-bunker image / build>     # `nak bunker`, pilot single-key
+  #   container_name: gw-bunker
+  #   restart: unless-stopped
+  #   expose:
+  #     - "<port>"
+  #   volumes:
+  #     - ./bunker/keystore:/keystore        # ENCRYPTED at rest, operator key offline
+
+  # --- OPTIONAL: private internal relay (PRINCIPLES §4) ---
+  # Deferred for the earliest pilot. Same image, separate DB + write policy,
+  # not exposed publicly (admin/tailnet access only).
+  # strfry-private:
+  #   image: dockurr/strfry:latest
+  #   container_name: gw-strfry-private
+  #   restart: unless-stopped
+  #   expose:
+  #     - "7777"
+  #   volumes:
+  #     - ./strfry-private/data:/app/strfry-db
+  #     - ./strfry-private/conf/strfry.conf:/etc/strfry.conf:ro
+
+networks:
+  default:
+    name: gemeinwert

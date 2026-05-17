@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BIM CVP — Project</title>
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">gemeinwert · BIM <span class="cvp">CVP</span></p>
+  <h1>Project coordination</h1>
+  <p class="lede">Signed BCF topics for your project. Your identity is managed for
+  you — there is no key to copy or lose.</p>
+
+  <div id="auth" class="card" hidden>
+    <p>You are not signed in to this device.</p>
+    <a href="./login.html"><button>Sign in</button></a>
+    <a href="./join.html"><button class="secondary">Join with a project code</button></a>
+  </div>
+
+  <div id="compose" class="card" hidden>
+    <h3 style="margin-top:0">New topic</h3>
+    <div id="banner"></div>
+    <label>Title</label>
+    <input id="t-title" maxlength="140" placeholder="e.g. Duct clashes beam, axis 4" />
+    <label>Description</label>
+    <textarea id="t-desc" placeholder="What is wrong, where, what is proposed"></textarea>
+    <div style="display:flex; gap:12px">
+      <div style="flex:1"><label>Type</label><select id="t-type"></select></div>
+      <div style="flex:1"><label>Status</label><select id="t-status"></select></div>
+      <div style="flex:1"><label>Priority</label><select id="t-prio"></select></div>
+    </div>
+    <button id="t-send">Publish topic</button>
+    <p class="status-line" id="compose-status"></p>
+  </div>
+
+  <div id="dash" class="card" hidden>
+    <h3 style="margin-top:0">Overview</h3>
+    <div class="kpis" id="kpis"></div>
+    <div class="charts">
+      <div class="chart">
+        <p class="chart-h">By status</p>
+        <div class="donut-row">
+          <div class="donut" id="donut"><span id="donut-total"></span></div>
+          <ul class="legend" id="st-legend"></ul>
+        </div>
+      </div>
+      <div class="chart">
+        <p class="chart-h">By type</p>
+        <div class="bars" id="ty-bars"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Project topics</h3>
+    <p class="status-line" id="feed-status">connecting…</p>
+    <div id="feed"></div>
+  </div>
+</div>
+
+<script type="module">
+// v1: the managed identity signs SERVER-SIDE via provision (no browser key,
+// no nsec ever). Reads of the relay are open and need no session.
+import * as cfg from "./config.js";
+import * as relay from "./lib/relay.js";
+import { buildTopicEvent, validateTopicEvent, parseTopic, STATUSES, TYPES, PRIORITIES } from "./lib/bcf.js";
+
+const $ = (id) => document.getElementById(id);
+for (const [sel, list, def] of [["t-type",TYPES,"Issue"],["t-status",STATUSES,"Open"],["t-prio",PRIORITIES,"Normal"]]) {
+  $(sel).innerHTML = list.map(v => `<option ${v===def?"selected":""}>${v}</option>`).join("");
+}
+
+const isDemo = !cfg.getProjectRef();
+const projectRef = cfg.getProjectRef() || cfg.DEMO_PROJECT_REF;
+const feed = $("feed"), topics = new Map();
+
+const ST_COLOR = { Open:"#f4c430", InProgress:"#5b9bd5", Resolved:"#4ade80", Closed:"#8a9aab" };
+const TY_COLOR = { Issue:"#f87171", Clash:"#f4c430", RFI:"#5b9bd5", Information:"#8a9aab", Decision:"#4ade80" };
+
+function renderDashboard(arr) {
+  const dash = $("dash");
+  // Showcase dashboard is for the public demo view only; real projects stay plain.
+  if (!arr.length || !isDemo) { dash.hidden = true; return; }
+  dash.hidden = false;
+  const total = arr.length;
+  const open = arr.filter(t => t.status==="Open"||t.status==="InProgress").length;
+  const done = arr.filter(t => t.status==="Resolved"||t.status==="Closed").length;
+  const hot  = arr.filter(t => t.priority==="High"||t.priority==="Critical").length;
+  $("kpis").innerHTML = [
+    ["Topics", total, "var(--ink)"], ["Open", open, "#f4c430"],
+    ["Resolved", done, "#4ade80"], ["High / Critical", hot, "#f87171"],
+  ].map(([k,v,c]) => `<div class="kpi"><span class="kpi-v" style="color:${c}">${v}</span><span class="kpi-k">${k}</span></div>`).join("");
+
+  // Status donut (conic-gradient) + legend.
+  const byS = {}; for (const t of arr) byS[t.status]=(byS[t.status]||0)+1;
+  let acc = 0; const stops = [];
+  for (const s of ["Open","InProgress","Resolved","Closed"]) {
+    const n = byS[s]||0; if (!n) continue;
+    const a = acc/total*360, b = (acc+n)/total*360; acc += n;
+    stops.push(`${ST_COLOR[s]} ${a}deg ${b}deg`);
+  }
+  $("donut").style.background = `conic-gradient(${stops.join(",")||"var(--line) 0deg 360deg"})`;
+  $("donut-total").textContent = total;
+  $("st-legend").innerHTML = ["Open","InProgress","Resolved","Closed"]
+    .filter(s => byS[s]).map(s => `<li><i style="background:${ST_COLOR[s]}"></i>${s} <b>${byS[s]}</b></li>`).join("");
+
+  // Type bars.
+  const byT = {}; for (const t of arr) byT[t.type]=(byT[t.type]||0)+1;
+  const max = Math.max(1, ...Object.values(byT));
+  $("ty-bars").innerHTML = ["Issue","Clash","RFI","Information","Decision"]
+    .filter(ty => byT[ty]).map(ty => `
+      <div class="bar"><span class="bar-k">${ty}</span>
+        <span class="bar-t"><span class="bar-f" style="width:${(byT[ty]/max*100).toFixed(1)}%;background:${TY_COLOR[ty]}"></span></span>
+        <span class="bar-v">${byT[ty]}</span></div>`).join("");
+}
+
+function render() {
+  const arr = [...topics.values()].sort((a,b)=>b.createdAt-a.createdAt);
+  renderDashboard(arr);
+  feed.innerHTML = arr.length ? arr.map(t => `
+    <div class="topic">
+      <h3>${esc(t.title)} <span class="pill ${t.status}">${t.status}</span></h3>
+      <div class="meta">${esc(t.type)}${t.priority?" · "+esc(t.priority):""} · ${rel(t.createdAt)} · a participant</div>
+      ${t.description?`<p class="desc">${esc(t.description)}</p>`:""}
+    </div>`).join("") : `<p class="note">No topics yet.</p>`;
+}
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function rel(ts){const d=Math.max(0,Date.now()/1000-ts);if(d<3600)return Math.floor(d/60)+"m ago";if(d<86400)return Math.floor(d/3600)+"h ago";return Math.floor(d/86400)+"d ago";}
+
+// Feed: open reads, no sign-in needed. Falls back to the public Citadel demo
+// project so visitors always see real signed BCF events.
+relay.subscribe(cfg.RELAY_URL, { kinds:[30900], "#a":[projectRef] }, {
+  onEvent: (ev) => {
+    if (!validateTopicEvent(ev).valid) return;
+    const t = parseTopic(ev), cur = topics.get(t.id);
+    if (!cur || ev.created_at >= cur.createdAt) { topics.set(t.id, t); render(); }
+  },
+  onEose: () => {
+    $("feed-status").innerHTML = isDemo
+      ? '<span class="live">live</span> · demo project “Citadel” (read-only)'
+      : '<span class="live">live</span> · reading project';
+  }
+});
+
+// Auth: a managed session is present iff login stored a session token + npub.
+const session = sessionStorage.getItem("bimcvp.session");
+const myPub = sessionStorage.getItem("bimcvp.npub") || "";
+const connected = !!(session && /^[0-9a-f]{64}$/.test(myPub));
+$("auth").hidden = connected;
+$("compose").hidden = !connected || isDemo;
+if (connected && isDemo) $("compose-status").textContent =
+  "Read-only demo project. Configure your own project to post.";
+
+$("t-send").addEventListener("click", async () => {
+  const btn = $("t-send"); btn.disabled = true;
+  $("banner").innerHTML = ""; $("compose-status").textContent = "publishing…";
+  try {
+    const unsigned = buildTopicEvent({
+      projectRef, pubkey: myPub,
+      title: $("t-title").value, description: $("t-desc").value,
+      status: $("t-status").value, type: $("t-type").value, priority: $("t-prio").value,
+    });
+    const v = validateTopicEvent({ ...unsigned, id: "x" });
+    if (!v.valid) throw new Error(v.errors.join(", "));
+    // Managed identity signs in provision (server-side); browser holds no key.
+    const r = await fetch(cfg.PROVISION_URL + "/api/sign-publish", {
+      method: "POST",
+      headers: { "content-type": "application/json", "authorization": "Bearer " + session },
+      body: JSON.stringify({ kind: 30900, content: unsigned.content, tags: unsigned.tags }),
+    });
+    if (r.ok) {
+      $("banner").innerHTML = '<div class="banner ok">Topic published.</div>';
+      $("t-title").value = ""; $("t-desc").value = "";
+      const t = parseTopic(unsigned); topics.set(t.id, t); render();
+    } else if (r.status === 401) {
+      $("banner").innerHTML = '<div class="banner warn">Your sign-in expired. '
+        + '<a href="./login.html">Sign in again</a>.</div>';
+    } else {
+      $("banner").innerHTML = '<div class="banner warn">Could not publish yet. '
+        + 'If you just joined, posting is enabled within ~2 minutes — try again '
+        + 'shortly.</div>';
+    }
+  } catch (e) {
+    $("banner").innerHTML = '<div class="banner warn">Could not publish. Please try again.</div>';
+  } finally {
+    btn.disabled = false; $("compose-status").textContent = "";
+  }
+});
+</script>
+</body>
+</html>

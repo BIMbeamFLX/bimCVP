@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wiki &mdash; BIM-CVP</title>
+  <meta name="description" content="BIM-CVP wiki: openBIM standards, buildingSMART references, workflow model and signed event mapping." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../en/standards.html">Standards</a>
+      <a href="./" class="active">Wiki</a>
+      <a href="../en/bim-cvp.html">BIM-CVP</a>
+      <a href="../en/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide wiki-index">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; wiki</p>
+
+    <header class="art-head">
+      <h1>BIM-CVP wiki.</h1>
+      <p class="art-lede">
+        Start with the concept, then the standards, then the event model. Larger
+        subjects have dedicated pages. Smaller details live in collected reference
+        notes until they deserve their own page.
+      </p>
+    </header>
+
+    <section class="wiki-chapter" id="understand">
+      <p class="hub-sec__eyebrow">Understand</p>
+      <h2>What problem are we solving?</h2>
+      <ul class="wiki-list">
+        <li>
+          <a href="grundlagen/openbim.html">What is BIM and openBIM</a>
+          <span>Model vs file, open standards, and why building data must outlive tools.</span>
+        </li>
+        <li>
+          <a href="grundlagen/platform-problem.html">The platform problem</a>
+          <span>Why openBIM data still gets trapped in vendor portals and project silos.</span>
+        </li>
+        <li>
+          <a href="../en/bim-cvp.html">BIM-CVP protocol framing</a>
+          <span>Common Value Protocol, Austrian economics framing, Nostr and signed responsibility.</span>
+        </li>
+        <li>
+          <a href="nostr-mapping/alice-bob-max.html">Alice, Bob, Max</a>
+          <span>A concrete story showing how project records link together as signed, verifiable events.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wiki-chapter" id="standards">
+      <p class="hub-sec__eyebrow">Standards</p>
+      <h2>What do we build on?</h2>
+      <ul class="wiki-list">
+        <li>
+          <a href="standards/buildingsmart-international.html">buildingSMART International</a>
+          <span>The main source map: IFC, BCF, IDS, bSDD, openCDE, validation and UCM.</span>
+        </li>
+        <li>
+          <a href="../en/standards.html">Pinned standards profile</a>
+          <span>The exact versions used for implementation and tests.</span>
+        </li>
+        <li>
+          <a href="modell/ifc.html">IFC</a>
+          <span>The building model as structured data, including schema and identity rules.</span>
+        </li>
+        <li>
+          <a href="koordination/bcf.html">BCF</a>
+          <span>Topics, comments, viewpoints and the coordination format BIM-CVP extends.</span>
+        </li>
+        <li>
+          <a href="anforderungen/ids.html">IDS</a>
+          <span>Machine-checkable information requirements for IFC delivery.</span>
+        </li>
+        <li>
+          <a href="prozess/iso-19650.html">ISO 19650</a>
+          <span>The process frame: roles, requirements, states and approvals.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wiki-chapter" id="events">
+      <p class="hub-sec__eyebrow">Event model</p>
+      <h2>How do standards become signed records?</h2>
+      <ul class="wiki-list">
+        <li>
+          <a href="nostr-mapping/workflow.html">Workflow model</a>
+          <span>End-to-end process: project setup, model publishing, coordination, validation and approval.</span>
+        </li>
+        <li>
+          <a href="nostr-mapping/bcf-events.html">BCF to Nostr events</a>
+          <span>Detailed event kinds, tags, examples, queries and round-trip rules.</span>
+        </li>
+        <li>
+          <a href="nostr-mapping/kind-mapping.html">Kind registry</a>
+          <span>Every event kind used by BIM-CVP across BCF, IFC, IDS and lifecycle records.</span>
+        </li>
+        <li>
+          <a href="nostr/basics.html">Nostr basics</a>
+          <span>Keypairs, signatures, relays, NIP-07 and why this is not a blockchain.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wiki-chapter" id="reference-notes">
+      <p class="hub-sec__eyebrow">Reference notes</p>
+      <h2>Small topics grouped in one place.</h2>
+      <p class="wiki-note">
+        The field guide is no longer a main learning path. It is a holding area for
+        smaller reference notes that do not need a dedicated page yet.
+      </p>
+      <ul class="wiki-list compact">
+        <li>
+          <a href="field-guide.html#ifc-layers">Model notes</a>
+          <span>IFC layers, core entities, property sets, quantity sets and MVDs.</span>
+        </li>
+        <li>
+          <a href="field-guide.html#bcf-xml">Coordination notes</a>
+          <span>BCF-XML, BCF-API and openCDE integration boundaries.</span>
+        </li>
+        <li>
+          <a href="field-guide.html#loin">Requirements notes</a>
+          <span>LOIN, PIR/EIR/AIR/OIR and IDM process references.</span>
+        </li>
+        <li>
+          <a href="field-guide.html#bsdd">Dictionary and lifecycle notes</a>
+          <span>bSDD, classification systems, AIM, building logbook and DPP.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wiki-chapter" id="profiles">
+      <p class="hub-sec__eyebrow">Profiles</p>
+      <h2>Regional and client overlays.</h2>
+      <p class="wiki-note">
+        Profiles adapt terminology, procurement references, phase names and client
+        exchange gates. They must not change the core BIM-CVP event model.
+      </p>
+      <ul class="wiki-list compact">
+        <li>
+          <a href="standards/buildingsmart-switzerland.html">Switzerland profile</a>
+          <span>Bauen digital Schweiz, KBOB, BIM-Abwicklungsmodell, glossary and BIM2FM.</span>
+        </li>
+        <li>
+          <a href="field-guide.html#dach-comparison">Regional profile notes</a>
+          <span>Short notes for DACH, Italy and other local implementations.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wiki-chapter" id="relay-wiki">
+      <p class="hub-sec__eyebrow">Next architecture</p>
+      <h2>Nostr relay wiki.</h2>
+      <p class="wiki-note">
+        A relay-backed wiki can add signed authorship and portable editing. The public
+        site remains the stable reading surface; relay events can become the signed
+        source layer behind it.
+      </p>
+      <ul class="wiki-list compact">
+        <li>
+          <a href="nostr/basics.html">Event basics</a>
+          <span>Use signed authorship and relays for publication.</span>
+        </li>
+        <li>
+          <a href="../en/bim-cvp.html#technical">Protocol fit</a>
+          <span>Long-form Markdown pages fit Nostr addressable events.</span>
+        </li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap-art-wide art-foot">
+  <span>Wiki &middot; gemeinwert / BIM-CVP</span>
+  <a href="../en/">back to home</a>
+</footer>
+
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

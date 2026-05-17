@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>nostr-cvp embed example</title>
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    body {
+      background: #101418;
+      color: #f5f0e6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 48px 24px;
+    }
+  </style>
+</head>
+<body>
+  <bcf-quickform
+    project="30902:0000000000000000000000000000000000000000000000000000000000000000:building-2026"
+    relays=""
+  ></bcf-quickform>
+
+  <script type="module" src="../index.js"></script>
+  <script>
+    document.addEventListener("bcf-quickform:signed", (event) => {
+      console.log("signed event", event.detail.event);
+    });
+  </script>
+</body>
+</html>

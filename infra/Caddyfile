@@ -1,0 +1,93 @@
+# Gemeinwert / BIM CVP — Caddy (auto-TLS via Let's Encrypt).
+#
+#   gemeinwert.com = the brand WEBSITE (DACH, human audience). Static site only.
+#   bimcvp.com     = the PROTOCOL hub: relay, NIP-05 identity (name@bimcvp.com),
+#                    wallet, blossom, dev/NIP docs. International, technical.
+#
+# No 301 between them — different surfaces, they cross-link in content.
+# Both are served by this one Caddy on the VPS.
+#
+# NOTE: gemeinwert.com / bimcvp.com are EXAMPLE domains — replace them
+# (and the ACME email below) with your own when self-hosting.
+#
+# DNS prerequisite (at your DNS provider; IPv4 203.0.113.10, IPv6
+# 2001:db8::1 — placeholders, use your server's real IPs). A + AAAA for each:
+#   gemeinwert.com   @ , www
+#   bimcvp.com       @ , www , relay , pay , blossom , portainer , bunker(Phase 2)
+# Do NOT touch your-mail-domain.tld (your mail).
+
+{
+	email admin@bimcvp.com          # Let's Encrypt notices — use a REACHABLE inbox
+}
+
+# === gemeinwert.com — brand website (DACH) ==================================
+gemeinwert.com {
+	encode zstd gzip
+	root * /srv/site
+	try_files {path} {path}/ {path}.html /index.html
+	file_server
+}
+
+www.gemeinwert.com {
+	redir https://gemeinwert.com{uri} permanent
+}
+
+# === bimcvp.com — protocol / identity hub ==================================
+bimcvp.com {
+	encode zstd gzip
+
+	# NIP-05: clean handles  name@bimcvp.com
+	# LNbits `nostrnip5` extension answers the well-known JSON.
+	# VERIFY upstream path after enabling the extension (README §5);
+	# adjust the rewrite target if nostrnip5 serves under /nostrnip5/... .
+	handle /.well-known/nostr.json* {
+		reverse_proxy lnbits:5000
+	}
+
+	# Lightning Address (LNURL-pay) resolves on the protocol domain too
+	handle /.well-known/lnurlp/* {
+		reverse_proxy lnbits:5000
+	}
+
+	# Protocol/dev surface. For now it serves the same static site
+	# (which already carries the wiki / standards / nostr pages).
+	# A dedicated /protocol or dev landing can replace this later.
+	handle {
+		root * /srv/site
+		try_files {path} {path}/ {path}.html /index.html
+		file_server
+	}
+}
+
+www.bimcvp.com {
+	redir https://bimcvp.com{uri} permanent
+}
+
+# === Services (all under bimcvp.com) =======================================
+relay.bimcvp.com {
+	reverse_proxy strfry:7777
+}
+
+pay.bimcvp.com {
+	reverse_proxy lnbits:5000
+}
+
+blossom.bimcvp.com {
+	reverse_proxy blossom:3000
+}
+
+# Container management UI. Caddy terminates TLS; Portainer has its own admin
+# login (set a strong password on FIRST visit, within minutes — until then
+# anyone can claim admin). Optional defense-in-depth: uncomment basic_auth
+# (generate hash:  docker run --rm caddy caddy hash-password --plaintext 'PW').
+portainer.bimcvp.com {
+	# basic_auth {
+	#	admin <bcrypt-hash>
+	# }
+	reverse_proxy portainer:9000
+}
+
+# PHASE 2 — uncomment once the NIP-46 bunker service is up (README §7)
+# bunker.bimcvp.com {
+# 	reverse_proxy bunker:<port>
+# }

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>buildingSMART International &mdash; BIM-CVP Wiki</title>
+  <meta name="description" content="buildingSMART International as the standards body behind openBIM: IFC, BCF, IDS, bSDD, openCDE, validation, UCM and how BIM-CVP maps them to signed events." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/bim-cvp.html">BIM-CVP</a>
+      <a href="../../en/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; standards &nbsp;/&nbsp; buildingSMART International</p>
+
+    <header class="art-head">
+      <h1>buildingSMART International</h1>
+      <p class="art-lede">
+        The international standards home for openBIM. For BIM-CVP it
+        defines the semantic layer: IFC for model data, BCF for coordination, IDS for
+        requirements, bSDD for vocabulary, openCDE for interoperability and UCM/IDM
+        for use-case context.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">Position</span>
+        <p>
+          BIM-CVP must not invent a BIM standard. BIM-CVP should implement the
+          buildingSMART standards faithfully and add only the missing signed-record
+          and value-evidence layer around them.
+        </p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#what-it-is">What buildingSMART owns</a></li>
+          <li><a href="#product-framing">Product framing</a></li>
+          <li><a href="#standards-map">Standards map</a></li>
+          <li><a href="#workflow">International openBIM workflow</a></li>
+          <li><a href="#event-policy">BIM-CVP event policy</a></li>
+          <li><a href="#implementation-impact">Implementation impact</a></li>
+          <li><a href="#source-links">Direct source links</a></li>
+        </ul>
+      </div>
+
+      <h2 id="what-it-is">What buildingSMART owns</h2>
+
+      <p>
+        buildingSMART International is the organisation behind the core openBIM
+        standards and services. Its standards page groups the ecosystem around
+        IFC, IDS, BCF, bSDD, the IFC Validation Service, openCDE and Use Case
+        Management. The important point for us is responsibility: buildingSMART
+        defines interoperable exchange semantics; BIM-CVP defines how a project
+        records, signs, discovers and audits those exchanges.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Question</th><th>buildingSMART answer</th><th>BIM-CVP answer</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>What is the model?</td><td>IFC schema and documentation.</td><td>Hash and reference the IFC file; never mutate it.</td></tr>
+          <tr><td>What must be delivered?</td><td>IDS, LOIN and exchange requirements.</td><td>Sign requirement specs and validation results.</td></tr>
+          <tr><td>How are issues exchanged?</td><td>BCF XML and BCF API.</td><td>Map topics, comments, viewpoints and audits to events.</td></tr>
+          <tr><td>How do terms stay stable?</td><td>bSDD URIs, classifications, dictionaries.</td><td>Store URI references in tags/content, not local synonyms.</td></tr>
+          <tr><td>How do CDEs interoperate?</td><td>openCDE APIs: Foundation, BCF, Documents, Dictionary.</td><td>Build adapters, not a closed platform.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="product-framing">Product framing</h2>
+
+      <p>
+        This is the clean market position: buildingSMART International defines the
+        openBIM objects and exchange semantics; BIM-CVP defines the
+        portable record layer around those objects. The product should therefore be
+        explained as implementation infrastructure for buildingSMART workflows, not
+        as a regional BIM profile and not as a competing CDE.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>buildingSMART layer</th><th>What stays standard</th><th>What CVP adds</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>IFC</td><td>The model file, schema version, GlobalIds and property data.</td><td>Signed file references, hashes, provenance and approval state.</td></tr>
+          <tr><td>BCF</td><td>Topics, comments, viewpoints, snapshots and project value lists.</td><td>Signed event graph, authorship, relay discovery and audit events.</td></tr>
+          <tr><td>IDS</td><td>Machine-checkable delivery requirements for IFC data.</td><td>Versioned requirement records and signed validation results.</td></tr>
+          <tr><td>bSDD</td><td>Stable concepts, properties, classifications and multilingual terms.</td><td>URI references inside events instead of local label forks.</td></tr>
+          <tr><td>openCDE</td><td>Foundation, BCF, Documents and Dictionary API boundaries.</td><td>Adapters that sync signed records with existing CDE products.</td></tr>
+          <tr><td>UCM / IDM</td><td>Use cases, process steps and information exchange needs.</td><td>Traceable reasons for why an event exists and who needs it.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="standards-map">Standards map</h2>
+
+      <table>
+        <thead>
+          <tr><th>Standard / service</th><th>Official role</th><th>Our event family</th><th>Do not confuse with</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="https://www.buildingsmart.org/standards/bsi-standards/industry-foundation-classes/" target="_blank" rel="noopener">IFC</a></td><td>Digital description of built assets, ISO 16739.</td><td><code>1063</code>, <code>30904</code>, <code>ifc</code> tags.</td><td>Native authoring file.</td></tr>
+          <tr><td><a href="https://www.buildingsmart.org/standards/bsi-standards/bim-collaboration-format/" target="_blank" rel="noopener">BCF</a></td><td>Issue management and coordination via file exchange or web service.</td><td><code>30900</code>, <code>30901</code>, <code>1170</code>, <code>1171</code>.</td><td>General chat or task management.</td></tr>
+          <tr><td><a href="https://www.buildingsmart.org/standards/bsi-standards/information-delivery-specification-ids/" target="_blank" rel="noopener">IDS</a></td><td>Computer-interpretable requirements for checking IFC data.</td><td><code>30810</code>, <code>1180</code>.</td><td>PDF requirement list only humans can read.</td></tr>
+          <tr><td><a href="https://www.buildingsmart.org/standards/" target="_blank" rel="noopener">bSDD</a></td><td>Terms, classifications and properties with stable identifiers.</td><td><code>classification-uri</code>, <code>bsdd-uri</code> tags.</td><td>Project-local spreadsheet vocabulary.</td></tr>
+          <tr><td><a href="https://github.com/buildingSMART/OpenCDE-API" target="_blank" rel="noopener">openCDE</a></td><td>API portfolio for CDE interoperability.</td><td>Adapter targets for export/import.</td><td>One central storage product.</td></tr>
+          <tr><td><a href="https://www.buildingsmart.org/standards/" target="_blank" rel="noopener">Validation Service</a></td><td>IFC validation and implementation feedback.</td><td>Validation report files and <code>1180</code> events.</td><td>Project approval.</td></tr>
+          <tr><td><a href="https://ucm.buildingsmart.org/" target="_blank" rel="noopener">UCM</a></td><td>Use Case Management for openBIM workflows.</td><td>Use-case references in project setup.</td><td>A runtime workflow engine.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="workflow">International openBIM workflow</h2>
+
+      <p>
+        buildingSMART describes openBIM workflow as flexible rather than one
+        universal process. That is exactly why the BIM-CVP workflow page is
+        explicit: it fixes one implementable profile while staying exportable to
+        normal IFC, IDS and BCF artifacts.
+      </p>
+
+      <pre>Define requirements
+  -> IDS / LOIN / use case
+  -> signed requirement events
+
+Author information
+  -> native tools produce IFC / documents
+  -> files get hash and metadata events
+
+Coordinate
+  -> BCF topics, comments, viewpoints
+  -> signed BCF event graph
+
+Validate
+  -> IDS checking and IFC validation
+  -> signed validation results
+
+Approve / publish
+  -> ISO 19650 state transition
+  -> signed approval event</pre>
+
+      <h2 id="event-policy">BIM-CVP event policy</h2>
+
+      <p>
+        For implementation, this page sets the boundary: every event must either
+        carry a buildingSMART object, reference a buildingSMART object, or record
+        the workflow decision around such an object.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>Why</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Use official version names.</td><td>Compatibility depends on exact schema.</td><td><code>IFC4X3_ADD2</code>, <code>BCF 3.0</code>, <code>IDS 1.0</code>.</td></tr>
+          <tr><td>Keep original GUIDs.</td><td>Round-trip depends on BCF/IFC identity.</td><td>Topic GUID in <code>d</code> and <code>bcf-guid</code>.</td></tr>
+          <tr><td>Link files by hash.</td><td>Storage location can change; bytes must not.</td><td><code>kind:1063</code> with <code>x</code> SHA-256.</td></tr>
+          <tr><td>Prefer URI references for vocabulary.</td><td>Local terms drift.</td><td>bSDD or national classification URI.</td></tr>
+          <tr><td>Export always remains possible.</td><td>OpenBIM is the escape hatch.</td><td>Events to BCFZIP, IFC references, IDS reports.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="implementation-impact">Implementation impact</h2>
+
+      <div class="spec-grid">
+        <div class="spec-card">
+          <h3>Module code</h3>
+          <p>Forms should ask for standard fields first: status, type, priority, IFC GUID, viewpoint, file reference.</p>
+        </div>
+        <div class="spec-card">
+          <h3>Validation</h3>
+          <p>Client-side schema checks should reject events that cannot round-trip to the matching standard.</p>
+        </div>
+        <div class="spec-card">
+          <h3>Wiki</h3>
+          <p>Every explanation page should end with implementation mapping and direct source links.</p>
+        </div>
+        <div class="spec-card">
+          <h3>Adapters</h3>
+          <p>Adapters target buildingSMART artifacts and APIs, not proprietary data models first.</p>
+        </div>
+      </div>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../../en/standards.html">Pinned standards</a> &mdash; current implementation baseline</li>
+          <li><a href="../nostr-mapping/workflow.html">Workflow model</a> &mdash; concrete process profile</li>
+          <li><a href="../nostr-mapping/bcf-events.html">BCF to Nostr events</a> &mdash; detailed mapping</li>
+          <li><a href="../grundlagen/openbim.html">BIM and openBIM</a> &mdash; plain-language primer</li>
+        </ul>
+      </div>
+
+      <h2 id="source-links">Direct source links</h2>
+      <ul>
+        <li><a href="https://www.buildingsmart.org/standards/" target="_blank" rel="noopener">buildingSMART International &mdash; Solutions and Standards</a></li>
+        <li><a href="https://www.buildingsmart.org/about/openbim/" target="_blank" rel="noopener">buildingSMART International &mdash; openBIM</a></li>
+        <li><a href="https://technical.buildingsmart.org/standards/" target="_blank" rel="noopener">buildingSMART Technical &mdash; Standards portal</a></li>
+        <li><a href="https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/content/introduction.htm" target="_blank" rel="noopener">IFC 4.3.2.0 documentation</a></li>
+        <li><a href="https://github.com/buildingSMART/BCF-API" target="_blank" rel="noopener">BCF API repository</a></li>
+        <li><a href="https://github.com/buildingSMART/BCF-XML" target="_blank" rel="noopener">BCF XML repository</a></li>
+        <li><a href="https://github.com/buildingSMART/IDS" target="_blank" rel="noopener">IDS repository</a></li>
+        <li><a href="https://github.com/buildingSMART/OpenCDE-API" target="_blank" rel="noopener">openCDE API repository</a></li>
+        <li><a href="https://user.buildingsmart.org/knowledge-base/openbim-workflows-explained/" target="_blank" rel="noopener">buildingSMART User Program &mdash; openBIM workflows explained</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Standards &middot; buildingSMART International</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

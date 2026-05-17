@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Platform Problem &mdash; BIM-CVP Wiki</title>
+  <meta name="description" content="Why open BIM standards still end up locked inside vendor platforms, and how BIM-CVP keeps coordination, approvals and audit trails portable." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/bim-cvp.html">BIM-CVP</a>
+      <a href="../../en/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; basics &nbsp;/&nbsp; platform problem</p>
+
+    <header class="art-head">
+      <h1>The platform problem</h1>
+      <p class="art-lede">
+        buildingSMART made the data formats open. The missing layer is the place
+        where coordination, approvals, comments and audit trails live after the
+        files have been exchanged.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">Core issue</span>
+        <p>
+          IFC, BCF and IDS are portable. The project memory around them often is
+          not. That memory is where cost, responsibility and legal evidence sit.
+        </p>
+      </div>
+
+      <h2>The open-standard gap</h2>
+      <p>
+        The construction industry already has strong open standards: IFC for model
+        data, BCF for coordination issues, IDS for machine-checkable requirements,
+        and ISO 19650 for information-management states. Those standards solve the
+        exchange format problem.
+      </p>
+      <p>
+        They do not define a neutral project memory. In practice, the running
+        conversation lives in vendor portals: issue comments, status changes,
+        permissions, review decisions, uploaded snapshots, approval history and
+        export logs. Exporting a file is possible; exporting the full trace of who
+        did what, when and why is the hard part.
+      </p>
+
+      <h2>What gets locked in</h2>
+      <table>
+        <thead>
+          <tr><th>Project record</th><th>Open format exists?</th><th>Typical lock-in point</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Model geometry and properties</td><td>IFC</td><td>Native authoring model and vendor-specific parameters.</td></tr>
+          <tr><td>Coordination issue</td><td>BCF</td><td>Live comments, assignment history and status audit.</td></tr>
+          <tr><td>Information requirement</td><td>IDS / EIR / AIR</td><td>PDF wording, portal-specific checks and approval workflow.</td></tr>
+          <tr><td>Document approval</td><td>ISO 19650 process</td><td>Sign-off evidence trapped in a CDE account.</td></tr>
+          <tr><td>Handover memory</td><td>AIM / BIM2FM</td><td>Operation data scattered across exported files and inboxes.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>The five practical pains</h2>
+      <p>
+        The key point is simple: the pain is not that vendor tools are bad. Many
+        are excellent. The problem is that the authoritative
+        record of a public or private building becomes dependent on a commercial
+        account model.
+      </p>
+      <ul>
+        <li><strong>Subscription math.</strong> A project can pay for seats every year while the building itself has a fifty-year life.</li>
+        <li><strong>Coordination lock-in.</strong> BCF exports exist, but the live thread and audit often stay inside the portal.</li>
+        <li><strong>Project memory loss.</strong> The person, tenant or subscription that owned a record may disappear long before the building does.</li>
+        <li><strong>Client switching cost.</strong> A new client platform can mean weeks of migration and provenance loss.</li>
+        <li><strong>Public-sector sovereignty.</strong> Public data should not require a foreign platform account to remain readable.</li>
+      </ul>
+
+      <h2>What BIM-CVP adds</h2>
+      <p>
+        BIM-CVP does not replace Revit, Archicad, Solibri, BIMcollab,
+        Trimble Connect or ACC. It adds a small signed-record layer below the
+        project workflow and beside the existing file formats.
+      </p>
+      <pre>IFC / BCF / IDS payloads
+  -> file hash and neutral storage reference
+  -> signed Nostr event
+  -> relays mirror the project memory
+  -> export back to openBIM formats stays possible</pre>
+      <p>
+        The result is not a new central platform. It is a portable event graph:
+        every topic, comment, validation result and approval can be verified by
+        signature and traced back to its source file.
+      </p>
+
+      <h2>Implementation rule</h2>
+      <p>
+        If a record is part of the building memory, it should be exportable,
+        hash-addressed where file-backed, and signed by its author. If a record
+        cannot survive a CDE switch, it is not yet sovereign enough for the
+        BIM-CVP profile.
+      </p>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="openbim.html">BIM and openBIM</a> &mdash; the standard landscape</li>
+          <li><a href="../koordination/bcf.html">BCF</a> &mdash; coordination format explained</li>
+          <li><a href="../nostr-mapping/workflow.html">Workflow model</a> &mdash; how the event graph works</li>
+          <li><a href="../nostr-mapping/bcf-events.html">BCF to Nostr events</a> &mdash; detailed mapping</li>
+        </ul>
+      </div>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Basics &middot; platform problem</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

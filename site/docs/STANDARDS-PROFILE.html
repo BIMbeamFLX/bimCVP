@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Standards Profile — Gemeinwert / BIM CVP &mdash; Gemeinwert Docs</title>
+  <meta name="description" content="Purpose. Fixes which versions of which buildingSMART and ISO standards the pilot uses exactly, with reasoning per choice. Based on the deep research from May 2026 and the CDE market research." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <style>
+    body::before { display: none; }
+    .doc-wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    .doc-head { padding: 42px 0 28px; border-bottom: 1px solid var(--line); }
+    .doc-head .crumb { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+    .doc-head .crumb a { color: var(--muted); }
+    .doc-head h1 { font-family: var(--font-display); font-size: clamp(34px, 5vw, 58px); line-height: 1.08; font-weight: 400; margin: 0; }
+    .doc-head p { max-width: 72ch; color: var(--ink-2); font-size: 17px; line-height: 1.65; margin: 18px 0 0; }
+    .doc-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 34px 0 64px; }
+    .doc { max-width: 860px; }
+    .doc h2 { font-family: var(--font-display); font-size: 30px; line-height: 1.2; font-weight: 400; margin: 42px 0 14px; padding-top: 8px; border-top: 1px solid var(--line); }
+    .doc h3 { font-family: var(--font-display); font-size: 22px; line-height: 1.25; font-weight: 400; color: var(--gold); margin: 32px 0 10px; }
+    .doc h4 { font-size: 16px; color: var(--ink); margin: 24px 0 8px; }
+    .doc p, .doc li { color: var(--ink-2); font-size: 16px; line-height: 1.7; }
+    .doc p { margin: 0 0 16px; }
+    .doc a { color: var(--gold); }
+    .doc code { font-family: var(--font-mono); font-size: 0.92em; background: rgba(255,255,255,.055); border: 1px solid var(--line); border-radius: 4px; padding: 0.08rem 0.28rem; color: var(--ink); }
+    .doc pre { overflow-x: auto; background: #10151b; border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; margin: 20px 0; }
+    .doc pre code { background: transparent; border: 0; padding: 0; color: var(--ink); font-size: 13px; line-height: 1.55; }
+    .doc table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 14px; }
+    .doc th, .doc td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+    .doc th { color: var(--ink); background: rgba(255,255,255,.045); font-weight: 600; }
+    .doc td { color: var(--ink-2); }
+    .doc blockquote { margin: 20px 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--gold); color: var(--ink-2); }
+    .doc hr { border: 0; border-top: 1px solid var(--line); margin: 34px 0; }
+    .doc-foot { border-top: 1px solid var(--line); padding: 28px 0 56px; color: var(--dim); font-size: 13px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .doc-foot a { color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div><div class="brand__word">gemeinwert</div><div class="brand__sub">BIM <span class="cvp">CVP</span></div></div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../en/">Home</a>
+      <a href="../en/standards.html">Standards</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="../en/bim-cvp.html">BIM-CVP</a>
+      <a href="../en/about.html">About</a>
+    </nav>
+  </div>
+</header>
+<main class="doc-wrap">
+  <header class="doc-head">
+    <p class="crumb"><a href="../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="./">docs</a> &nbsp;/&nbsp; STANDARDS-PROFILE.html</p>
+    <h1>Standards Profile — Gemeinwert / BIM CVP</h1>
+    <p>Purpose. Fixes which versions of which buildingSMART and ISO standards the pilot uses exactly, with reasoning per choice. Based on the deep research from May 2026 and the CDE market research.</p>
+  </header>
+  <div class="doc-layout">
+    <article class="doc">
+<p><strong>Purpose.</strong> Fixes which versions of which buildingSMART and ISO standards the pilot uses exactly, with reasoning per choice. Based on the deep research from May 2026 and the CDE market research.</p>
+<p><strong>Principle.</strong> Not generic &quot;IFC4&quot; or &quot;BCF&quot; — but exact pinned versions. Otherwise the pilot drifts into incompatibilities and the NIP draft has no test vectors.</p>
+<hr />
+<h3 id="1-canonical-model-format-ifc-4-3-2-0">1. Canonical model format: IFC 4.3.2.0</h3>
+<ul>
+<li><strong>Version:</strong> IFC 4.3.2.0 (official schema designation)</li>
+<li><strong>Released:</strong> April 2024</li>
+<li><strong>Status:</strong> official buildingSMART standard, semantically identical to ISO 16739-1:2024 (the published 4.3.2.0 documentation adds examples and typo corrections)</li>
+<li><strong>Reason:</strong> the current official core for buildings and infrastructure. First IFC release that covers bridges, road, rail, tunnels and ports. Still fully compatible with IFC4 workflows for buildings.</li>
+</ul>
+<p><strong>Legacy read paths (read-only):</strong></p>
+<ul>
+<li><strong>IFC 4.0.2.1 (IFC4 ADD2 TC1)</strong>, October 2017 — widely used in building toolchains, ISO 16739-1:2018</li>
+<li><strong>IFC 2x3 TC1</strong>, July 2007 — required for legacy FM stock</li>
+<li>IFC 4.1.0.0 (June 2018) and 4.2.0.0 (April 2019) are withdrawn — read path optional</li>
+</ul>
+<p><strong>Not for use:</strong> IFC 4.4.x dev and IFC 5 dev are not production-ready. Keep watch, but no pilot use.</p>
+<p><strong>Tag value normalization at code level:</strong> in the <code>schema</code> tag we use toolchain-common labels <code>IFC4X3_ADD2</code> (for IFC 4.3.2.0), <code>IFC4_ADD2_TC1</code> (for 4.0.2.1), <code>IFC2X3_TC1</code> (for 2x3 TC1).</p>
+<hr />
+<h3 id="2-standard-exchange-profile-reference-view-1-2">2. Standard exchange profile: Reference View 1.2</h3>
+<ul>
+<li><strong>MVD:</strong> Reference View 1.2 for IFC4 ADD2 TC1</li>
+<li><strong>Status:</strong> official, Final</li>
+<li><strong>Reason:</strong> broadest interoperability for reference-based exchange in buildings and most of infrastructure. This is the &quot;safest&quot; default for a CDE.</li>
+</ul>
+<p><strong>Special MVDs that need conditional support:</strong></p>
+<table><thead><tr><th>MVD</th><th>IFC base</th><th>When</th><th>Status</th></tr></thead><tbody>
+<tr><td>Reference View 1.2</td><td>IFC4 ADD2 TC1</td><td>building default</td><td>Final</td></tr>
+<tr><td>Alignment Based View 1.0</td><td>IFC 4.3</td><td>road, rail, tunnel — infrastructure projects</td><td>in formal review 2025</td></tr>
+<tr><td>Design Transfer View</td><td>IFC4 ADD2 TC1</td><td>one-way authoring-tool-to-tool transfer</td><td>never cleanly finalized by buildingSMART — not a primary target</td></tr>
+<tr><td>IFC4Precast</td><td>IFC4 ADD2 TC1</td><td>precast — explicitly separate from RV</td><td>Final</td></tr>
+<tr><td>Quantity Takeoff View</td><td>IFC4 ADD2 TC1</td><td>BOQ / quantities linkage (parking lot)</td><td>Draft</td></tr>
+<tr><td>Energy Analysis View</td><td>IFC4 ADD2 TC1</td><td>EPBD recast energy reports</td><td>Draft</td></tr>
+<tr><td>Product Library View</td><td>IFC4 ADD2 TC1</td><td>manufacturer PDTs (<code>kind:30850</code> later)</td><td>Draft</td></tr>
+<tr><td>IFC2x3 Coordination View</td><td>IFC 2x3 TC1</td><td>legacy coordination</td><td>Final</td></tr>
+<tr><td>IFC2x3 Basic FM Handover View</td><td>IFC 2x3 TC1</td><td>CAFM/CMMS handover to legacy tools</td><td>Final</td></tr>
+</tbody></table>
+<p><strong>Pilot default:</strong> Reference View 1.2. Other MVDs only when the specific use case forces them. For infrastructure projects use Alignment Based View 1.0 once production and tool-validated.</p>
+<p><strong>MVD formalization:</strong> all MVDs are defined in <code>mvdXML</code>, a buildingSMART-standardised format for formal IFC schema subset description.</p>
+<hr />
+<h3 id="3-information-requirements-ids-1-0">3. Information requirements: IDS 1.0</h3>
+<ul>
+<li><strong>Version:</strong> IDS 1.0</li>
+<li><strong>Released:</strong> 1 June 2024</li>
+<li><strong>Status:</strong> official buildingSMART standard, Final (pre-1.0 versions were not official)</li>
+<li><strong>Reason:</strong> the first Final standard for machine-readable information requirements with clear IFC binding. Replaces informal EIR PDFs with machine-checkable specs.</li>
+</ul>
+<p><strong>What IDS can check:</strong> requirements on properties, quantities/attributes, materials, classifications, entity types, and <code>partOf</code> dependencies.</p>
+<p><strong>What IDS does not cover:</strong> geometry requirements. Those stay with MVD + LOIN.</p>
+<p><strong>Practical consequence:</strong> IDS today is often the more effective lever than purely textual specifications, because it is machine-checkable and versionable like code. EIR/AIA texts can remain attachments; operational requirements move into IDS.</p>
+<hr />
+<h3 id="4-coordination-bcf-api-3-0-bcf-xml-3-0">4. Coordination: BCF API 3.0 + BCF XML 3.0</h3>
+<ul>
+<li><strong>BCF API 3.0:</strong> Final, released <strong>17 June 2021</strong></li>
+<li><strong>BCF XML 3.0:</strong> Final, released <strong>18 June 2021</strong></li>
+<li><strong>Fallback BCF API 2.1:</strong> Final, released <strong>16 January 2017</strong></li>
+<li><strong>Fallback BCF XML 2.1:</strong> Final</li>
+<li><strong>Reason:</strong> BCF 3.0 builds on 2.1, extends OpenCDE integration and introduces <code>ServerAssignedId</code>, <code>DocumentReferences</code>, <code>ViewSetupHints</code>, <code>Coloring</code>, <code>Bitmaps</code>. Required for ISO-19650-compliant workflows. Auth/authorization with per-entity authorization and project extensions is much cleaner for CDE operation than 2.1.</li>
+</ul>
+<p><strong>Practice note:</strong> existing tools often still speak BCF 2.1. Our adapter must read/write both directions (round-trip tests mandatory).</p>
+<p><strong>Tool compatibility (vendor-self-reported, as of 2026):</strong></p>
+<table><thead><tr><th>Tool</th><th>BCF XML 2.0/2.1/3.0</th><th>BCF API 2.0/2.1/3.0</th></tr></thead><tbody>
+<tr><td>Archicad</td><td>2.0 / 2.1 / 3.0</td><td>2.0 / 2.1 / 3.0</td></tr>
+<tr><td>Solibri Office</td><td>2.0 / 2.1 / 3.0</td><td>2.0 / 2.1 / 3.0</td></tr>
+<tr><td>ALLPLAN</td><td>(not declared)</td><td>2.0 / 2.1</td></tr>
+<tr><td>BIMcollab Zoom</td><td>2.0 / 2.1</td><td>2.0 / 2.1</td></tr>
+<tr><td>DESITE BIM</td><td>2.1 / 3.0</td><td>3.0</td></tr>
+<tr><td>usBIM</td><td>2.0 / 2.1 / 3.0</td><td>3.0</td></tr>
+<tr><td>Quadri</td><td>2.1</td><td>2.1</td></tr>
+</tbody></table>
+<p>Conclusion: 2.1 is everywhere, 3.0 is not. Our stack must speak <strong>3.0 natively as server</strong> and <strong>2.1 import/export</strong> for backwards compatibility.</p>
+<hr />
+<h3 id="5-opencde-api-stack">5. OpenCDE API stack</h3>
+<ul>
+<li><strong>Foundation API:</strong> 1.1 (released together with Documents API 1.0)</li>
+<li><strong>Documents API:</strong> 1.0 Final, <strong>21 December 2023</strong></li>
+<li><strong>Dictionary API:</strong> bSDD-compatible (live service)</li>
+<li><strong>BCF API:</strong> 3.0 (see above)</li>
+</ul>
+<p><strong>Foundation 1.1 enforces:</strong></p>
+<ul>
+<li>OAuth2-based authentication</li>
+<li>TLS minimum 1.2 (HTTPS-only)</li>
+<li>standardized error objects</li>
+<li><strong>ETags</strong> for cache and change control</li>
+<li>full PUT updates</li>
+<li>CORS</li>
+<li>date/time per RFC3339</li>
+<li>versioning / service discovery</li>
+<li>paging / sorting / filtering via <strong>OData</strong></li>
+<li><strong>Client Credentials Grant explicitly not supported</strong> (no user identity transferable) — aligns with our npub-first principle.</li>
+</ul>
+<p><strong>Documents API 1.0 specifics:</strong></p>
+<ul>
+<li>selection / download / upload of files including metadata</li>
+<li>callback URL for upload workflows</li>
+<li>external storage targets supported (exactly the adapter pattern we need for <code>nodrive://</code>)</li>
+<li>recommended: short, random, <strong>single-use URLs</strong> for selection and upload workflows</li>
+<li>malware scanning, MIME check, controlled binary uploads as mandatory</li>
+</ul>
+<p><strong>Linking BCF API ↔ Documents API:</strong> BCF topics can reference Documents API files via <code>open-cde-documents://…</code> URIs without carrying the binary itself.</p>
+<hr />
+<h3 id="6-classification-bsdd-uris">6. Classification: bSDD URIs</h3>
+<ul>
+<li><strong>Service:</strong> buildingSMART Data Dictionary, live</li>
+<li><strong>Use:</strong> referenced URIs of the form <code>https://identifier.buildingsmart.org/uri/buildingsmart/ifc/4.3/prop/...</code></li>
+<li><strong>Reason:</strong> stable, multilingual terms for classes, properties, materials. Referenceable in IFC properties and IDS specifications.</li>
+</ul>
+<p><strong>Pilot position:</strong> we do not build our own dictionary, we reference bSDD URIs. Own classifications are exclusively project-specific and embedded in property sets.</p>
+<hr />
+<h3 id="7-process-model-iso-19650-swiss-default-profile">7. Process model: ISO 19650 + Swiss default profile</h3>
+<p><strong>Technical layer</strong> is DACH-neutral. <strong>Process layer</strong> follows the Swiss profile as default, with adapters for DE and AT.</p>
+<h4 id="7-1-why-swiss-profile-as-default">7.1 Why Swiss profile as default</h4>
+<table><thead><tr><th>Switzerland</th><th>Germany</th><th>Austria</th></tr></thead><tbody>
+<tr><td>Best <strong>operational artifacts</strong>: KBOB contract annexes &quot;Application of the BIM method&quot;, BIM Abwicklungsmodell, LOIN guides per SN EN 17412-1 (2026), AIM basics, BIM2FM data field catalog, openBIM.ch workflow sheets, national glossary by buildingSMART Switzerland</td><td>Strongest <strong>governance line</strong>: BIM Deutschland + DIN EN ISO 19650 + VDI 2552 Blatt 5 + AIA/BAP/BIM4INFRA templates</td><td>Strongest <strong>normative consolidation</strong>: <strong>ÖNORM A 6241-1:2025</strong> (published 15.10.2025) + A 6241-2 (Level-3 iBIM)</td></tr>
+<tr><td><strong>Directly usable for product design</strong></td><td>More program- and template-driven than operational</td><td>Strong in training (BIMcert), strong infrastructure operators (ASFINAG, ÖBB)</td></tr>
+<tr><td><strong>SIA 2051 retired end of 2024</strong> — consolidation toward ISO 19650 ongoing</td><td>KBOB provides explicit <strong>orientation guide to SN EN ISO 19650 part 1</strong></td><td>ASFINAG and ÖBB are strong public BIM drivers</td></tr>
+</tbody></table>
+<p><strong>Consequence:</strong> the Swiss KBOB profile with BIM Abwicklungsmodell and LOIN guides becomes the default workflow template. DE projects get DIN/VDI adapter, AT projects get ÖNORM A 6241 adapter, IT projects get UNI 11337 adapter (see section 8.2).</p>
+<p><strong>KBOB minimum requirements for contract annexes</strong> (should be reflected in CDE tenders): openBIM principles, structured data delivery, BIM model plan with IFC class specifications, BEP/BAP as central project steering instrument, data sovereignty + data security + data protection + liability explicitly addressed.</p>
+<h4 id="7-2-iso-19650-lifecycle-states">7.2 ISO 19650 lifecycle states</h4>
+<p>Four canonical states, encoded in document and model events as the <code>iso19650-state</code> tag:</p>
+<ul>
+<li><strong>WIP</strong> (Work In Progress) — author works, no one else sees it</li>
+<li><strong>Shared</strong> — visible to defined team members, not yet final</li>
+<li><strong>Published</strong> — approved by approver, authoritative</li>
+<li><strong>Archive</strong> — completed, archived</li>
+</ul>
+<p>Transitions are not free write rights, but explicit transition rights with approver authority.</p>
+<hr />
+<h3 id="8-role-model-two-axes">8. Role model — two axes</h3>
+<p>We separate <strong>discipline</strong> (what I do) and <strong>project authority</strong> (which rights I have).</p>
+<h4 id="8-1-discipline-axis-ifc-actorroleenum">8.1 Discipline axis (IFC ActorRoleEnum)</h4>
+<p>From IFC 4.3 ADD2 schema:</p>
+<p><code>ARCHITECT</code>, <code>STRUCTURALENGINEER</code>, <code>MECHANICALENGINEER</code>, <code>ELECTRICALENGINEER</code>, <code>CIVILENGINEER</code>, <code>BUILDINGPHYSICIST</code>, <code>FIRESAFETYENGINEER</code>, <code>CONSTRUCTIONMANAGER</code>, <code>CLIENT</code>, <code>CONTRACTOR</code>, <code>SUBCONTRACTOR</code>, <code>CONSULTANT</code>, <code>OWNER</code>, <code>PROJECTMANAGER</code>, <code>BUILDINGOPERATOR</code>, <code>RESELLER</code>, <code>MANUFACTURER</code>, <code>SUPPLIER</code>, plus <code>UserDefinedRole</code>.</p>
+<h4 id="8-2-project-authority-axis-iso-19650-practice-consolidation">8.2 Project authority axis (ISO 19650 + practice consolidation)</h4>
+<table><thead><tr><th>Role</th><th>Short form</th><th>Primary authority</th></tr></thead><tbody>
+<tr><td>CDE Administrator</td><td><code>cde-admin</code></td><td>technical operation, no functional release</td></tr>
+<tr><td>Information Manager / CDE Governance</td><td><code>info-manager</code></td><td>conventions, container rules, project defaults</td></tr>
+<tr><td>Lead Appointed Party (overall coordinator)</td><td><code>lead-appointed</code></td><td>contractor-side overall coordination</td></tr>
+<tr><td>Task Team Manager (discipline lead)</td><td><code>task-team-lead</code></td><td>discipline team leadership</td></tr>
+<tr><td>Model Author / Specialist Planner</td><td><code>model-author</code></td><td>creates models and documents</td></tr>
+<tr><td>BIM Coordinator / Reviewer</td><td><code>bim-coord</code></td><td>clash and quality review</td></tr>
+<tr><td>Approver / Release Authority</td><td><code>approver</code></td><td>formal release (gate owner)</td></tr>
+<tr><td>FM / Asset Representative</td><td><code>fm-rep</code></td><td>operations / AIM / handover view</td></tr>
+<tr><td>External Observer / Auditor</td><td><code>observer</code></td><td>read-only audit access</td></tr>
+</tbody></table>
+<p><strong>Italian adapter</strong> (UNI 11337-7) maps to the ISO 19650 layer:</p>
+<table><thead><tr><th>Italian term</th><th>ISO role</th></tr></thead><tbody>
+<tr><td>BIM Manager PA</td><td>Information Manager</td></tr>
+<tr><td>BIM Coordinator PA</td><td>BIM Coordinator</td></tr>
+<tr><td>BIM Specialist PA</td><td>Model Author</td></tr>
+<tr><td>CDE Manager</td><td>CDE Administrator</td></tr>
+</tbody></table>
+<h4 id="8-3-encoding-in-the-nostr-event">8.3 Encoding in the Nostr event</h4>
+<p>In the <code>kind:30902</code> BCF Project event, members are listed via <code>p</code> tags:</p>
+<pre><code>[&quot;p&quot;, &quot;&lt;pubkey-hex&gt;&quot;, &quot;&lt;relay-hint&gt;&quot;, &quot;&lt;discipline&gt;&quot;, &quot;&lt;project-authority&gt;&quot;]</code></pre>
+<p>Multi-assignment possible (a person can combine multiple disciplines or roles) — then multiple <code>p</code> tags for the same pubkey.</p>
+<hr />
+<h3 id="9-rights-and-policy-model">9. Rights and policy model</h3>
+<h4 id="9-1-two-layer-architecture">9.1 Two-layer architecture</h4>
+<ul>
+<li><strong>RBAC base:</strong> who is fundamentally allowed to act on which resource type — projects, folders, documents, models, topics, comments, viewpoints.</li>
+<li><strong>ABAC overlay:</strong> under which conditions the access actually applies — phase, stage, status, discipline, responsibility, tenant, confidentiality class, document class, model container, asset type.</li>
+</ul>
+<h4 id="9-2-bcf-api-compliant-rights-vocabulary">9.2 BCF-API-compliant rights vocabulary</h4>
+<p>We use the BCF API action lists directly:</p>
+<ul>
+<li><code>project_actions</code>: <code>update</code>, <code>createTopic</code>, <code>createDocument</code></li>
+<li><code>topic_actions</code>: <code>update</code>, <code>updateBimSnippet</code>, <code>updateRelatedTopics</code>, <code>updateDocumentReferences</code>, <code>updateFiles</code>, <code>createComment</code>, <code>createViewpoint</code></li>
+<li><code>comment_actions</code>: <code>update</code></li>
+</ul>
+<p>These actions are published in the project event as extensions, with local exceptions in the <code>authorization</code> field on topic / comment.</p>
+<h4 id="9-3-status-transition-rights">9.3 Status transition rights</h4>
+<p>Status changes are <strong>separate permissions</strong>, not implied by write rights. Defined per transition:</p>
+<ul>
+<li><code>WIP → Shared</code>: model author themselves</li>
+<li><code>Shared → Published</code>: approver role</li>
+<li><code>Published → Archive</code>: information manager + approver jointly (Frostr multi-sig optional)</li>
+<li><code>* → Closed/Resolved</code>: BCF topic role + approver</li>
+</ul>
+<hr />
+<h3 id="10-audit-and-event-model">10. Audit and event model</h3>
+<h4 id="10-1-what-gets-logged-at-minimum">10.1 What gets logged (at minimum)</h4>
+<ul>
+<li>login / auth events</li>
+<li>rights resolutions</li>
+<li>document upload (with hash)</li>
+<li>version creation</li>
+<li>metadata changes</li>
+<li>status changes (with <code>audit-field</code>, <code>audit-from</code>, <code>audit-to</code>)</li>
+<li>issue creation</li>
+<li>comment</li>
+<li>viewpoint changes</li>
+<li>linking of documents and topics</li>
+<li>approvals</li>
+<li>exports and downloads</li>
+<li>failed attempts</li>
+</ul>
+<h4 id="10-2-technical-anchoring">10.2 Technical anchoring</h4>
+<ul>
+<li><strong>Foundation API ETags</strong> provide conditional-request audit at server level</li>
+<li><strong>BCF Topic Events / Comment Events</strong> are the event-stream layer</li>
+<li><strong>IFC OwnerHistory</strong> at model level</li>
+<li><strong>Our <code>kind:1171</code> audit events</strong> span the Nostr layer over all of it</li>
+</ul>
+<p>For tamper resistance: OpenTimestamps anchor on construction-diary and approval events. Optionally on audit events for highly sensitive projects.</p>
+<hr />
+<h3 id="11-privacy-and-compliance">11. Privacy and compliance</h3>
+<h4 id="11-1-applicable-law">11.1 Applicable law</h4>
+<ul>
+<li><strong>Switzerland:</strong> revised Federal Act on Data Protection (revDSG), in force since 1 September 2023</li>
+<li><strong>EU / Italy / Austria / Germany:</strong> Regulation (EU) 2016/679 (GDPR)</li>
+</ul>
+<h4 id="11-2-personal-data-in-a-bim-cde">11.2 Personal data in a BIM CDE</h4>
+<p>The following fields can be personal and must be handled accordingly:</p>
+<ul>
+<li>usernames / profiles (kind:0)</li>
+<li>free-text comments (kind:1170)</li>
+<li>issue histories (kind:1171)</li>
+<li>snapshots (if persons are recognizable)</li>
+<li>file attachments (if content is personal)</li>
+<li>approval logs</li>
+<li>metadata in models or documents</li>
+</ul>
+<h4 id="11-3-mandatory-measures">11.3 Mandatory measures</h4>
+<ul>
+<li>data minimization in comments and forms</li>
+<li>standardized retention and deletion rules per container / project</li>
+<li>separation of functional documentation and IAM / security logs</li>
+<li>encryption in transit (TLS ≥ 1.2) and at rest (LUKS or similar)</li>
+<li>tenant and project isolation</li>
+<li>exportable audit trails</li>
+<li>location and transfer policies for CH/EU projects</li>
+<li>role-based visibility of sensitive attachments and snapshots</li>
+</ul>
+<h4 id="11-4-dpia">11.4 DPIA</h4>
+<p>For every public pilot project a separate data protection impact assessment. Template in <code>docs/BACKEND-SETUP.md</code> section 10 (skeleton).</p>
+<hr />
+<h3 id="12-integration-with-authoring-tools">12. Integration with authoring tools</h3>
+<table><thead><tr><th>Tool</th><th>Integration</th><th>Note</th></tr></thead><tbody>
+<tr><td>Revit</td><td>built-in IFC exporter; Data Management API + Issues API as adapter</td><td>adapter onto our canonical BCF / Documents domain, not the other way</td></tr>
+<tr><td>Archicad</td><td>built-in BCF format; Developer API with BCF import/export</td><td>very good candidate for deep integration</td></tr>
+<tr><td>Allplan</td><td>IFC export, BCF support</td><td>standard path</td></tr>
+<tr><td>Solibri</td><td>BCF Live Connector is BCF-API-compliant</td><td>ideal QA / coordination endpoint</td></tr>
+<tr><td>ACC / BIM 360</td><td>Data Management API + Issues API</td><td>external system with adapter, not semantic anchor</td></tr>
+<tr><td>Tekla, Vectorworks, DDS-CAD</td><td>IFC + BCF</td><td>via standard paths</td></tr>
+</tbody></table>
+<hr />
+<h3 id="12a-cam-edilizia-2025-italy-sustainability-mandate">12a. CAM Edilizia 2025 (Italy) — sustainability mandate</h3>
+<p>Since 25.11.2025 mandatory for Italian public construction procurement (D.Lgs. 36/2023 art. 57 par. 2). Three sections are technically relevant:</p>
+<ul>
+<li><strong>2.1.3 Progettazione in BIM</strong> — BIM model must contain environmental and material data, EPDs per EN ISO 22057:2022</li>
+<li><strong>2.3.16 Piano di manutenzione</strong> — maintenance documentation archived in BIM, IFC-compliant</li>
+<li><strong>2.3.17 Piano di decostruzione</strong> — new in 2025, at least 70% of building part weight reusable or selectively recyclable, per UNI PdR 75 + UNI 8290-1</li>
+</ul>
+<p>LCA / LCC per <strong>EN 15804</strong> (products), <strong>EN 15978</strong> (buildings), <strong>EN 16627</strong> (LCC). Reporting framework <strong>Level(s)</strong> (EU).</p>
+<h4 id="honesty-tags-source-labeling">Honesty tags — source labeling</h4>
+<p>CAM data are often modeled estimates, not measurements. To keep this visible in the audit trail, we label data provenance per value:</p>
+<table><thead><tr><th>Tag value</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>model</code></td><td>industry dataset / generic factor (Ökobaudat, EPD-Italy, EcoPlatform)</td></tr>
+<tr><td><code>verified</code></td><td>accredited EPD per EN 15804 + EN ISO 14025, third-party verified</td></tr>
+<tr><td><code>measured</code></td><td>real factory telemetry or sensor data, signed by the producer</td></tr>
+</tbody></table>
+<p>Usage in PDT / LCA / EPBD events:</p>
+<pre><code>[&quot;epd-source&quot;, &quot;model&quot;]
+[&quot;lca-source&quot;, &quot;verified&quot;]
+[&quot;co2-source&quot;, &quot;measured&quot;]</code></pre>
+<p>The audit trail can then distinguish estimate from measurement. Over years, <code>measured</code> gradually replaces <code>model</code> values without changing the doc structure.</p>
+<hr />
+<h3 id="12b-six-cam-related-kind-reservations">12b. Six CAM-related kind reservations</h3>
+<table><thead><tr><th>Kind</th><th>Name</th><th>Trigger</th></tr></thead><tbody>
+<tr><td><code>30940</code></td><td>LCA study reference</td><td>EN 15804/15978, CAM 1.3.2</td></tr>
+<tr><td><code>30941</code></td><td>LCC study reference</td><td>EN 16627, CAM 1.3.2</td></tr>
+<tr><td><code>30942</code></td><td>Level(s) indicator set</td><td>EU framework</td></tr>
+<tr><td><code>30962</code></td><td>Maintenance cycle / maintenance event</td><td>CAM 2.3.16</td></tr>
+<tr><td><code>30971</code></td><td>Deconstruction plan approval</td><td>CAM 2.3.17</td></tr>
+<tr><td><code>1190</code></td><td>Sustainability indicator snapshot</td><td>point-in-time, immutable</td></tr>
+</tbody></table>
+<p>Value ranges and tag conventions in <code>KIND-REGISTRY.md</code>.</p>
+<hr />
+<h3 id="13-what-is-explicitly-not-chosen-with-reason">13. What is explicitly not chosen (with reason)</h3>
+<ul>
+<li><strong>proprietary formats</strong> (Revit .rvt, ArchiCAD .pln) — only as authoring source, never as exchange.</li>
+<li><strong>Closed CDEs as backend</strong> — pilot stays self-hostable.</li>
+<li><strong>ifcOWL</strong> — semantically attractive, but toolchain thin and not NIP-friendly.</li>
+<li><strong>BimJSON</strong> — historically interesting, no longer mindshare.</li>
+<li><strong>STEP phase profiles outside IFC</strong> — out of scope.</li>
+<li><strong>BIM 5D / 6D / 7D extensions without IFC anchor</strong> — proprietary or unstandardized.</li>
+<li><strong>NIP-04 for DMs</strong> — cryptographically broken, replaced by NIP-17 + NIP-44.</li>
+</ul>
+<hr />
+<h3 id="14-future-tracking">14. Future tracking</h3>
+<p>What we watch closely, but don't include today:</p>
+<ul>
+<li><strong>IFC 4.4.x dev:</strong> minor semantic-layer update of 4.3, active development at <code>buildingSMART/IFC4.4.x-development</code>. No release date.</li>
+<li><strong>IFC 5 alpha (released May 2026) / IFC X:</strong> next generation. Component-based architecture (Entity Component System), JSON serialization at <code>ifcx.dev</code>, USD integration via Alliance-for-OpenUSD liaison. Alpha repo at <code>buildingSMART/IFC5-development</code>. Incremental release strategy — first reduced version, then modules. Not production-ready, no stable date. <strong>Our adapter architecture should leave room for IFC 5 JSON as additional schema target once stable.</strong> Strategically aligned with our Nostr-event-based thinking (both JSON, both component-based, both designed for programmatic access).</li>
+<li><strong>EPBD recast Building Logbook</strong> requirements: finer content obligations from 2027/28</li>
+<li><strong>EU DPP / ESPR</strong> for construction products from 2027</li>
+<li><strong>MLS-over-Nostr</strong> for end-to-end encrypted groups with forward secrecy</li>
+<li><strong>NIP-29 v2</strong> group management on standard relays</li>
+<li><strong>bSI Implementers Assembly</strong> semi-annual events — next at ACCA Bagnoli Irpino, Italy. Strategic outreach opportunity for the Bolzano pilot context.</li>
+</ul>
+<hr />
+<h3 id="15-references">15. References</h3>
+<ul>
+<li>buildingSMART Standards Repository (official database)</li>
+<li>buildingSMART IFC 4.3 ADD2 Documentation</li>
+<li>buildingSMART IDS 1.0 Release (2024-06-01)</li>
+<li>buildingSMART BCF Repositories (XML 2.0, 2.1, 3.0; API 2.1, 3.0)</li>
+<li>buildingSMART OpenCDE-API Repository (Foundation 1.1, Documents 1.0)</li>
+<li>buildingSMART Data Dictionary (bSDD) service</li>
+<li>ISO 16739-1:2024 (IFC 4.3 ADD2 as ISO standard)</li>
+<li>ISO 19650 series (Information Management)</li>
+<li>EN 15804 (LCA products) / EN 15978 (LCA buildings) / EN 16627 (LCC)</li>
+<li>EN ISO 22057:2022 (EPDs in BIM)</li>
+<li>EN 17412-1 (LOIN)</li>
+<li>SN EN 17412-1 (Swiss adaptation)</li>
+<li>ÖNORM A 6241-1:2025, A 6241-2 (Austrian standard)</li>
+<li>UNI 11337 (Italian standard, 12 parts)</li>
+<li>UNI PdR 75 (selective deconstruction), UNI 8290-1 (building parts terminology)</li>
+<li>DM 312/2021, D.Lgs. 36/2023, D.Lgs. 209/2024 Correttivo, CAM Edilizia 25.11.2025</li>
+<li>Level(s) — EU framework for sustainability indicators</li>
+<li>Swiss revDSG (in force 2023-09-01)</li>
+<li>EU GDPR (Regulation 2016/679)</li>
+</ul>
+<hr />
+<p><em>Status: May 2026. Living document — version bumps in the listed standards trigger an update. Before any NIP PR to <code>nostr-protocol/nips</code>, this profile must align with the test vectors used.</em></p>
+    </article>
+  </div>
+</main>
+<footer class="doc-wrap doc-foot">
+  <span>Docs &middot; static HTML</span>
+  <a href="./">back to docs index</a>
+</footer>
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

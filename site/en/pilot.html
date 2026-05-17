@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BIM + Nostr &mdash; BIM-CVP</title>
+  <meta name="description" content="A plain-language overview of how BIM standards map to signed Nostr events in BIM-CVP." />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/site.css" />
+  <link rel="stylesheet" href="../assets/info.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="./" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="./">Home</a>
+      <a href="standards.html">Standards</a>
+      <a href="../wiki/">Wiki</a>
+      <a href="bim-cvp.html">BIM-CVP</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="info-main">
+  <p class="info-crumb"><a href="./">gemeinwert</a> / BIM + Nostr</p>
+
+  <section class="info-hero">
+    <h1>BIM gives buildings a shared language. Nostr gives records a signature.</h1>
+    <p>
+      BIM-CVP maps existing openBIM work into signed Nostr events. IFC, BCF, IDS
+      and ISO 19650 stay the domain standards. Nostr supplies portable identity,
+      signatures, relays and a simple event log.
+    </p>
+  </section>
+
+  <section class="info-section">
+    <h2>The split.</h2>
+    <p>
+      BIM is the building domain: models, issues, requirements, approvals and handover
+      records. Nostr is the transport and signature layer: who created a record, when it
+      was created, what it references and where the payload can be found.
+    </p>
+    <p>
+      This split is the core rule. We do not invent a new BIM schema. We sign and route
+      the records that BIM tools already understand.
+    </p>
+  </section>
+
+  <section class="info-section">
+    <h2>Standards fixed now.</h2>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Standard</th>
+          <th>Use in events</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Model</td>
+          <td>IFC 4.3.2.0, read support for IFC4 / IFC2x3</td>
+          <td>File reference, project GUID, element GUIDs, schema and authoring-tool tags.</td>
+        </tr>
+        <tr>
+          <td>Coordination</td>
+          <td>BCF API 3.0 / BCF XML 3.0</td>
+          <td>Topics, viewpoints, comments, status changes and audit trail.</td>
+        </tr>
+        <tr>
+          <td>Requirements</td>
+          <td>IDS 1.0</td>
+          <td>Machine-checkable delivery requirements attached to projects, models or packages.</td>
+        </tr>
+        <tr>
+          <td>Process</td>
+          <td>ISO 19650, EN 17412-1 LOIN</td>
+          <td>WIP / shared / published states, information need, responsibility and approval authority.</td>
+        </tr>
+        <tr>
+          <td>CDE bridge</td>
+          <td>OpenCDE Foundation 1.1, Documents API 1.0</td>
+          <td>Adapter target for classical CDE platforms and document handover.</td>
+        </tr>
+        <tr>
+          <td>Use cases</td>
+          <td>IDM / buildingSMART UCM</td>
+          <td>Process references that explain why each information exchange is needed.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="info-note">
+      Version pinning matters. Event definitions only become testable when the BIM
+      standard version behind each event is explicit.
+    </p>
+  </section>
+
+  <section class="info-section">
+    <h2>First event vocabulary.</h2>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>Kind</th>
+          <th>Name</th>
+          <th>Standard</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>30902</code></td>
+          <td>Project</td>
+          <td>ISO 19650</td>
+          <td>Stable project container with title, phase, location and member references.</td>
+        </tr>
+        <tr>
+          <td><code>30903</code></td>
+          <td>Document reference</td>
+          <td>OpenCDE Documents</td>
+          <td>Hash-addressed reference to drawings, reports, PDFs or external CDE documents.</td>
+        </tr>
+        <tr>
+          <td><code>30904</code></td>
+          <td>IFC file reference</td>
+          <td>IFC / NIP-94</td>
+          <td>Signed metadata for an IFC file: schema, project GUID, hash, URL and discipline.</td>
+        </tr>
+        <tr>
+          <td><code>30900</code></td>
+          <td>BCF topic</td>
+          <td>BCF 3.0</td>
+          <td>Issue title, description, type, priority, status, assignee and model references.</td>
+        </tr>
+        <tr>
+          <td><code>30901</code></td>
+          <td>BCF viewpoint</td>
+          <td>BCF 3.0</td>
+          <td>Camera, snapshot and selected IFC elements for a topic.</td>
+        </tr>
+        <tr>
+          <td><code>1170</code></td>
+          <td>BCF comment</td>
+          <td>BCF 3.0</td>
+          <td>Threaded comment attached to a topic or viewpoint.</td>
+        </tr>
+        <tr>
+          <td><code>1171</code></td>
+          <td>BCF audit event</td>
+          <td>BCF / ISO 19650</td>
+          <td>Status, assignment, approval and state changes that must remain traceable.</td>
+        </tr>
+        <tr>
+          <td><code>30810</code></td>
+          <td>IDS specification</td>
+          <td>IDS 1.0</td>
+          <td>Requirement package and validation target references.</td>
+        </tr>
+        <tr>
+          <td><code>30811</code></td>
+          <td>LOIN definition</td>
+          <td>EN 17412-1</td>
+          <td>Level of information need per phase, actor, element class or deliverable.</td>
+        </tr>
+        <tr>
+          <td><code>30960</code></td>
+          <td>Site diary entry</td>
+          <td>ISO 19650 / OTS</td>
+          <td>Daily construction record with optional OpenTimestamps proof.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="info-section">
+    <h2>Base tags every BIM event should understand.</h2>
+    <dl class="info-kv">
+      <div>
+        <dt><code>d</code></dt>
+        <dd>Stable replaceable identifier, for example project id, topic id or requirement id.</dd>
+      </div>
+      <div>
+        <dt><code>a</code></dt>
+        <dd>Reference to parent project, model, topic or requirement event.</dd>
+      </div>
+      <div>
+        <dt><code>x</code></dt>
+        <dd>SHA-256 hash for file-backed payloads.</dd>
+      </div>
+      <div>
+        <dt><code>url</code></dt>
+        <dd>Download location for IFC, BCF, PDF, IDS or snapshot payloads.</dd>
+      </div>
+      <div>
+        <dt><code>ifc</code></dt>
+        <dd>Element reference inside an IFC model.</dd>
+      </div>
+      <div>
+        <dt><code>bcf-status</code></dt>
+        <dd>BCF topic state such as Open, InProgress, Resolved or Closed.</dd>
+      </div>
+      <div>
+        <dt><code>cde-state</code></dt>
+        <dd>ISO 19650 state: WIP, shared, published or archived.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="info-section">
+    <h2>Read next.</h2>
+    <div class="info-links">
+      <a class="info-link" href="standards.html">Pinned standards</a>
+      <a class="info-link" href="../wiki/nostr-mapping/kind-mapping.html">Full kind mapping</a>
+      <a class="info-link" href="../wiki/koordination/bcf.html">BCF explained</a>
+      <a class="info-link" href="/docs/KIND-REGISTRY.html">Kind registry</a>
+    </div>
+  </section>
+
+  <div id="bcf-client-mount" data-client="bcf-coordination" hidden></div>
+</main>
+<script src="../assets/nodebg.js"></script>
+</body>
+</html>

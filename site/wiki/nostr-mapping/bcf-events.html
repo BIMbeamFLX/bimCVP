@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BCF to Nostr Events &mdash; BIM-CVP Wiki</title>
+  <meta name="description" content="Detailed BCF to Nostr event mapping: topics, comments, viewpoints, snapshots, audit events, tags, round-trip rules and JSON examples." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/bim-cvp.html">BIM-CVP</a>
+      <a href="../../en/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art-wide">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; mapping &nbsp;/&nbsp; bcf-events</p>
+
+    <header class="art-head">
+      <h1>BCF to Nostr event mapping</h1>
+      <p class="art-lede">
+        A concrete event vocabulary for carrying buildingSMART BCF 3.0 topics,
+        comments, viewpoints, snapshots and audit trails as signed Nostr events.
+        This is the event vocabulary for BCF-compatible coordination.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">Core rule</span>
+        <p>
+          BCF stays the coordination standard. Nostr does not replace the BCF
+          data model; it adds signed identity, append-only history, relay
+          transport and project-wide discovery.
+        </p>
+      </div>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <ul>
+          <li><a href="#scope">Scope and design rules</a></li>
+          <li><a href="#event-family">Event family</a></li>
+          <li><a href="#tag-vocabulary">Tag vocabulary</a></li>
+          <li><a href="#topic-mapping">BCF topic mapping</a></li>
+          <li><a href="#comment-mapping">BCF comment mapping</a></li>
+          <li><a href="#viewpoint-mapping">BCF viewpoint mapping</a></li>
+          <li><a href="#worked-example">Worked example</a></li>
+          <li><a href="#queries">Relay query patterns</a></li>
+          <li><a href="#roundtrip">BCF XML/API round-trip rules</a></li>
+          <li><a href="#validation">Validation checklist</a></li>
+        </ul>
+      </div>
+
+      <h2 id="scope">Scope and design rules</h2>
+
+      <p>
+        The mapping targets BCF 3.0 first, with a BCF 2.1 import/export fallback.
+        It is intentionally conservative: fields from BCF are preserved, unknown
+        extension data is kept in JSON, and event relationships are expressed
+        with Nostr's standard indexed tags where possible.
+      </p>
+
+      <div class="spec-grid">
+        <div class="spec-card">
+          <h3>Do not embed the model</h3>
+          <p>BCF points to IFC elements through GUIDs. IFC files are separate file events.</p>
+        </div>
+        <div class="spec-card">
+          <h3>Keep BCF GUIDs</h3>
+          <p>BCF topic, comment and viewpoint GUIDs are preserved as explicit fields.</p>
+        </div>
+        <div class="spec-card">
+          <h3>Current state + audit</h3>
+          <p>The current topic is addressable. Every change is also an immutable audit event.</p>
+        </div>
+        <div class="spec-card">
+          <h3>Viewpoints are immutable</h3>
+          <p>If camera or selection changes, create a new viewpoint GUID and link it.</p>
+        </div>
+      </div>
+
+      <p>
+        Nostr event IDs are derived from the signed event payload. That means the
+        BCF GUID must not be treated as the event ID. The BCF GUID lives in
+        <code>d</code> and <code>bcf-guid</code>; the Nostr <code>id</code> is the
+        signature-derived hash.
+      </p>
+
+      <h2 id="event-family">Event family</h2>
+
+      <table>
+        <thead>
+          <tr><th>Kind</th><th>Name</th><th>Nostr class</th><th>BCF object</th><th>Authority</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>30902</code></td><td>BCF project</td><td>addressable</td><td>Project + extensions</td><td>latest by <code>d</code></td></tr>
+          <tr><td><code>30900</code></td><td>BCF topic</td><td>addressable</td><td>Topic / markup</td><td>latest by <code>d</code></td></tr>
+          <tr><td><code>30901</code></td><td>BCF viewpoint</td><td>addressable, no republish</td><td>VisualizationInfo</td><td>one event per viewpoint GUID</td></tr>
+          <tr><td><code>1170</code></td><td>BCF comment</td><td>regular</td><td>Comment</td><td>append-only</td></tr>
+          <tr><td><code>1171</code></td><td>BCF audit</td><td>regular</td><td>Topic/comment event log</td><td>append-only</td></tr>
+          <tr><td><code>1063</code></td><td>File metadata</td><td>regular</td><td>Snapshot, IFC, document</td><td>hash-bound file record</td></tr>
+          <tr><td><code>30903</code></td><td>Document reference</td><td>addressable</td><td>DocumentReference</td><td>latest by <code>d</code></td></tr>
+          <tr><td><code>30904</code></td><td>IFC file reference</td><td>addressable</td><td>BCF file/model ref</td><td>latest by <code>d</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="map-note">
+        <strong>Profile rule for <code>kind:30901</code>:</strong> Nostr treats
+        30000-39999 as addressable replaceable events. BCF treats viewpoints as
+        immutable. This profile therefore forbids publishing a second
+        <code>kind:30901</code> with the same <code>d</code>. A changed camera,
+        selection, clipping plane or snapshot requires a new BCF viewpoint GUID.
+      </div>
+
+      <h2 id="tag-vocabulary">Tag vocabulary</h2>
+
+      <p>
+        Use indexed single-letter tags for discovery, and verbose BCF tags for
+        readability. Relays are expected to index single-letter tags such as
+        <code>a</code>, <code>e</code>, <code>p</code>, <code>d</code>,
+        <code>s</code> and <code>t</code>. Multi-letter tags are preserved but
+        should be filtered client-side unless the relay explicitly indexes them.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Tag</th><th>Required on</th><th>Meaning</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>d</code></td><td>30900, 30901, 30902, 30903, 30904</td><td>Addressable identity, normally BCF GUID</td><td><code>["d","b345...8228"]</code></td></tr>
+          <tr><td><code>a</code></td><td>all project events</td><td>Project address</td><td><code>["a","30902:&lt;owner&gt;:pilot-2026"]</code></td></tr>
+          <tr><td><code>e</code></td><td>1170, 1171, links</td><td>Referenced event ID with optional marker</td><td><code>["e","&lt;topic-id&gt;","","root"]</code></td></tr>
+          <tr><td><code>p</code></td><td>when people are involved</td><td>Participant, assignee, watcher or mentioned actor</td><td><code>["p","&lt;pubkey&gt;","","assignee"]</code></td></tr>
+          <tr><td><code>s</code></td><td>30900</td><td>Indexed topic status mirror</td><td><code>["s","Open"]</code></td></tr>
+          <tr><td><code>t</code></td><td>optional</td><td>Label, discipline, search facet</td><td><code>["t","mep"]</code></td></tr>
+          <tr><td><code>bcf-guid</code></td><td>BCF events</td><td>Original BCF GUID</td><td><code>["bcf-guid","b345...8228"]</code></td></tr>
+          <tr><td><code>bcf-version</code></td><td>BCF events</td><td>BCF semantic version</td><td><code>["bcf-version","3.0"]</code></td></tr>
+          <tr><td><code>bcf-status</code></td><td>30900</td><td>Project-extension status value</td><td><code>["bcf-status","Open"]</code></td></tr>
+          <tr><td><code>bcf-type</code></td><td>30900</td><td>Project-extension topic type</td><td><code>["bcf-type","Clash"]</code></td></tr>
+          <tr><td><code>bcf-priority</code></td><td>optional</td><td>Project-extension priority</td><td><code>["bcf-priority","High"]</code></td></tr>
+          <tr><td><code>bcf-stage</code></td><td>optional</td><td>Planning / project stage</td><td><code>["bcf-stage","LP4"]</code></td></tr>
+          <tr><td><code>bcf-due</code></td><td>optional</td><td>Due date as Unix timestamp</td><td><code>["bcf-due","1779577200"]</code></td></tr>
+          <tr><td><code>ifc</code></td><td>topic/viewpoint</td><td>IFC GlobalId / compressed GUID</td><td><code>["ifc","2Y$0aB..."]</code></td></tr>
+          <tr><td><code>ifc-file</code></td><td>topic/viewpoint</td><td>Linked <code>kind:30904</code> file reference</td><td><code>["ifc-file","&lt;event-id&gt;"]</code></td></tr>
+          <tr><td><code>x</code></td><td>1063</td><td>SHA-256 file hash</td><td><code>["x","&lt;sha256&gt;"]</code></td></tr>
+          <tr><td><code>m</code></td><td>1063</td><td>MIME type</td><td><code>["m","image/png"]</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="topic-mapping">BCF topic mapping</h2>
+
+      <p>
+        A BCF topic is the current issue state. It is addressable because BCF
+        topics change: status, priority, assignee, due date and labels may be
+        updated. The authoritative current state is the latest <code>kind:30900</code>
+        for the same <code>d</code> tag. For every meaningful update, emit a
+        matching <code>kind:1171</code> audit event.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>BCF topic field</th><th>Nostr location</th><th>Rule</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>guid</code></td><td><code>d</code>, <code>bcf-guid</code>, <code>content.guid</code></td><td>Preserve exactly.</td></tr>
+          <tr><td><code>title</code></td><td><code>content.title</code>, optional <code>title</code> tag</td><td>Human-readable issue headline.</td></tr>
+          <tr><td><code>description</code></td><td><code>content.description</code></td><td>Markdown allowed in UI, plain string for BCF export.</td></tr>
+          <tr><td><code>topic_status</code></td><td><code>bcf-status</code> and indexed <code>s</code></td><td>Must be valid in project extensions.</td></tr>
+          <tr><td><code>topic_type</code></td><td><code>bcf-type</code></td><td>Must be valid in project extensions.</td></tr>
+          <tr><td><code>priority</code></td><td><code>bcf-priority</code></td><td>Optional unless project profile requires it.</td></tr>
+          <tr><td><code>stage</code></td><td><code>bcf-stage</code></td><td>Use local phase vocabulary, e.g. SIA/LP/UNI.</td></tr>
+          <tr><td><code>assigned_to</code></td><td><code>p</code> tag with marker <code>assignee</code></td><td>Use pubkey, keep email in content only for import provenance.</td></tr>
+          <tr><td><code>labels</code></td><td>repeated <code>t</code> tags and <code>content.labels</code></td><td><code>t</code> gives relay search.</td></tr>
+          <tr><td><code>due_date</code></td><td><code>bcf-due</code>, <code>content.due_date</code></td><td>Unix timestamp in tag, ISO string in content.</td></tr>
+          <tr><td><code>server_assigned_id</code></td><td><code>bcf-server-assigned-id</code></td><td>Human-visible ticket number, not identity.</td></tr>
+          <tr><td><code>bim_snippet</code></td><td><code>content.bim_snippet</code> plus optional <code>e</code> file ref</td><td>Keep full BCF object.</td></tr>
+          <tr><td><code>document_references</code></td><td><code>e</code> with marker <code>document</code> or <code>kind:30903</code></td><td>Prefer <code>30903</code> when metadata matters.</td></tr>
+          <tr><td><code>related_topics</code></td><td><code>e</code> with marker <code>related</code></td><td>Reference topic event IDs.</td></tr>
+          <tr><td><code>viewpoints</code></td><td><code>e</code> with marker <code>viewpoint</code></td><td>Reference <code>kind:30901</code> event IDs.</td></tr>
+        </tbody>
+      </table>
+
+      <pre><code>{
+  "kind": 30900,
+  "pubkey": "&lt;author-pubkey-hex&gt;",
+  "created_at": 1778946000,
+  "tags": [
+    ["d", "b345f4f2-3a04-b43b-a713-5e456bef8228"],
+    ["a", "30902:&lt;owner-pubkey&gt;:pilot-2026"],
+    ["bcf-guid", "b345f4f2-3a04-b43b-a713-5e456bef8228"],
+    ["bcf-version", "3.0"],
+    ["bcf-status", "Open"],
+    ["s", "Open"],
+    ["bcf-type", "Clash"],
+    ["bcf-priority", "High"],
+    ["bcf-stage", "LP4"],
+    ["bcf-due", "1779577200"],
+    ["bcf-server-assigned-id", "P-2026-042"],
+    ["p", "&lt;mep-pubkey&gt;", "", "assignee"],
+    ["p", "&lt;structural-pubkey&gt;", "", "consulted"],
+    ["t", "mep"],
+    ["t", "structure"],
+    ["ifc", "2Y$0aBv19FqQ9rP5J6wQhA"],
+    ["ifc-file", "&lt;ifc-file-ref-event-id&gt;"],
+    ["e", "&lt;viewpoint-event-id&gt;", "", "viewpoint"],
+    ["e", "&lt;snapshot-file-event-id&gt;", "", "snapshot"]
+  ],
+  "content": "{\"title\":\"Duct crosses main girder at axis 4/B\",\"description\":\"MEP duct intersects primary steel beam. Need reroute or structural opening decision.\",\"labels\":[\"mep\",\"structure\"],\"extensions\":{}}"
+}</code></pre>
+
+      <h2 id="comment-mapping">BCF comment mapping</h2>
+
+      <p>
+        BCF comments become regular immutable events. They reference the topic
+        by event ID with an <code>e</code> tag and carry the original BCF comment
+        GUID in content. If a tool imports an edited BCF comment, publish a new
+        comment event with an <code>e</code> marker <code>replaces</code>; do not
+        mutate the original signed event.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>BCF comment field</th><th>Nostr location</th><th>Rule</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>guid</code></td><td><code>content.guid</code>, optional <code>bcf-guid</code></td><td>Preserve for export.</td></tr>
+          <tr><td><code>topic_guid</code></td><td><code>e</code> marker <code>root</code> and <code>content.topic_guid</code></td><td>Use event ID for live graph, BCF GUID for export.</td></tr>
+          <tr><td><code>comment</code></td><td><code>content.text</code></td><td>Must not be blank unless comment only links a viewpoint.</td></tr>
+          <tr><td><code>author</code></td><td><code>pubkey</code>, optional <code>content.author_email</code></td><td>Pubkey is authoritative.</td></tr>
+          <tr><td><code>date</code></td><td><code>created_at</code>, <code>content.date</code></td><td>Use Unix seconds on the event.</td></tr>
+          <tr><td><code>viewpoint_guid</code></td><td><code>e</code> marker <code>viewpoint</code></td><td>Optional.</td></tr>
+          <tr><td><code>modified_date</code></td><td>replacement event + <code>content.modified_date</code></td><td>Keep original event and replacement chain.</td></tr>
+        </tbody>
+      </table>
+
+      <pre><code>{
+  "kind": 1170,
+  "pubkey": "&lt;structural-pubkey&gt;",
+  "created_at": 1778950200,
+  "tags": [
+    ["e", "&lt;topic-event-id&gt;", "", "root"],
+    ["a", "30902:&lt;owner-pubkey&gt;:pilot-2026"],
+    ["p", "&lt;mep-pubkey&gt;"],
+    ["e", "&lt;viewpoint-event-id&gt;", "", "viewpoint"]
+  ],
+  "content": "{\"guid\":\"a333fca8-1a31-caac-a321-bb33abc8414\",\"topic_guid\":\"b345f4f2-3a04-b43b-a713-5e456bef8228\",\"text\":\"Girder HEB400 cannot be lowered. Please reroute duct below suspended ceiling zone.\",\"date\":\"2026-05-16T10:10:00Z\"}"
+}</code></pre>
+
+      <h2 id="viewpoint-mapping">BCF viewpoint mapping</h2>
+
+      <p>
+        The viewpoint captures how to reopen the problem in a model viewer:
+        camera, clipping, annotations, selected components, visible components,
+        colors and optional bitmap/snapshot references. BCF API treats viewpoints
+        as immutable; this profile follows that rule.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>BCF viewpoint field</th><th>Nostr location</th><th>Rule</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>guid</code></td><td><code>d</code>, <code>bcf-guid</code>, <code>content.guid</code></td><td>One event per GUID.</td></tr>
+          <tr><td><code>perspective_camera</code></td><td><code>content.camera.perspective</code></td><td>BCF object copied losslessly.</td></tr>
+          <tr><td><code>orthogonal_camera</code></td><td><code>content.camera.orthogonal</code></td><td>Exactly one camera type when camera is present.</td></tr>
+          <tr><td><code>components.selection</code></td><td>repeated <code>ifc</code> tags + <code>content.components.selection</code></td><td>Tags make selected elements searchable.</td></tr>
+          <tr><td><code>components.visibility</code></td><td><code>content.components.visibility</code></td><td>Keep exception list and default visibility.</td></tr>
+          <tr><td><code>components.coloring</code></td><td><code>content.components.coloring</code></td><td>Preserve ARGB color values.</td></tr>
+          <tr><td><code>lines</code></td><td><code>content.lines</code></td><td>Copy point arrays.</td></tr>
+          <tr><td><code>clipping_planes</code></td><td><code>content.clipping_planes</code></td><td>Direction must not be zero vector.</td></tr>
+          <tr><td><code>snapshot</code></td><td><code>e</code> marker <code>snapshot</code> to <code>kind:1063</code></td><td>File hash lives in NIP-94 event.</td></tr>
+        </tbody>
+      </table>
+
+      <pre><code>{
+  "kind": 30901,
+  "pubkey": "&lt;author-pubkey-hex&gt;",
+  "created_at": 1778945700,
+  "tags": [
+    ["d", "a11a82e7-e66c-34b4-ada1-5846abf39133"],
+    ["a", "30902:&lt;owner-pubkey&gt;:pilot-2026"],
+    ["bcf-guid", "a11a82e7-e66c-34b4-ada1-5846abf39133"],
+    ["bcf-version", "3.0"],
+    ["ifc", "2Y$0aBv19FqQ9rP5J6wQhA"],
+    ["ifc", "1hJ9K0lMn2OP3Q4rS5tUvW"],
+    ["ifc-file", "&lt;ifc-file-ref-event-id&gt;"],
+    ["e", "&lt;snapshot-file-event-id&gt;", "", "snapshot"]
+  ],
+  "content": "{\"guid\":\"a11a82e7-e66c-34b4-ada1-5846abf39133\",\"camera\":{\"type\":\"perspective\",\"camera_view_point\":{\"x\":12.4,\"y\":8.2,\"z\":3.1},\"camera_direction\":{\"x\":-0.8,\"y\":0.1,\"z\":-0.2},\"camera_up_vector\":{\"x\":0,\"y\":0,\"z\":1},\"field_of_view\":60,\"aspect_ratio\":1.77},\"components\":{\"selection\":[{\"ifc_guid\":\"2Y$0aBv19FqQ9rP5J6wQhA\"}],\"visibility\":{\"default_visibility\":true,\"exceptions\":[]}},\"clipping_planes\":[]}"
+}</code></pre>
+
+      <h2 id="worked-example">Worked example</h2>
+
+      <p>
+        The minimal useful BCF exchange is not one event. It is a small graph:
+        file metadata for the snapshot, a viewpoint, the topic, then comments
+        and audit records.
+      </p>
+
+      <h3>1. Snapshot file <span class="kind">kind:1063</span></h3>
+
+      <pre><code>{
+  "kind": 1063,
+  "pubkey": "&lt;author-pubkey-hex&gt;",
+  "created_at": 1778945600,
+  "tags": [
+    ["url", "https://blossom.example/files/snap-axis-4b.png"],
+    ["m", "image/png"],
+    ["x", "6f1e9d4a6f7b0a2c3d4e5f67890abcdeffedcba09876543210abcdef12345678"],
+    ["size", "284102"],
+    ["dim", "1440x900"],
+    ["a", "30902:&lt;owner-pubkey&gt;:pilot-2026"],
+    ["alt", "BCF snapshot showing duct crossing steel girder at axis 4/B"]
+  ],
+  "content": "Snapshot for topic P-2026-042"
+}</code></pre>
+
+      <h3>2. Topic current state <span class="kind">kind:30900</span></h3>
+
+      <p>
+        Use the topic example above. The important relationships are:
+        <code>e:viewpoint</code>, <code>e:snapshot</code>, project <code>a</code>,
+        assignee <code>p</code>, and status mirror <code>s</code>.
+      </p>
+
+      <h3>3. Status update audit <span class="kind">kind:1171</span></h3>
+
+      <pre><code>{
+  "kind": 1171,
+  "pubkey": "&lt;mep-pubkey&gt;",
+  "created_at": 1779032400,
+  "tags": [
+    ["e", "&lt;topic-event-id&gt;", "", "root"],
+    ["a", "30902:&lt;owner-pubkey&gt;:pilot-2026"],
+    ["audit-field", "bcf-status"],
+    ["audit-from", "Open"],
+    ["audit-to", "InProgress"],
+    ["bcf-action", "update"],
+    ["client", "bim-cvp-bcf-client/0.1"]
+  ],
+  "content": "{\"reason\":\"MEP team accepted the clash and is preparing reroute option.\"}"
+}</code></pre>
+
+      <h3>4. Replacement topic state <span class="kind">kind:30900</span></h3>
+
+      <p>
+        After the audit event, publish a new <code>kind:30900</code> with the
+        same <code>d</code>, same <code>bcf-guid</code>, updated
+        <code>bcf-status</code> and updated <code>s</code>. Clients that only
+        need the current state read this latest topic. Clients that need evidence
+        read the <code>1171</code> chain.
+      </p>
+
+      <h2 id="queries">Relay query patterns</h2>
+
+      <p>
+        These examples are Nostr filters. They are intentionally simple and
+        assume the relay indexes single-letter tags as described in NIP-01.
+      </p>
+
+      <h3>All current BCF topics in one project</h3>
+      <pre><code>{
+  "kinds": [30900],
+  "#a": ["30902:&lt;owner-pubkey&gt;:pilot-2026"],
+  "limit": 200
+}</code></pre>
+
+      <h3>All open topics in one project</h3>
+      <pre><code>{
+  "kinds": [30900],
+  "#a": ["30902:&lt;owner-pubkey&gt;:pilot-2026"],
+  "#s": ["Open"],
+  "limit": 200
+}</code></pre>
+
+      <h3>One topic thread</h3>
+      <pre><code>[
+  {
+    "kinds": [30900],
+    "#d": ["b345f4f2-3a04-b43b-a713-5e456bef8228"],
+    "limit": 1
+  },
+  {
+    "kinds": [1170, 1171],
+    "#e": ["&lt;topic-event-id&gt;"],
+    "limit": 500
+  }
+]</code></pre>
+
+      <h3>All topics touching an IFC element</h3>
+      <p>
+        Standard NIP-01 relays should not be assumed to index multi-letter tags.
+        The portable query fetches project topics and filters <code>ifc</code>
+        tags client-side.
+      </p>
+      <pre><code>{
+  "kinds": [30900, 30901],
+  "#a": ["30902:&lt;owner-pubkey&gt;:pilot-2026"],
+  "limit": 500
+}</code></pre>
+
+      <div class="map-note">
+        <strong>Optional project relay extension:</strong> a project relay may
+        advertise custom indexing for <code>#ifc</code>. Clients may use it when
+        available, but must keep the project-scope fallback above.
+      </div>
+
+      <h2 id="roundtrip">BCF XML/API round-trip rules</h2>
+
+      <h3>BCF-XML to Nostr</h3>
+      <ol>
+        <li>Read <code>bcf.version</code>, <code>project.bcfp</code>, <code>extensions.xml</code> and topic folders.</li>
+        <li>Create or update one <code>kind:30902</code> project event containing extension lists.</li>
+        <li>For every snapshot or document file, publish <code>kind:1063</code> with hash, MIME type, size and URL.</li>
+        <li>For every viewpoint file, publish one <code>kind:30901</code>; never republish the same viewpoint <code>d</code>.</li>
+        <li>For every topic, publish the current <code>kind:30900</code> state using the original topic GUID.</li>
+        <li>For every comment, publish <code>kind:1170</code> and preserve comment GUID, author/date and optional viewpoint reference.</li>
+        <li>If the source contains history, publish <code>kind:1171</code> audit events; otherwise mark import provenance in content.</li>
+      </ol>
+
+      <h3>Nostr to BCF-XML</h3>
+      <ol>
+        <li>Resolve project <code>kind:30902</code> and extension lists.</li>
+        <li>Resolve latest <code>kind:30900</code> per topic <code>d</code>.</li>
+        <li>Resolve linked viewpoints and snapshots via <code>e</code> markers.</li>
+        <li>Sort comments by <code>created_at</code>, then by event ID for tie-breaking.</li>
+        <li>Write <code>markup.bcf</code>, <code>viewpoint.bcfv</code>, snapshot files and optional <code>documents.xml</code>.</li>
+        <li>Keep unknown content fields as BCF extension data where possible; otherwise write an export warning.</li>
+      </ol>
+
+      <h3>BCF API adapter</h3>
+      <p>
+        The API adapter maps REST mutations to signed events: <code>POST Topic</code>
+        publishes <code>30900</code>; <code>PUT Topic</code> publishes a new
+        <code>30900</code> and a <code>1171</code>; <code>POST Comment</code>
+        publishes <code>1170</code>; <code>POST Viewpoint</code> publishes
+        <code>30901</code>; BCF API event endpoints read from <code>1171</code>.
+      </p>
+
+      <h2 id="validation">Validation checklist</h2>
+
+      <table>
+        <thead>
+          <tr><th>Check</th><th>Fail if</th><th>Why it matters</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Topic identity</td><td><code>kind:30900</code> has no <code>d</code> or <code>bcf-guid</code></td><td>Round-trip cannot preserve BCF GUID.</td></tr>
+          <tr><td>Project scope</td><td>Project events lack <code>a</code> reference</td><td>Relay queries cannot isolate a project.</td></tr>
+          <tr><td>Status validity</td><td><code>bcf-status</code> not in project extensions</td><td>BCF export becomes invalid for the project.</td></tr>
+          <tr><td>Viewpoint immutability</td><td>Two <code>30901</code> events reuse one <code>d</code></td><td>BCF viewpoint changed instead of creating a new one.</td></tr>
+          <tr><td>Snapshot integrity</td><td>Snapshot link has no <code>1063</code> with <code>x</code> hash</td><td>Image provenance cannot be verified.</td></tr>
+          <tr><td>IFC references</td><td>Topic references components but no <code>ifc</code> tags</td><td>Viewer cannot find elements efficiently.</td></tr>
+          <tr><td>Audit trail</td><td>Status/assignee/priority changed without <code>1171</code></td><td>Current state exists but reason and author trail are missing.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="workflow.html">Workflow model</a> &mdash; where BCF events sit in the full process</li>
+          <li><a href="alice-bob-max.html">Alice, Bob, Max</a> &mdash; the same process as a concrete story</li>
+          <li><a href="../koordination/bcf.html">BCF primer</a> &mdash; what BCF is before the event layer</li>
+          <li><a href="kind-mapping.html">Kind mapping</a> &mdash; the full registry beyond BCF</li>
+          <li><a href="../nostr/basics.html">Nostr basics</a> &mdash; event shape, relays and signing</li>
+          <li><a href="../modell/ifc.html">IFC</a> &mdash; the GUIDs BCF points at</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://github.com/buildingSMART/BCF-API" target="_blank" rel="noopener">buildingSMART BCF API 3.0 repository</a></li>
+        <li><a href="https://github.com/buildingSMART/BCF-XML" target="_blank" rel="noopener">buildingSMART BCF XML repository</a></li>
+        <li><a href="https://technical.buildingsmart.org/standards/bcf/" target="_blank" rel="noopener">buildingSMART BCF technical overview</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/01.md" target="_blank" rel="noopener">Nostr NIP-01 event and tag model</a></li>
+        <li><a href="https://github.com/nostr-protocol/nips/blob/master/94.md" target="_blank" rel="noopener">Nostr NIP-94 file metadata</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Mapping &middot; BCF to Nostr Events</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>

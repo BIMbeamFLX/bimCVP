@@ -1,0 +1,48 @@
+# Blossom — BIM CVP blob storage
+# Public download, authenticated upload. Served as https://blossom.bimcvp.com
+
+publicDomain: https://blossom.bimcvp.com
+
+databasePath: /app/data/sqlite.db
+
+storage:
+  backend: local
+  local:
+    # Mount a block/attached volume here when IFC/blob growth needs it
+    # (keeps large blobs off the box's main disk — see README §8).
+    dir: /app/data/blobs
+
+cache:
+  maxSize: 100MB
+
+upload:
+  enabled: true
+  requireAuth: true
+  # empty allowList = any authenticated pubkey may upload.
+  # Tighten by listing explicit pubkey hex once the pilot circle is fixed.
+  allowList: []
+  blockList: []
+  mimeTypeBlocklist:
+    - text/html
+  mimeTypeAllowlist:
+    - application/x-step          # IFC (SPF)
+    - model/vnd.usdz+zip          # USD package
+    - application/octet-stream
+    - image/png
+    - image/jpeg
+    - image/svg+xml
+    - image/webp
+    - application/pdf
+    - application/json
+    - text/plain
+    - text/markdown
+  maxFileSize: 524288000          # 500 MB
+
+list:
+  requireAuth: false
+
+download:
+  requireAuth: false
+
+discovery:
+  upstreams: []

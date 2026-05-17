@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IDS — BIM-CVP Wiki</title>
+  <meta name="description" content="Information Delivery Specification 1.0 — buildingSMART standard for machine-checkable information requirements on IFC models." />
+  <link rel="icon" href="../../assets/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+  <link rel="stylesheet" href="../../assets/wiki.css" />
+</head>
+<body>
+
+<header class="topbar" data-screen-label="Top bar">
+  <div class="shell topbar__inner">
+    <a class="brand" href="../../en/" aria-label="gemeinwert">
+      <img class="brand__monogram" src="../../assets/logo-monogram.svg" alt="" width="30" height="36" />
+      <div>
+        <div class="brand__word">gemeinwert</div>
+        <div class="brand__sub">BIM <span class="cvp">CVP</span></div>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="../../en/">Home</a>
+      <a href="../../en/standards.html">Standards</a>
+      <a href="../" class="active">Wiki</a>
+      <a href="../../en/bim-cvp.html">BIM-CVP</a>
+      <a href="../../en/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap-art">
+    <p class="crumb"><a href="../../en/">gemeinwert</a> &nbsp;/&nbsp; <a href="../">wiki</a> &nbsp;/&nbsp; requirements &nbsp;/&nbsp; ids</p>
+
+    <header class="art-head">
+      <h1>IDS &mdash; Information Delivery Specification</h1>
+      <p class="art-lede">
+        The buildingSMART standard for machine-readable information requirements on
+        IFC models. Final as version 1.0 since 1 June 2024. Replaces informal EIR PDFs
+        with a checkable specification that an IFC model can be automatically validated against.
+      </p>
+    </header>
+
+    <article class="art">
+
+      <div class="tldr">
+        <span class="tldr__label">In one sentence</span>
+        <p>IDS makes the question &ldquo;which information has to be in the model, and in what form?&rdquo; machine-checkable.</p>
+      </div>
+
+      <h2>Why it exists</h2>
+
+      <p>
+        In classical BIM workflows the client describes information requirements in an
+        EIR or AIA &mdash; as a PDF, with tables, lists, examples. The contractor delivers
+        an IFC model. Whether the model <em>actually meets</em> the requirements is checked
+        at the end by a person with spot checks. Or not at all.
+      </p>
+
+      <p>
+        IDS flips this around: the requirement itself becomes a file that a checker tool
+        runs automatically against an IFC model. Pass or fail comes with concrete pointers
+        to which property on which component is missing or has the wrong value.
+      </p>
+
+      <p>
+        Practical consequence: EIR / AIA remain as legal contract text. The <em>technical
+        requirement definition</em> moves into a versionable, checkable IDS file.
+      </p>
+
+      <h2>Version status</h2>
+
+      <table>
+        <thead>
+          <tr><th>Version</th><th>Released</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>IDS 1.0</code></td>
+            <td>1 June 2024</td>
+            <td><strong>Final, official buildingSMART standard</strong></td>
+          </tr>
+          <tr>
+            <td>Pre-1.0 versions (beta)</td>
+            <td>2022&ndash;2024</td>
+            <td>Not official, do not use as a stable requirement source</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        IDS 1.0 is the first final standard in this domain. Before it there were only
+        informal XML schemas or proprietary solutions (Solibri rules, BIMQ, Plannerly templates).
+      </p>
+
+      <h2>What IDS can check</h2>
+
+      <p>
+        IDS addresses the <strong>alphanumeric</strong> layer of an IFC model. Geometry
+        requirements remain the job of MVDs and LOIN. Concretely IDS can formulate
+        requirements on:
+      </p>
+
+      <ul>
+        <li><strong>Entity types</strong> &mdash; e.g. &ldquo;there must be <code>IfcWall</code> instances&rdquo;</li>
+        <li><strong>Properties</strong> &mdash; e.g. &ldquo;every wall must carry <code>Pset_WallCommon.FireRating</code>&rdquo;</li>
+        <li><strong>Values</strong> &mdash; e.g. &ldquo;with values from the list REI30 / REI60 / REI90&rdquo;</li>
+        <li><strong>Quantities</strong> &mdash; e.g. &ldquo;<code>Qto_WallBaseQuantities.GrossArea</code> is mandatory and greater than 0&rdquo;</li>
+        <li><strong>Materials</strong> &mdash; e.g. &ldquo;material assigned from list {masonry, concrete, steel}&rdquo;</li>
+        <li><strong>Classifications</strong> &mdash; e.g. &ldquo;eBKP-H code linked via <code>IfcRelAssociatesClassification</code>&rdquo;</li>
+        <li><strong><code>partOf</code> dependencies</strong> &mdash; e.g. &ldquo;every window is part of a wall&rdquo;</li>
+      </ul>
+
+      <p>
+        IDS therefore has four building blocks that are combined in every specification:
+        <em>applicability</em>, <em>requirement</em>, <em>reference to IFC version</em>, and
+        <em>cardinality</em> (required, optional, prohibited).
+      </p>
+
+      <h2>Structure of an IDS file</h2>
+
+      <p>IDS files are XML, defined by a clear XSD schema. The root element is <code>ids:ids</code>. Example:</p>
+
+      <pre>&lt;ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ids:info&gt;
+    &lt;ids:title&gt;Fire-rating requirements, sample project&lt;/ids:title&gt;
+    &lt;ids:version&gt;1.0&lt;/ids:version&gt;
+    &lt;ids:author&gt;bauamt@example.org&lt;/ids:author&gt;
+    &lt;ids:date&gt;2026-04-15&lt;/ids:date&gt;
+    &lt;ids:description&gt;Mandatory requirements, detailed design phase&lt;/ids:description&gt;
+    &lt;ids:purpose&gt;LP4&lt;/ids:purpose&gt;
+  &lt;/ids:info&gt;
+  &lt;ids:specifications&gt;
+    &lt;ids:specification ifcVersion="IFC4X3" name="Walls need fire-rating value"&gt;
+      &lt;ids:applicability minOccurs="0" maxOccurs="unbounded"&gt;
+        &lt;ids:entity&gt;
+          &lt;ids:name&gt;&lt;ids:simpleValue&gt;IFCWALL&lt;/ids:simpleValue&gt;&lt;/ids:name&gt;
+        &lt;/ids:entity&gt;
+      &lt;/ids:applicability&gt;
+      &lt;ids:requirements&gt;
+        &lt;ids:property dataType="IFCLABEL" cardinality="required"&gt;
+          &lt;ids:propertySet&gt;
+            &lt;ids:simpleValue&gt;Pset_WallCommon&lt;/ids:simpleValue&gt;
+          &lt;/ids:propertySet&gt;
+          &lt;ids:baseName&gt;
+            &lt;ids:simpleValue&gt;FireRating&lt;/ids:simpleValue&gt;
+          &lt;/ids:baseName&gt;
+          &lt;ids:value&gt;
+            &lt;xs:restriction base="xs:string"&gt;
+              &lt;xs:enumeration value="REI30" /&gt;
+              &lt;xs:enumeration value="REI60" /&gt;
+              &lt;xs:enumeration value="REI90" /&gt;
+            &lt;/xs:restriction&gt;
+          &lt;/ids:value&gt;
+        &lt;/ids:property&gt;
+      &lt;/ids:requirements&gt;
+    &lt;/ids:specification&gt;
+  &lt;/ids:specifications&gt;
+&lt;/ids:ids&gt;</pre>
+
+      <p>
+        In plain English: &ldquo;Every <code>IfcWall</code> instance must have the property
+        <code>FireRating</code> in the set <code>Pset_WallCommon</code>, and its value must be
+        one of REI30, REI60, REI90.&rdquo; A checker loads the IDS file plus an IFC model and
+        immediately shows which walls comply and which do not.
+      </p>
+
+      <h2>Relationship to bSDD</h2>
+
+      <p>
+        Property names like <code>Pset_WallCommon.FireRating</code> are human-readable &mdash; but
+        language- and version-dependent. IDS specifications often additionally reference a
+        bSDD URI:
+      </p>
+
+      <pre>&lt;ids:property dataType="IFCLABEL"
+              uri="https://identifier.buildingsmart.org/uri/buildingsmart/ifc/4.3/prop/FireRating"
+              cardinality="required"&gt;
+  ...
+&lt;/ids:property&gt;</pre>
+
+      <p>The URI is language-neutral, unique, versioned and resolvable in multiple languages. That is exactly what bSDD is for.</p>
+
+      <h2>Relationship to MVD, IDM, LOIN</h2>
+
+      <table>
+        <thead>
+          <tr><th>Standard</th><th>Addresses</th><th>Example question</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MVD</strong></td>
+            <td>which subset of the IFC schema is used</td>
+            <td>&ldquo;Which IFC entities and properties are allowed in this exchange?&rdquo;</td>
+          </tr>
+          <tr>
+            <td><strong>IDS</strong></td>
+            <td>which information must actually <em>be present</em> in the model</td>
+            <td>&ldquo;Does every wall have a fire-rating value?&rdquo;</td>
+          </tr>
+          <tr>
+            <td><strong>IDM</strong></td>
+            <td>process &mdash; who, when, in which exchange step</td>
+            <td>&ldquo;Who delivers the fire-rating data in which phase?&rdquo;</td>
+          </tr>
+          <tr>
+            <td><strong>LOIN</strong> (EN 17412)</td>
+            <td>granularity per information item</td>
+            <td>&ldquo;How detailed must the fire-rating statement be?&rdquo;</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>In practice they work together: IDM describes the process. LOIN defines the depth. MVD sets the schema footprint. IDS makes it checkable.</p>
+
+      <h2>Tool support (2026)</h2>
+
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>IDS authoring</th><th>IDS check against IFC</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Solibri Office</td><td>—</td><td>✓ IFC check</td></tr>
+          <tr><td>ArchiCAD</td><td>✓</td><td>—</td></tr>
+          <tr><td>ALLPLAN</td><td>✓</td><td>—</td></tr>
+          <tr><td>usBIM</td><td>✓</td><td>✓</td></tr>
+          <tr><td>BIMcollab Zoom</td><td>—</td><td>✓ IFC check</td></tr>
+          <tr><td>DESITE BIM</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Blumatica BIM</td><td>✓ IDS editor</td><td>✓ IDS validator</td></tr>
+          <tr><td>Plannerly</td><td>✓</td><td>—</td></tr>
+          <tr><td>BIM-Q</td><td>✓</td><td>(via Solibri bridge)</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        The tool landscape has grown significantly within 18 months of the IDS final release.
+        When selecting: separate <em>authoring</em> from <em>checking</em> &mdash; many tools do
+        only one of them.
+      </p>
+
+      <h2>Mapping to signed events</h2>
+
+      <p>BIM-CVP models IDS specs as parameterised replaceable events:</p>
+
+      <pre>kind:30810  IDS Specification (replaceable)
+  d: &lt;spec-guid&gt;
+  tags: [
+    ["title",         "Fire-rating requirements, sample project"],
+    ["a",             "&lt;project-ref&gt;"],
+    ["ids-version",   "1.0"],
+    ["ifc-version",   "IFC4X3"],
+    ["purpose",       "LP4"],
+    ["author-pubkey", "&lt;client-npub&gt;"],
+    ["x",             "&lt;sha256-of-ids-xml&gt;"]
+  ]
+  content: the full ids-XML (for small specs)
+           or a Blossom URL reference (for large ones)</pre>
+
+      <p>Validation results are published separately:</p>
+
+      <pre>kind:1180  IDS Validation Result (immutable)
+  tags: [
+    ["e",         "&lt;ids-spec-event-id&gt;"],     # which IDS
+    ["e",         "&lt;ifc-file-event-id&gt;"],     # which IFC
+    ["x",         "&lt;report-sha256&gt;"],
+    ["result",    "pass"],                       # pass / fail / warning
+    ["validator", "&lt;tool-npub&gt;"],
+    ["summary",   "147/150 walls compliant, 3 warnings"]
+  ]
+  content: full report (JSON or Blossom URL)</pre>
+
+      <p>Validation can be run by any accredited validator service.</p>
+
+      <h2>Italian UNI 11337 mapping</h2>
+
+      <p>The Italian BIM contract framework uses similar concepts under different names:</p>
+
+      <table>
+        <thead>
+          <tr><th>buildingSMART / ISO</th><th>UNI 11337 (Italy)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>EIR (Exchange Information Requirements)</td><td>Capitolato Informativo (UNI 11337-4)</td></tr>
+          <tr><td>BEP (BIM Execution Plan)</td><td>Piano di Gestione Informativa</td></tr>
+          <tr><td>IDS (technical check)</td><td>complements the Capitolato &mdash; not formally substituted, often embedded in practice</td></tr>
+        </tbody>
+      </table>
+
+      <p>For Italian public tenders (DM 312/2021) the Capitolato Informativo is the binding document. IDS can be attached as the technical check layer.</p>
+
+      <div class="art-next">
+        <h3>Read on</h3>
+        <ul>
+          <li><a href="../modell/ifc.html">What is IFC?</a> &mdash; the data model IDS checks against</li>
+          <li><a href="../prozess/iso-19650.html">ISO 19650</a> &mdash; the overarching process frame</li>
+          <li><a href="../nostr-mapping/kind-mapping.html">Kind mapping</a> &mdash; complete event overview</li>
+        </ul>
+      </div>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.buildingsmart.org/standards/bsi-standards/information-delivery-specification-ids/" target="_blank" rel="noopener">buildingSMART IDS standard page</a></li>
+        <li><a href="https://github.com/buildingSMART/IDS" target="_blank" rel="noopener">buildingSMART IDS repository</a></li>
+        <li><a href="https://standards.buildingsmart.org/IDS/1.0/ids.xsd" target="_blank" rel="noopener">IDS 1.0 XSD schema</a></li>
+        <li><a href="https://technical.buildingsmart.org/ids-software-implementations/" target="_blank" rel="noopener">List of IDS-capable software</a></li>
+      </ul>
+
+    </article>
+
+    <footer class="art-foot">
+      <span>Wiki &middot; Requirements &middot; IDS</span>
+      <a href="../">&larr; back to wiki hub</a>
+    </footer>
+  </div>
+</main>
+
+<script src="../../assets/nodebg.js"></script>
+</body>
+</html>
