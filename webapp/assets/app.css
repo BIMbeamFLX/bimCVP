@@ -58,3 +58,5 @@ code.codebox {
   display: inline-block; background: #0d1217; border: 1px solid var(--line);
   border-radius: 6px; padding: 6px 10px; font-family: var(--font-mono);
 }
+
+.req { color: #f0a; font-size: .8em; font-weight: 600; }

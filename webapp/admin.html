@@ -23,10 +23,11 @@
       <div id="banner"></div>
       <label>Project title</label>
       <input id="p-title" placeholder="e.g. Building — HKLS coordination" />
-      <label>Project admin email</label>
-      <input id="p-email" type="email" placeholder="who manages this project" />
-      <p class="note">Gets the invite code + QR by email, with a notice to keep
-      it safe.</p>
+      <label>Project admin email <span class="req">*required</span></label>
+      <input id="p-email" type="email" required aria-required="true"
+             autocomplete="email" placeholder="who manages this project" />
+      <p class="note">Required — this is the recovery anchor. Gets the invite
+      code + QR by email, with a notice to keep it safe.</p>
       <label>Description</label>
       <textarea id="p-desc" placeholder="Short scope"></textarea>
       <label>Address (optional)</label>
