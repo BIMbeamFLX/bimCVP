@@ -163,3 +163,21 @@ The substrate for node/operator key custody — **not** an end-user artifact.
 Until B is built: confidential data does not go on the public relay (use A).
 The mnemonic/node-backup model is post-pilot; the pilot keeps the current
 `PROVISION_MASTER_KEY` (already backed up in a password manager).
+
+## Roadmap sequence (after B)
+
+Encryption (Increment B) is the prerequisite for the sovereign-storage layer.
+Ordered path:
+
+1. **A** — private relay stopgap (now, for confidential data).
+2. **B** — per-project content encryption + BIP39/NIP-06 node backup.
+3. **Multi-bunker custody** — threshold/FROST PCK custody across self-hosted
+   nodes (the hardest part; see §B.1, §B.6).
+4. **nodrive** — sovereign Drive replacement on the same stack
+   (`docs/nodrive-concept.md`). Comes **after** encryption: it reuses the
+   per-project keys and the node-backup model for content-addressed file
+   storage, so it must not be built before B exists.
+
+`nodrive` is a recognized roadmap item, not a side note — the file/Drive
+counterpart to the signed-coordination layer, on the same identity and key
+substrate.
