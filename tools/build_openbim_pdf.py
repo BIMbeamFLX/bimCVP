@@ -91,7 +91,7 @@ def bullets(items):
     )
 
 def rating_chip(level):
-    color = {"hoch": HIGH, "sehr hoch": HIGH, "mittel": MID, "niedrig": LOW, "n/a": NA}.get(level.lower(), NA)
+    color = {"high": HIGH, "very high": HIGH, "medium": MID, "low": LOW, "n/a": NA}.get(level.lower(), NA)
     tbl = Table([[P(f"<font color='white'><b>{level.upper()}</b></font>", small)]],
                 colWidths=[3.6*cm])
     tbl.setStyle(TableStyle([
@@ -105,19 +105,19 @@ def rating_chip(level):
     return tbl
 
 
-def standard_block(name, was, eignung, ereignis, luecke, empfehlung):
-    """Render a standardised block per Standard."""
+def standard_block(name, what, suitability, event, gap_issue, recommendation):
+    """Render a standardised block per standard."""
     elems = [H3(name)]
-    elems.append(rating_chip(eignung["label"]))
+    elems.append(rating_chip(suitability["label"]))
     elems.append(gap(4))
-    elems.append(P(f"<b>Was es ist.</b> {was}"))
-    elems.append(P(f"<b>NIP-Eignung.</b> {eignung['begruendung']}"))
-    if ereignis:
-        elems.append(P(f"<b>Ereignis-Vorschlag.</b> {ereignis}"))
-    if luecke:
-        elems.append(P(f"<b>Lücken / Probleme.</b> {luecke}"))
-    if empfehlung:
-        elems.append(P(f"<b>Empfehlung.</b> {empfehlung}"))
+    elems.append(P(f"<b>What it is.</b> {what}"))
+    elems.append(P(f"<b>NIP suitability.</b> {suitability['rationale']}"))
+    if event:
+        elems.append(P(f"<b>Event proposal.</b> {event}"))
+    if gap_issue:
+        elems.append(P(f"<b>Gaps / problems.</b> {gap_issue}"))
+    if recommendation:
+        elems.append(P(f"<b>Recommendation.</b> {recommendation}"))
     elems.append(gap(8))
     return KeepTogether(elems)
 
@@ -127,7 +127,7 @@ doc = SimpleDocTemplate(
     OUTPUT, pagesize=A4,
     leftMargin=2.0*cm, rightMargin=2.0*cm,
     topMargin=2.0*cm, bottomMargin=2.2*cm,
-    title="openBIM-Standards × Nostr — NIP-Eignung",
+    title="openBIM standards × Nostr — NIP suitability",
     author="Felix Hitthaler",
 )
 
@@ -135,8 +135,8 @@ def on_page(canvas, doc):
     canvas.saveState()
     canvas.setFont("Helvetica", 8)
     canvas.setFillColor(MUTED)
-    page_text = f"Seite {doc.page}"
-    canvas.drawString(2.0*cm, 1.2*cm, "openBIM × Nostr — NIP-Eignung")
+    page_text = f"Page {doc.page}"
+    canvas.drawString(2.0*cm, 1.2*cm, "openBIM × Nostr — NIP suitability")
     canvas.drawRightString(A4[0]-2.0*cm, 1.2*cm, page_text)
     canvas.restoreState()
 
@@ -145,504 +145,504 @@ story = []
 
 # ---------- Cover ----------
 story.append(Spacer(1, 4*cm))
-story.append(Paragraph("openBIM-Standards × Nostr", title))
-story.append(Paragraph("Welche Standards sind NIP-fähig — und wie?", subtitle))
+story.append(Paragraph("openBIM standards × Nostr", title))
+story.append(Paragraph("Which standards are NIP-ready — and how?", subtitle))
 story.append(gap(20))
-story.append(P("Research-Vorlauf zur Identifikation realistischer NIP-Kandidaten "
-               "im Schnittfeld buildingSMART-Ökosystem und Nostr-Protokoll. "
-               "Ziel: priorisierte Liste von Spezifikationsstücken, die als "
-               "eigenständige NIPs (Nostr Implementation Possibility) sinnvoll sind, "
-               "samt Event-Skizzen und offenen Fragen."))
+story.append(P("Research groundwork to identify realistic NIP candidates "
+               "at the intersection of the buildingSMART ecosystem and the Nostr protocol. "
+               "Goal: a prioritised list of specification pieces that make sense as "
+               "standalone NIPs (Nostr Implementation Possibility), "
+               "together with event sketches and open questions."))
 story.append(gap(30))
-story.append(Paragraph("<b>Autor</b>&nbsp;&nbsp;Felix Hitthaler", meta))
-story.append(Paragraph("<b>Stand</b>&nbsp;&nbsp;Mai 2026", meta))
-story.append(Paragraph("<b>Status</b>&nbsp;&nbsp;Diskussionsentwurf", meta))
-story.append(Paragraph("<b>Bezug</b>&nbsp;&nbsp;openbimstandards.org · "
+story.append(Paragraph("<b>Author</b>&nbsp;&nbsp;Felix Hitthaler", meta))
+story.append(Paragraph("<b>As of</b>&nbsp;&nbsp;May 2026", meta))
+story.append(Paragraph("<b>Status</b>&nbsp;&nbsp;Discussion draft", meta))
+story.append(Paragraph("<b>Reference</b>&nbsp;&nbsp;openbimstandards.org · "
                        "buildingsmart.org · github.com/buildingSMART · "
                        "github.com/openBIMstandards", meta))
 story.append(PageBreak())
 
-# ---------- TOC (manuell, weil simpel) ----------
-story.append(H1("Inhalt"))
+# ---------- TOC (manual, because simple) ----------
+story.append(H1("Contents"))
 toc_items = [
-    "1. Ausgangslage und Methode",
-    "2. openBIMstandards.org — Incubator-Bestand",
-    "3. buildingSMART-Portfolio im Detail",
+    "1. Background and method",
+    "2. openBIMstandards.org — incubator inventory",
+    "3. buildingSMART portfolio in detail",
     "    3.1 Industry Foundation Classes (IFC)",
     "    3.2 Information Delivery Specification (IDS)",
     "    3.3 BIM Collaboration Format (BCF)",
     "    3.4 buildingSMART Data Dictionary (bSDD)",
-    "    3.5 openCDE-Initiative (Foundation, Documents, Dictionary, BCF APIs)",
+    "    3.5 openCDE initiative (Foundation, Documents, Dictionary, BCF APIs)",
     "    3.6 IFC Validation Service",
     "    3.7 Use Case Management (UCM)",
     "    3.8 Information Delivery Manual (IDM)",
-    "4. Querschnitt — weitere relevante Standards",
-    "5. NIP-Eignungs-Matrix",
-    "6. Top-Kandidaten — Skizzen",
-    "7. Roadmap-Vorschlag",
-    "8. Quellen",
+    "4. Cross-section — further relevant standards",
+    "5. NIP suitability matrix",
+    "6. Top candidates — sketches",
+    "7. Roadmap proposal",
+    "8. Sources",
 ]
 for item in toc_items:
     story.append(P(item, body_left))
 story.append(PageBreak())
 
-# ---------- 1. Ausgangslage ----------
-story.append(H1("1. Ausgangslage und Methode"))
+# ---------- 1. Background ----------
+story.append(H1("1. Background and method"))
 story.append(P(
-    "openBIM ist der Sammelbegriff für offene, herstellerneutrale Datenaustausch- und "
-    "Koordinationsstandards im Bauwesen, getragen primär von buildingSMART International "
-    "(bSI) und ergänzenden Initiativen. Die Kern-Standards sind IFC (Modellschema), "
-    "IDS (Anforderungsschema), BCF (Issue-Format), bSDD (Datenwörterbuch), sowie das "
-    "openCDE-Bündel an REST-APIs, das Common-Data-Environment-Funktionen "
-    "herstellerneutral spezifiziert."))
+    "openBIM is the umbrella term for open, vendor-neutral data-exchange and "
+    "coordination standards in construction, driven primarily by buildingSMART International "
+    "(bSI) and complementary initiatives. The core standards are IFC (model schema), "
+    "IDS (requirements schema), BCF (issue format), bSDD (data dictionary), as well as the "
+    "openCDE bundle of REST APIs that specifies common-data-environment functions "
+    "vendor-neutrally."))
 story.append(P(
-    "Parallel existiert die Community-Initiative <font color='#0b5394'>openBIMstandards.org</font> "
-    "(github.com/openBIMstandards) als &lsquo;Incubator for agile open BIM standards for the web&rsquo; "
-    "— kleinere Repos zu ifcOWL, BimJSON, Property-Set-Definitions und Modell-Checking. "
-    "Die Aktivität dort ist seit ca. 2020 niedrig, die Konzepte sind aber inhaltlich nahe an "
-    "dem, was Nostr-native Tooling braucht: web-orientiert, JSON-affin, signierbar, "
-    "föderierbar."))
+    "In parallel there is the community initiative <font color='#0b5394'>openBIMstandards.org</font> "
+    "(github.com/openBIMstandards) as an &lsquo;Incubator for agile open BIM standards for the web&rsquo; "
+    "— smaller repos for ifcOWL, BimJSON, property-set definitions and model checking. "
+    "Activity there has been low since around 2020, but the concepts are conceptually close to "
+    "what Nostr-native tooling needs: web-oriented, JSON-friendly, signable, "
+    "federatable."))
 story.append(P(
-    "<b>Methode dieser Untersuchung.</b> Jedes Artefakt wird auf vier Dimensionen geprüft:"))
+    "<b>Method of this study.</b> Each artefact is assessed against four dimensions:"))
 story.append(bullets([
-    "<b>Datenmodell-Fit</b> — lässt sich der Standard in Nostr-Event-Form (signiertes JSON, "
-    "Tags, Replacable-Semantik) abbilden, ohne wesentliche Semantik zu verlieren?",
-    "<b>Identitäts- und Berechtigungs-Fit</b> — passt das Autorenmodell zu npub-Signaturen "
-    "und Group-/Badge-Logik (NIP-29, NIP-58)?",
-    "<b>Datei-Layer</b> — wie wird die binäre Komponente (IFC, Snapshot, Anhang) gehandhabt?",
-    "<b>Dezentralisierungs-Nutzen</b> — gibt es einen echten Vorteil gegenüber dem Status quo "
-    "(Zentralität abbauen, Plattform-Lock-in vermeiden, neue Workflows freischalten)?",
+    "<b>Data-model fit</b> — can the standard be expressed in Nostr event form (signed JSON, "
+    "tags, replaceable semantics) without losing essential semantics?",
+    "<b>Identity and authorisation fit</b> — does the authorship model fit npub signatures "
+    "and group/badge logic (NIP-29, NIP-58)?",
+    "<b>File layer</b> — how is the binary component (IFC, snapshot, attachment) handled?",
+    "<b>Decentralisation benefit</b> — is there a real advantage over the status quo "
+    "(reduce centralisation, avoid platform lock-in, unlock new workflows)?",
 ]))
 story.append(P(
-    "Die Eignung wird in drei Stufen klassifiziert: "
-    "<b>HOCH</b> (NIP-Draft lohnt sich, Nutzen klar), "
-    "<b>MITTEL</b> (denkbar, aber mit Kompromissen), "
-    "<b>NIEDRIG</b> (Nostr ist hier nicht der richtige Layer)."))
+    "Suitability is classified in three levels: "
+    "<b>HIGH</b> (a NIP draft is worthwhile, benefit clear), "
+    "<b>MEDIUM</b> (conceivable, but with compromises), "
+    "<b>LOW</b> (Nostr is not the right layer here)."))
 story.append(P(
-    "<b>Abgrenzung.</b> BCF wurde bereits in einem separaten Research-Dokument "
-    "vertieft behandelt (BCF-over-Nostr NIP-Draft). Hier nur kurze Einordnung und "
-    "Verweise."))
+    "<b>Scope boundary.</b> BCF was already covered in depth in a separate research document "
+    "(BCF-over-Nostr NIP draft). Only a brief classification and "
+    "references here."))
 story.append(PageBreak())
 
-# ---------- 2. openBIMstandards.org Incubator ----------
-story.append(H1("2. openBIMstandards.org — Incubator-Bestand"))
+# ---------- 2. openBIMstandards.org incubator ----------
+story.append(H1("2. openBIMstandards.org — incubator inventory"))
 story.append(P(
-    "Die GitHub-Organisation <font color='#0b5394'>openBIMstandards</font> umfasst acht "
-    "Repos, davon mehrere archiviert oder seit Jahren inaktiv. Inhaltlich interessant für "
-    "Nostr-Adaptionen sind drei Artefakte: ifcOWL, BimJSON und das PSD-Repository. "
-    "modelcheckN3 und der Schependomlaan-Datensatz sind Methoden-/Daten-Showcases und "
-    "nicht selbst Standardisierungsgegenstand."))
+    "The GitHub organisation <font color='#0b5394'>openBIMstandards</font> comprises eight "
+    "repos, several of them archived or inactive for years. Conceptually interesting for "
+    "Nostr adaptations are three artefacts: ifcOWL, BimJSON and the PSD repository. "
+    "modelcheckN3 and the Schependomlaan dataset are method/data showcases and "
+    "not themselves objects of standardisation."))
 
 story.append(standard_block(
     "ifcOWL",
-    "RDF/OWL-Ontologie-Variante von IFC, primär für Linked-Data-Anwendungen. "
-    "SPARQL-fähig, Verbindung zur Semantic-Web-Toolchain.",
-    {"label": "NIEDRIG",
-     "begruendung": "Nostr-Events sind JSON-Streams, keine RDF-Tripel. Eine "
-     "vollständige Ontologie als Event-Strom hätte hohen Konvertierungsverlust "
-     "und keinen Praxisnutzen gegenüber dem nativen Triple-Store-Stack."},
+    "RDF/OWL ontology variant of IFC, primarily for linked-data applications. "
+    "SPARQL-capable, connected to the Semantic Web toolchain.",
+    {"label": "LOW",
+     "rationale": "Nostr events are JSON streams, not RDF triples. A "
+     "full ontology as an event stream would incur high conversion loss "
+     "and no practical benefit over the native triple-store stack."},
     None,
-    "Andere Datenphilosophie (Graph-DB vs. Append-Log). Reasoner-Logik nicht abbildbar.",
-    "Kein eigener NIP. Berührungspunkt: JSON-LD im event.content wäre für "
-    "Linked-Data-Brücken denkbar — dafür reicht ein generischer Kind plus "
-    "spezielle Tag-Konventionen."))
+    "Different data philosophy (graph DB vs. append log). Reasoner logic not representable.",
+    "No dedicated NIP. Touchpoint: JSON-LD in event.content would be "
+    "conceivable for linked-data bridges — a generic kind plus "
+    "specific tag conventions would suffice for that."))
 
 story.append(standard_block(
     "BimJSON",
-    "JSON-Kommunikationsstandard-Entwurf für Online-BIM-Tools (Repo zuletzt 2015 aktiv). "
-    "Idee: einfacher JSON-Austausch jenseits von IFC.",
-    {"label": "MITTEL",
-     "begruendung": "Format passt grundsätzlich, hat aber keine nennenswerte "
-     "Verbreitung. Reaktivierung als Nostr-Format wäre eher Neuerfindung als Adaption."},
+    "JSON communication-standard draft for online BIM tools (repo last active 2015). "
+    "Idea: simple JSON exchange beyond IFC.",
+    {"label": "MEDIUM",
+     "rationale": "The format fits in principle, but has no notable "
+     "adoption. Reactivation as a Nostr format would be reinvention rather than adaptation."},
     None,
-    "Kaum Mindshare, kein aktueller Maintainer. Definitions-Lücken in Geometrie und "
-    "Property-Sets.",
-    "Nicht eigenständig weiterführen. Stattdessen IFC-Subset-Excerpts (z. B. nur "
-    "Spatial Structure + ausgewählte Properties) als zweckspezifische Events modellieren, "
-    "wo das sinnvoll ist."))
+    "Little mindshare, no current maintainer. Definition gaps in geometry and "
+    "property sets.",
+    "Do not continue standalone. Instead model IFC subset excerpts (e.g. just "
+    "spatial structure + selected properties) as purpose-specific events "
+    "where that makes sense."))
 
 story.append(standard_block(
-    "BIMbots-PSD-Repository",
-    "Repository und GraphQL-Server für Property Set Definitions (PSDs). PSDs sind "
-    "die Vorlagen, die in IFC den Werten Bedeutung geben (Pset_WallCommon, "
-    "Pset_DoorWindow­Glazing­Type usw.).",
-    {"label": "HOCH",
-     "begruendung": "PSDs sind kleine, klar strukturierte Records mit eigener GUID. "
-     "Perfekt für parameterized replaceable Events: jeder Herausgeber publiziert seine "
-     "PSDs unter eigener npub, Konsumenten subscriben gezielt."},
-    "<font face='Courier'>kind:30821</font> openBIM-PSD, d=PSD-GUID. Felder: Name, "
-    "DefiningValue, ApplicableClasses, PropertyDefinitions[]. Bezug zu bSDD via URI-Tag.",
-    "Konflikt-Fall mehrerer PSD-Autoren mit gleichem Namen — über Namensräume "
-    "(npub-Prefix) lösbar.",
-    "<b>Starker NIP-Kandidat.</b> Klein, klar, hoher Praxisnutzen. Kann unabhängig von "
-    "bSDD existieren und sich später mit einem bSDD-NIP zusammenwachsen lassen."))
+    "BIMbots PSD repository",
+    "Repository and GraphQL server for Property Set Definitions (PSDs). PSDs are "
+    "the templates that give values meaning in IFC (Pset_WallCommon, "
+    "Pset_DoorWindow­Glazing­Type etc.).",
+    {"label": "HIGH",
+     "rationale": "PSDs are small, clearly structured records with their own GUID. "
+     "Perfect for parameterized replaceable events: each publisher publishes their "
+     "PSDs under their own npub, consumers subscribe selectively."},
+    "<font face='Courier'>kind:30821</font> openBIM PSD, d=PSD-GUID. Fields: Name, "
+    "DefiningValue, ApplicableClasses, PropertyDefinitions[]. Reference to bSDD via URI tag.",
+    "Conflict case of multiple PSD authors with the same name — solvable via namespaces "
+    "(npub prefix).",
+    "<b>Strong NIP candidate.</b> Small, clear, high practical benefit. Can exist "
+    "independently of bSDD and later converge with a bSDD NIP."))
 
 story.append(standard_block(
     "modelcheckN3",
-    "Modell-Validierung über Notation3-Regeln auf ifcOWL.",
-    {"label": "NIEDRIG",
-     "begruendung": "Semantic-Web-Toolchain, gleiches Argument wie ifcOWL."},
+    "Model validation via Notation3 rules on ifcOWL.",
+    {"label": "LOW",
+     "rationale": "Semantic Web toolchain, same argument as ifcOWL."},
     None,
-    "Andere Datenphilosophie.",
-    "Kein eigener NIP."))
+    "Different data philosophy.",
+    "No dedicated NIP."))
 
 story.append(standard_block(
     "Archive-DataSetSchependomlaan",
-    "Klassisches Test-Dataset mit IFC + dazugehörigen Daten — methodischer Showcase, "
-    "kein Standard.",
-    {"label": "N/A", "begruendung": "Kein Standard, kein NIP-Gegenstand."},
+    "Classic test dataset with IFC + associated data — a methodological showcase, "
+    "not a standard.",
+    {"label": "N/A", "rationale": "Not a standard, not a NIP subject."},
     None, None,
-    "Als Test-Vektor für IFC- und IDS-Adaptions-PoCs verwenden."))
+    "Use as a test vector for IFC and IDS adaptation PoCs."))
 
 story.append(PageBreak())
 
 # ---------- 3. buildingSMART Portfolio ----------
-story.append(H1("3. buildingSMART-Portfolio im Detail"))
+story.append(H1("3. buildingSMART portfolio in detail"))
 
 # 3.1 IFC
 story.append(H2("3.1 Industry Foundation Classes (IFC)"))
-story.append(rating_chip("NIEDRIG (auf Entity-Level) / HOCH (auf File-Level)"))
+story.append(rating_chip("LOW (at entity level) / HIGH (at file level)"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Schemenbasiertes Datenmodell für Bauwerke — STEP-Physical-File "
-    "(.ifc), ifcXML, ifcJSON sowie ifcOWL-Serialisierungen. Aktuell IFC 4.3 als "
-    "ISO 16739-1:2024, in Vorbereitung IFC 4.4 (Erweiterungen Wasser/Tunnel/Industrie) "
-    "und Diskussion zu IFC 5. Tausende Entity-Typen, Geometrie + Alphanumerik, "
-    "typischer Modellumfang einige hundert MB bis mehrere GB."))
+    "<b>What it is.</b> A schema-based data model for buildings — STEP physical file "
+    "(.ifc), ifcXML, ifcJSON and ifcOWL serialisations. Currently IFC 4.3 as "
+    "ISO 16739-1:2024, with IFC 4.4 in preparation (extensions for water/tunnel/industry) "
+    "and discussion of IFC 5. Thousands of entity types, geometry + alphanumerics, "
+    "typical model size from a few hundred MB to several GB."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Auf Entity-Level (jede IfcWall, IfcDoor etc. als eigenes Event) "
-    "<b>klar ungeeignet</b>: Millionen Events pro Realprojekt, Schreiblast, "
-    "Indexier-Aufwand, Relay-Last. Auf File-Level (ganzes Modell als Blob plus "
-    "Metadaten-Event) <b>gut geeignet</b>: passt zu NIP-94 + Blossom-Hash + optional "
-    "kind:30904 BCF-File-Reference (siehe BCF-Doc) und/oder OpenTimestamps-Anker auf der "
-    "Timechain für Notarfunktion. Subset-Level (z. B. nur Spatial Structure als Treemap-"
-    "Event) wäre für föderierte Modell-Übersichten denkbar, ist aber nicht "
-    "standardisiert und eher Forschungs- als NIP-Material."))
+    "<b>NIP suitability.</b> At entity level (each IfcWall, IfcDoor etc. as its own event) "
+    "<b>clearly unsuitable</b>: millions of events per real project, write load, "
+    "indexing effort, relay load. At file level (whole model as a blob plus "
+    "a metadata event) <b>well suited</b>: fits NIP-94 + Blossom hash + optionally "
+    "kind:30904 BCF file reference (see BCF doc) and/or an OpenTimestamps anchor on the "
+    "timechain for a notary function. Subset level (e.g. just spatial structure as a treemap "
+    "event) would be conceivable for federated model overviews, but is not "
+    "standardised and is research rather than NIP material."))
 story.append(P(
-    "<b>Empfehlung.</b> Kein dedizierter IFC-NIP. Stattdessen: generische "
-    "<font face='Courier'>kind:1063</font> NIP-94 file-metadata Events mit "
-    "IFC-spezifischen Tags (<font face='Courier'>schema=IFC4X3</font>, "
+    "<b>Recommendation.</b> No dedicated IFC NIP. Instead: generic "
+    "<font face='Courier'>kind:1063</font> NIP-94 file-metadata events with "
+    "IFC-specific tags (<font face='Courier'>schema=IFC4X3</font>, "
     "<font face='Courier'>ifc-project</font>, <font face='Courier'>ifc-site</font>, "
-    "<font face='Courier'>ifc-building</font>). Provenance, Signatur und Versionierung "
-    "ergeben sich aus dem File-Reference-Event."))
+    "<font face='Courier'>ifc-building</font>). Provenance, signature and versioning "
+    "follow from the file-reference event."))
 story.append(gap(6))
 
 # 3.2 IDS
 story.append(H2("3.2 Information Delivery Specification (IDS)"))
-story.append(rating_chip("SEHR HOCH"))
+story.append(rating_chip("VERY HIGH"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Seit Juni 2024 als IDS 1.0 finaler bSI-Standard. XML/XSD-basiertes "
-    "Format zur computer-interpretierbaren Definition von Informationsanforderungen, die "
-    "automatisch gegen IFC-Modelle geprüft werden können. Eine IDS-Datei enthält "
+    "<b>What it is.</b> A final bSI standard as IDS 1.0 since June 2024. An XML/XSD-based "
+    "format for the computer-interpretable definition of information requirements that "
+    "can be checked automatically against IFC models. An IDS file contains "
     "<font face='Courier'>ids:info</font> (Title, Version, Author, Date, Description, "
-    "Copyright, IfcVersion, Milestone, License, Purpose) und einen "
-    "<font face='Courier'>ids:specifications</font>-Block; pro Spezifikation eine "
-    "Anwendbarkeits-Bedingung (Entity, Attribute, Classification, Property, Material, "
-    "PartOf) plus Anforderungen mit Kardinalität."))
+    "Copyright, IfcVersion, Milestone, License, Purpose) and an "
+    "<font face='Courier'>ids:specifications</font> block; per specification an "
+    "applicability condition (Entity, Attribute, Classification, Property, Material, "
+    "PartOf) plus requirements with cardinality."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Sehr hoch. IDS-Files sind klein (typisch wenige kB), strukturiert, "
-    "haben sinnvolle Autorschaft (Auftraggeber, AHJ, Generalplaner), eindeutige Versionen "
-    "und sind exakt der Use-Case, in dem signierte, replizierbare, versionierte Events "
-    "Mehrwert liefern: Anforderungen werden öffentlich signiert publiziert, Auftragnehmer "
-    "abonnieren, automatische Checker konsumieren."))
-story.append(P("<b>Ereignis-Vorschlag.</b>"))
+    "<b>NIP suitability.</b> Very high. IDS files are small (typically a few kB), structured, "
+    "have meaningful authorship (client, AHJ, lead designer), unambiguous versions "
+    "and are exactly the use case where signed, replicable, versioned events "
+    "add value: requirements are published publicly signed, contractors "
+    "subscribe, automatic checkers consume."))
+story.append(P("<b>Event proposal.</b>"))
 story.append(Paragraph(
     "kind:30810 — openBIM IDS Specification (parameterized replaceable, d=spec-guid)<br/>"
     "tags: a (project), ids-version, ifc-version, milestone, status (Draft/Final), "
-    "purpose, t (Pflicht-Tags je Domäne)<br/>"
-    "content: JSON-Repräsentation der IDS-Specifications, oder den ursprünglichen "
-    "ids-XML-Inhalt 1:1 — Round-trip-fähig.<br/>"
+    "purpose, t (mandatory tags per domain)<br/>"
+    "content: JSON representation of the IDS specifications, or the original "
+    "ids-XML content 1:1 — round-trip capable.<br/>"
     "<br/>"
-    "kind:1180 — IDS Validation Result (regulär, immutabel)<br/>"
-    "tags: e (IDS-Event), e (IFC-File-Event), x (sha256 des Reports), result (pass/fail), "
-    "p (Validator-npub)<br/>"
-    "content: Zusammenfassung; vollständiger Report als NIP-94-Begleit-Event.",
+    "kind:1180 — IDS Validation Result (regular, immutable)<br/>"
+    "tags: e (IDS event), e (IFC file event), x (sha256 of the report), result (pass/fail), "
+    "p (validator npub)<br/>"
+    "content: summary; full report as a NIP-94 companion event.",
     code))
 story.append(P(
-    "<b>Lücken / Probleme.</b> IDS referenziert bSDD-URIs für Properties — die müssen "
-    "auflösbar bleiben (Mirror-Cache empfehlenswert). IDS-Versions-Upgrades (1.0 → 1.1 → "
-    "2.0) brauchen klare Migrations-Hinweise im NIP."))
+    "<b>Gaps / problems.</b> IDS references bSDD URIs for properties — these must "
+    "remain resolvable (a mirror cache is advisable). IDS version upgrades (1.0 → 1.1 → "
+    "2.0) need clear migration notes in the NIP."))
 story.append(P(
-    "<b>Empfehlung.</b> <b>Erstklassiger NIP-Kandidat.</b> Klein, mächtig, dezentral "
-    "publizierbar — passt auch politisch zur Idee, dass Auftraggeber-Anforderungen nicht "
-    "in proprietären Portalen versteckt liegen sollten. Ideale Erweiterung des BCF-NIPs: "
-    "IDS-NIP definiert Anforderungen, BCF-NIP dokumentiert Verstöße/Themen."))
+    "<b>Recommendation.</b> <b>First-class NIP candidate.</b> Small, powerful, "
+    "decentrally publishable — also fits politically with the idea that client requirements "
+    "should not be hidden in proprietary portals. An ideal extension of the BCF NIP: "
+    "the IDS NIP defines requirements, the BCF NIP documents violations/topics."))
 story.append(gap(6))
 
 # 3.3 BCF
 story.append(H2("3.3 BIM Collaboration Format (BCF)"))
-story.append(rating_chip("HOCH"))
+story.append(rating_chip("HIGH"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Standard für Issue- und Koordinationskommunikation in BIM-"
-    "Projekten. BCF-XML 3.0 (Container .bcfzip) und BCF-API. Topics, Comments, "
-    "Viewpoints, Snapshots, IFC-Element-Referenzen."))
+    "<b>What it is.</b> A standard for issue and coordination communication in BIM "
+    "projects. BCF-XML 3.0 (container .bcfzip) and the BCF API. Topics, comments, "
+    "viewpoints, snapshots, IFC element references."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Hoch. Bereits separat ausgearbeitet als BCF-over-Nostr "
-    "NIP-Entwurf — Event-Kinds 30900–30904 (Topic, Viewpoint, Project, Document Ref, "
+    "<b>NIP suitability.</b> High. Already worked out separately as a BCF-over-Nostr "
+    "NIP draft — event kinds 30900–30904 (Topic, Viewpoint, Project, Document Ref, "
     "File Ref) plus 1170–1172 (Comment, Audit, Reaction)."))
 story.append(P(
-    "<b>Empfehlung.</b> Eigenständiger NIP, läuft parallel zum IDS-NIP. Querverweise "
-    "zwischen IDS-Validation-Result-Events und BCF-Topic-Events sind die natürliche "
-    "Brücke (failed Validation → automatischer BCF-Topic)."))
+    "<b>Recommendation.</b> A standalone NIP, running in parallel to the IDS NIP. Cross-references "
+    "between IDS validation-result events and BCF topic events are the natural "
+    "bridge (failed validation → automatic BCF topic)."))
 story.append(gap(6))
 
 # 3.4 bSDD
 story.append(H2("3.4 buildingSMART Data Dictionary (bSDD)"))
-story.append(rating_chip("HOCH (konzeptionell) / MITTEL (praktisch)"))
+story.append(rating_chip("HIGH (conceptually) / MEDIUM (practically)"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Zentrale Datenbank für Klassifikationen, Klassen, Properties, "
-    "Werte und ihre Übersetzungen. REST-API. URI-basierte Identität "
+    "<b>What it is.</b> A central database for classifications, classes, properties, "
+    "values and their translations. REST API. URI-based identity "
     "(<font face='Courier'>https://identifier.buildingsmart.org/uri/...</font>). "
-    "Klassifikationssysteme (Uniclass, OmniClass, ETIM u. v. m.) liegen dort gepflegt."))
+    "Classification systems (Uniclass, OmniClass, ETIM and many more) are maintained there."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Konzeptionell sehr passend — föderierte, signierte Definitionen "
-    "sind genau die Disziplin, in der Nostr glänzt. Praktisch hängt der Wert vom "
-    "Konsens-Layer ab: ein Dictionary ohne kuratierte Single-Source verliert seinen "
-    "Zweck. Brauchbares Modell: jeder Herausgeber (Hersteller, Verband, Kammer) "
-    "publiziert seine Klassen unter eigener npub; Konsumenten wählen, wem sie folgen, "
-    "Aggregator-Relays liefern kuratierte Sichten."))
-story.append(P("<b>Ereignis-Vorschlag.</b>"))
+    "<b>NIP suitability.</b> Conceptually very fitting — federated, signed definitions "
+    "are exactly the discipline in which Nostr shines. Practically the value depends on "
+    "the consensus layer: a dictionary without a curated single source loses its "
+    "purpose. A workable model: each publisher (manufacturer, association, chamber) "
+    "publishes their classes under their own npub; consumers choose whom to follow, "
+    "aggregator relays deliver curated views."))
+story.append(P("<b>Event proposal.</b>"))
 story.append(Paragraph(
     "kind:30820 — bSDD Classification System (d=URI)<br/>"
-    "kind:30821 — bSDD Class (d=URI)  // hier mit BIMbots-PSD-Repository konvergent<br/>"
+    "kind:30821 — bSDD Class (d=URI)  // here convergent with the BIMbots PSD repository<br/>"
     "kind:30822 — bSDD Property (d=URI)<br/>"
     "kind:30823 — bSDD Value List (d=URI)<br/>"
-    "tags: lang (mehrsprachig), version, parent (URI des übergeordneten Systems), "
-    "ifc-mapping (Pset_xyz oder direkt IfcEntity)<br/>"
-    "content: JSON mit allen lokalisierten Bezeichnungen, Definitionen, Synonymen, "
-    "Einheiten, applikabler IFC-Domäne.",
+    "tags: lang (multilingual), version, parent (URI of the parent system), "
+    "ifc-mapping (Pset_xyz or directly IfcEntity)<br/>"
+    "content: JSON with all localised labels, definitions, synonyms, "
+    "units, applicable IFC domain.",
     code))
 story.append(P(
-    "<b>Lücken / Probleme.</b> Konflikt-Resolution bei konkurrierenden Definitionen. "
-    "URI-Erhalt bei Spiegelung auf Nostr. Performance bei großem Klassen-Korpus "
-    "(Uniclass mit zehntausenden Klassen → entsprechend viele Events, Index-Last)."))
+    "<b>Gaps / problems.</b> Conflict resolution for competing definitions. "
+    "URI preservation when mirroring onto Nostr. Performance with a large class corpus "
+    "(Uniclass with tens of thousands of classes → correspondingly many events, index load)."))
 story.append(P(
-    "<b>Empfehlung.</b> NIP-Draft sinnvoll, aber zuerst kleineren Scope (PSD-Repository, "
-    "siehe 3.4-Verwandte aus 2.0) als Vorstudie. Voller bSDD-Spiegel als Phase 2."))
+    "<b>Recommendation.</b> A NIP draft makes sense, but first a smaller scope (the PSD repository, "
+    "see the 3.4 relatives from section 2) as a preliminary study. A full bSDD mirror as phase 2."))
 story.append(gap(6))
 
 # 3.5 openCDE
-story.append(H2("3.5 openCDE-Initiative (Foundation, Documents, Dictionary, BCF APIs)"))
-story.append(rating_chip("HOCH"))
+story.append(H2("3.5 openCDE initiative (Foundation, Documents, Dictionary, BCF APIs)"))
+story.append(rating_chip("HIGH"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Bündel von REST-APIs als herstellerneutrale CDE-Layer-Spec. "
-    "Foundation API (Auth, Sessions, Projekte, User), Documents API (Dokumente, "
-    "Versionen, Metadaten), Dictionary API (Verbindung zu bSDD), BCF API (Issue-Tracking)."))
-story.append(P("<b>NIP-Eignung pro API.</b>"))
+    "<b>What it is.</b> A bundle of REST APIs as a vendor-neutral CDE-layer spec. "
+    "Foundation API (auth, sessions, projects, users), Documents API (documents, "
+    "versions, metadata), Dictionary API (connection to bSDD), BCF API (issue tracking)."))
+story.append(P("<b>NIP suitability per API.</b>"))
 story.append(bullets([
-    "<b>Foundation API → HOCH.</b> Projekte als <font face='Courier'>kind:30902</font> "
-    "(siehe BCF-Doc), User als npub mit Profile-Event (NIP-01 kind:0), Auth via "
-    "NIP-42, Berechtigungen via NIP-29 group membership. Direkter Ersatz auf "
-    "Protokoll-Ebene möglich.",
-    "<b>Documents API → HOCH.</b> Document-Records als parameterized replaceable "
-    "Event (<font face='Courier'>kind:30930</font> openBIM Document Record), Files via "
-    "NIP-94 + Blossom, Versionierung über erneutes Publish desselben d-Tags, "
-    "Lifecycle-Status (WIP/Shared/Published/Archive nach ISO 19650) als Tag "
+    "<b>Foundation API → HIGH.</b> Projects as <font face='Courier'>kind:30902</font> "
+    "(see BCF doc), users as npub with a profile event (NIP-01 kind:0), auth via "
+    "NIP-42, authorisation via NIP-29 group membership. A direct replacement at the "
+    "protocol level is possible.",
+    "<b>Documents API → HIGH.</b> Document records as parameterized replaceable "
+    "events (<font face='Courier'>kind:30930</font> openBIM Document Record), files via "
+    "NIP-94 + Blossom, versioning via re-publishing the same d-tag, "
+    "lifecycle status (WIP/Shared/Published/Archive per ISO 19650) as the tag "
     "<font face='Courier'>iso19650-state</font>.",
-    "<b>Dictionary API → HOCH (via bSDD-NIP, s. 3.4).</b>",
-    "<b>BCF API → HOCH (via BCF-NIP, s. 3.3).</b>",
+    "<b>Dictionary API → HIGH (via the bSDD NIP, see 3.4).</b>",
+    "<b>BCF API → HIGH (via the BCF NIP, see 3.3).</b>",
 ]))
 story.append(P(
-    "<b>Empfehlung.</b> Statt vier eigene NIPs einen <b>openCDE-Brücken-NIP</b>: "
-    "definiert einen HTTP-Adapter-Pattern, der openCDE-API-Endpunkte auf Nostr-Events "
-    "abbildet. Damit bleiben bestehende Tools (ACC, Bimcollab, Solibri) ohne "
-    "Nostr-Patches nutzbar — der Adapter terminiert REST nach außen, Nostr nach innen. "
-    "Übergangslösung mit hohem Praxiswert."))
-story.append(P("<b>Ereignis-Vorschlag für Documents.</b>"))
+    "<b>Recommendation.</b> Instead of four separate NIPs, one <b>openCDE bridge NIP</b>: "
+    "defines an HTTP adapter pattern that maps openCDE API endpoints onto Nostr events. "
+    "This keeps existing tools (ACC, Bimcollab, Solibri) usable without "
+    "Nostr patches — the adapter terminates REST on the outside, Nostr on the inside. "
+    "A transitional solution with high practical value."))
+story.append(P("<b>Event proposal for Documents.</b>"))
 story.append(Paragraph(
     "kind:30930 — openBIM Document Record (parameterized replaceable, d=document-guid)<br/>"
     "tags: a (project), iso19650-state (WIP|Shared|Published|Archive), "
     "title, mime, version, x (sha256), url (Blossom), revision, "
-    "supersedes (event-id eines früheren Records, optional), p (Verantwortlicher)<br/>"
-    "content: JSON mit Beschreibung, Metadaten, Klassifikation-Refs.",
+    "supersedes (event-id of an earlier record, optional), p (responsible person)<br/>"
+    "content: JSON with description, metadata, classification refs.",
     code))
 story.append(gap(6))
 
 # 3.6 Validation Service
 story.append(H2("3.6 IFC Validation Service"))
-story.append(rating_chip("HOCH"))
+story.append(rating_chip("HIGH"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Kostenloser zentraler Online-Validator von bSI, prüft IFC-Files "
-    "gegen Schema, Implementer-Agreements und MVDs, liefert strukturierten Report. "
-    "Aktuell als Strategic Project geführt."))
+    "<b>What it is.</b> A free central online validator from bSI; checks IFC files "
+    "against schema, implementer agreements and MVDs, delivers a structured report. "
+    "Currently run as a Strategic Project."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Hoch als Data Vending Machine (NIP-90). Validation ist eine "
-    "wohldefinierte Service-Funktion mit klarer Input/Output-Form — perfekter "
-    "DVM-Use-Case. Mehrere unabhängige Validator-Provider können konkurrieren, "
-    "Reputations-Layer ergibt sich aus Result-History und Tags-/Reviews-Volumen."))
-story.append(P("<b>Ereignis-Vorschlag.</b>"))
+    "<b>NIP suitability.</b> High as a Data Vending Machine (NIP-90). Validation is a "
+    "well-defined service function with a clear input/output form — a perfect "
+    "DVM use case. Several independent validator providers can compete, "
+    "a reputation layer emerges from result history and tag/review volume."))
+story.append(P("<b>Event proposal.</b>"))
 story.append(Paragraph(
     "kind:5901 — IFC Validation Job Request (NIP-90 input)<br/>"
-    "tags: i (IFC-URL + sha256), schema (IFC4|IFC4X3|IFC4X4), "
-    "ids-ref (event-id einer IDS-Spec, optional), bid (max sats)<br/>"
+    "tags: i (IFC URL + sha256), schema (IFC4|IFC4X3|IFC4X4), "
+    "ids-ref (event-id of an IDS spec, optional), bid (max sats)<br/>"
     "<br/>"
     "kind:6901 — IFC Validation Job Result (NIP-90 output)<br/>"
-    "tags: e (request-event), result (pass|fail|warning), "
-    "report-url, x (sha256 des Reports), summary (Anzahl errors/warnings)<br/>"
-    "content: JSON-Zusammenfassung; Volltext-Report via NIP-94-Begleit-Event.",
+    "tags: e (request event), result (pass|fail|warning), "
+    "report-url, x (sha256 of the report), summary (number of errors/warnings)<br/>"
+    "content: JSON summary; full-text report via a NIP-94 companion event.",
     code))
 story.append(P(
-    "<b>Empfehlung.</b> <b>Klarer NIP-Kandidat.</b> Kombiniert mit IDS-NIP entsteht "
-    "ein dezentrales QA-Netzwerk: Auftraggeber publiziert IDS, Auftragnehmer publiziert "
-    "IFC + Validator-Bestellung, mehrere Validatoren bieten, der Beste/Schnellste "
-    "gewinnt, alle Ergebnisse sind signiert und nachprüfbar."))
+    "<b>Recommendation.</b> <b>Clear NIP candidate.</b> Combined with the IDS NIP this "
+    "creates a decentralised QA network: the client publishes the IDS, the contractor publishes "
+    "the IFC + a validator order, several validators bid, the best/fastest "
+    "wins, all results are signed and verifiable."))
 story.append(gap(6))
 
 # 3.7 UCM
 story.append(H2("3.7 Use Case Management (UCM)"))
-story.append(rating_chip("HOCH"))
+story.append(rating_chip("HIGH"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> Online-Service zur Erfassung und Austausch von Use Cases — "
-    "Anwendungsfällen für openBIM-Workflows mit zugehörigen IDS/IDM, "
-    "Domänen-Kontext, Stakeholder, Information-Exchange-Schema. Service unter "
+    "<b>What it is.</b> An online service for capturing and exchanging use cases — "
+    "application scenarios for openBIM workflows with associated IDS/IDM, "
+    "domain context, stakeholders, information-exchange schema. Service at "
     "ucm.buildingsmart.org."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Hoch. Use-Case-Records sind reine Metadaten-Objekte mit "
-    "strukturierten Feldern, gut abbildbar auf parameterized replaceable Events."))
-story.append(P("<b>Ereignis-Vorschlag.</b>"))
+    "<b>NIP suitability.</b> High. Use-case records are pure metadata objects with "
+    "structured fields, well representable as parameterized replaceable events."))
+story.append(P("<b>Event proposal.</b>"))
 story.append(Paragraph(
     "kind:30840 — openBIM Use Case (parameterized replaceable, d=usecase-id)<br/>"
-    "tags: t (Domäne), stage (Bauphase), stakeholders (mehrfach), "
+    "tags: t (domain), stage (construction phase), stakeholders (multiple), "
     "ids-ref, idm-ref, lang<br/>"
-    "content: JSON nach UCM-Datenmodell (Titel, Beschreibung, Motivation, "
-    "Vorbedingungen, Schritte, Ergebnisse, KPIs).",
+    "content: JSON per the UCM data model (title, description, motivation, "
+    "preconditions, steps, outcomes, KPIs).",
     code))
 story.append(P(
-    "<b>Empfehlung.</b> Schöner sekundärer NIP — niedriges Risiko, sofort produktiv, "
-    "kann unabhängig von IDS/BCF starten und sich später quervernetzen."))
+    "<b>Recommendation.</b> A nice secondary NIP — low risk, immediately productive, "
+    "can start independently of IDS/BCF and cross-link later."))
 story.append(gap(6))
 
 # 3.8 IDM
 story.append(H2("3.8 Information Delivery Manual (IDM)"))
-story.append(rating_chip("MITTEL"))
+story.append(rating_chip("MEDIUM"))
 story.append(gap(4))
 story.append(P(
-    "<b>Was es ist.</b> bSI-Standard zur Beschreibung von Geschäftsprozessen und "
-    "Informationsanforderungen, die später in IFC und IDS technisch konkret werden. "
-    "BPMN-affin, eher textlastig."))
+    "<b>What it is.</b> A bSI standard for describing business processes and "
+    "information requirements that later become technically concrete in IFC and IDS. "
+    "BPMN-oriented, rather text-heavy."))
 story.append(P(
-    "<b>NIP-Eignung.</b> Mittel. IDMs sind strukturierte Dokumente, deren Wert aber "
-    "stark in Diagrammen und Erläuterungen liegt — eher klassisches Publishing. "
-    "NIP-23 Long-form-Content (kind:30023) wäre ausreichend, ohne dedizierten NIP."))
+    "<b>NIP suitability.</b> Medium. IDMs are structured documents, but their value "
+    "lies heavily in diagrams and explanations — rather classic publishing. "
+    "NIP-23 long-form content (kind:30023) would be sufficient, without a dedicated NIP."))
 story.append(P(
-    "<b>Empfehlung.</b> Kein eigener NIP. Stattdessen NIP-23 nutzen, mit Convention-"
-    "Tags <font face='Courier'>idm-domain</font>, <font face='Courier'>process-bpmn</font> "
-    "(Hash auf hinterlegtes BPMN), <font face='Courier'>ifc-version</font>."))
+    "<b>Recommendation.</b> No dedicated NIP. Use NIP-23 instead, with convention "
+    "tags <font face='Courier'>idm-domain</font>, <font face='Courier'>process-bpmn</font> "
+    "(hash of the stored BPMN), <font face='Courier'>ifc-version</font>."))
 story.append(PageBreak())
 
-# ---------- 4. Querschnitt ----------
-story.append(H1("4. Querschnitt — weitere relevante Standards"))
+# ---------- 4. Cross-section ----------
+story.append(H1("4. Cross-section — further relevant standards"))
 story.append(P(
-    "Über das bSI-Kernsortiment hinaus existieren benachbarte Standards, die im "
-    "Praxisbetrieb gemeinsam mit IFC/IDS/BCF auftreten und ebenfalls auf "
-    "NIP-Eignung geprüft werden sollten."))
+    "Beyond the bSI core range there are adjacent standards that, in "
+    "practical operation, appear together with IFC/IDS/BCF and should likewise be "
+    "assessed for NIP suitability."))
 
 story.append(standard_block(
     "LOIN (DIN EN 17412-1:2020)",
-    "Level of Information Need. Definiert geometrische, alphanumerische und "
-    "Dokumentations-Granularität pro Informations-Anforderung. In Deutschland und "
-    "EU-weit als Methode für Informations­anforderungen etabliert.",
-    {"label": "HOCH",
-     "begruendung": "Strukturierte Metadaten, klar versionierbar, oft eng mit IDS "
-     "und Pset-Vorgaben verknüpft. Ideal als parameterized replaceable Event."},
+    "Level of Information Need. Defines geometric, alphanumeric and "
+    "documentation granularity per information requirement. Established in Germany and "
+    "EU-wide as a method for information requirements.",
+    {"label": "HIGH",
+     "rationale": "Structured metadata, clearly versionable, often closely tied to IDS "
+     "and Pset specifications. Ideal as a parameterized replaceable event."},
     "<font face='Courier'>kind:30811</font> openBIM LOIN Definition, d=loin-id. "
-    "Tags: a (project), purpose, milestone, ids-ref. content: JSON mit den drei "
-    "LOIN-Achsen.",
-    "Verzahnung mit IDS sauber halten — Vorschlag: LOIN-Event referenziert das IDS-Event, "
-    "nicht umgekehrt, weil LOIN konzeptionell vor IDS kommt.",
-    "Mit IDS zusammen denken — bietet sich als gemeinsamer NIP oder eng kooperierender "
-    "Folge-NIP an."))
+    "Tags: a (project), purpose, milestone, ids-ref. content: JSON with the three "
+    "LOIN axes.",
+    "Keep the interlocking with IDS clean — proposal: the LOIN event references the IDS event, "
+    "not the other way around, because LOIN conceptually comes before IDS.",
+    "Think of it together with IDS — lends itself to a joint NIP or a closely cooperating "
+    "follow-on NIP."))
 
 story.append(standard_block(
     "COBie",
-    "Construction-Operations Building Information Exchange. Spreadsheet- oder "
-    "ifcXML-basiertes Handover-Format für FM-Daten.",
-    {"label": "NIEDRIG",
-     "begruendung": "Dateiformat, kein Protokoll. Übergabe-Charakter (einmaliger "
-     "Transfer), keine laufende Kollaboration."},
+    "Construction-Operations Building Information Exchange. A spreadsheet- or "
+    "ifcXML-based handover format for FM data.",
+    {"label": "LOW",
+     "rationale": "A file format, not a protocol. Handover character (one-off "
+     "transfer), no ongoing collaboration."},
     None,
-    "Inhalte sind tabellarisch, gehören als ganzes File via NIP-94 + Blossom abgelegt, "
-    "nicht in Event-Schema gequetscht.",
-    "Kein eigener NIP. Generischer File-Layer reicht."))
+    "Contents are tabular, belong stored as a whole file via NIP-94 + Blossom, "
+    "not squeezed into an event schema.",
+    "No dedicated NIP. A generic file layer is enough."))
 
 story.append(standard_block(
     "Product Data Templates (ISO 23387, ISO 23386)",
-    "Templates für Hersteller-Produktdaten — strukturierte, mehrsprachige Property-Sets "
-    "pro Produktklasse. EU-Bauproduktenverordnung (CPR) und Digital Product Passport "
-    "verstärken die Relevanz drastisch.",
-    {"label": "HOCH",
-     "begruendung": "Hersteller-signierte Produktdaten passen perfekt zu npub-Identität. "
-     "EU-DPP-Pflicht ab 2027 macht den Use-Case hoch-aktuell. Berührungspunkt mit dem "
-     "in einer früheren Diskussion entworfenen Material-Pass-Konzept."},
+    "Templates for manufacturer product data — structured, multilingual property sets "
+    "per product class. The EU Construction Products Regulation (CPR) and the Digital Product Passport "
+    "drastically increase the relevance.",
+    {"label": "HIGH",
+     "rationale": "Manufacturer-signed product data fits npub identity perfectly. "
+     "The EU DPP obligation from 2027 makes the use case highly topical. A touchpoint with the "
+     "material-passport concept drafted in an earlier discussion."},
     "<font face='Courier'>kind:30850</font> openBIM Product Data Template, d=template-id. "
     "Tags: manufacturer-npub, classification-uri (bSDD), product-category, "
-    "lang, valid-from, valid-to. content: JSON nach ISO-23387-Datenmodell.",
-    "Versionierung und Widerruf bei Produktänderung — analog NIP-58-Badge-Revoke per "
-    "NIP-09 Delete.",
-    "<b>Sehr starker Kandidat</b>, weil regulatorisches Andocken (CPR, EU-DPP) jetzt "
-    "erfolgt und Hersteller in Bewegung sind."))
+    "lang, valid-from, valid-to. content: JSON per the ISO 23387 data model.",
+    "Versioning and revocation on product change — analogous to NIP-58 badge revoke via "
+    "NIP-09 delete.",
+    "<b>Very strong candidate</b>, because regulatory anchoring (CPR, EU DPP) is now "
+    "happening and manufacturers are in motion."))
 
 story.append(standard_block(
     "ISO 19650",
-    "Prozess-Standard für CDE-Betrieb und Information Management. Definiert "
-    "States (WIP / Shared / Published / Archive), Rollen, Workflows.",
-    {"label": "MITTEL",
-     "begruendung": "Prozess, kein Schema. Direkt nicht abbildbar, aber als "
-     "Tag-Convention sehr nützlich (siehe 3.5)."},
+    "A process standard for CDE operation and information management. Defines "
+    "states (WIP / Shared / Published / Archive), roles, workflows.",
+    {"label": "MEDIUM",
+     "rationale": "A process, not a schema. Not directly representable, but very "
+     "useful as a tag convention (see 3.5)."},
     None,
-    "Workflow-Engine wäre eigene große Aufgabe — gehört nicht in den NIP-Core.",
-    "Tag-Convention <font face='Courier'>iso19650-state</font> im Documents-/BCF-NIP "
-    "integrieren. Kein eigener NIP."))
+    "A workflow engine would be a separate large task — does not belong in the NIP core.",
+    "Integrate the tag convention <font face='Courier'>iso19650-state</font> into the Documents/BCF NIP. "
+    "No dedicated NIP."))
 
 story.append(standard_block(
-    "DIN SPEC 91357 / EN ISO 16484 (BACnet u. ä.)",
-    "Gebäudeautomations- und Twin-Standards für Mess-/Steuer-/Regel-Daten. "
-    "Operative Datenebene neben dem statischen IFC.",
-    {"label": "HOCH",
-     "begruendung": "Live-Sensordaten signiert via npub publizieren ist genau der "
-     "Bereich, in dem Nostr seinen Streaming-Charakter ausspielt. Anknüpfung an "
-     "ESG/EPBD-Recast-Monitoring (EU-Richtlinie 2024/1275)."},
-    "<font face='Courier'>kind:1230</font> Building Telemetry (regulär, ephemeral-affin). "
-    "Tags: device-id (IfcGUID-koppelbar), unit, point-type, project. content: "
-    "kompakter JSON-Payload (timestamp, value, quality).",
-    "Hohe Frequenz → Relay-Last. Optional Aggregations-Events (1 min / 1 h Mittel).",
-    "Eigener NIP <b>HKLS-Telemetrie</b> sinnvoll, koppelt direkt an die HKLS-Twin-"
-    "Projekt-Idee aus der Sovereign-Engineering-Roadmap."))
+    "DIN SPEC 91357 / EN ISO 16484 (BACnet etc.)",
+    "Building-automation and twin standards for measurement/control/regulation data. "
+    "An operational data layer alongside the static IFC.",
+    {"label": "HIGH",
+     "rationale": "Publishing live sensor data signed via npub is exactly the "
+     "area where Nostr plays out its streaming character. Connects to "
+     "ESG/EPBD-recast monitoring (EU Directive 2024/1275)."},
+    "<font face='Courier'>kind:1230</font> Building Telemetry (regular, ephemeral-affine). "
+    "Tags: device-id (couplable to IfcGUID), unit, point-type, project. content: "
+    "compact JSON payload (timestamp, value, quality).",
+    "High frequency → relay load. Optional aggregation events (1 min / 1 h average).",
+    "A dedicated NIP <b>HVAC telemetry</b> makes sense, couples directly to the HVAC twin "
+    "project idea from the Sovereign Engineering roadmap."))
 
 story.append(PageBreak())
 
 # ---------- 5. Matrix ----------
-story.append(H1("5. NIP-Eignungs-Matrix"))
+story.append(H1("5. NIP suitability matrix"))
 story.append(P(
-    "Synoptische Sicht. Sortierung nach NIP-Eignung absteigend. Spalte Aufwand "
-    "schätzt grob: S = ein Wochenende, M = einige Wochen, L = mehrere Monate."))
+    "A synoptic view. Sorted by NIP suitability descending. The effort column "
+    "estimates roughly: S = one weekend, M = a few weeks, L = several months."))
 
 matrix = [
-    ["Standard", "Eignung", "Event-Kind (Vorschlag)", "Aufwand", "Killer-Use-Case"],
-    ["IDS",                       "Sehr hoch", "30810 + 1180",          "M", "Auftraggeber-Anforderungen souverän"],
-    ["BCF",                       "Hoch",      "30900–30904 / 1170–72", "M", "Koordinations-Issues ohne Plattform"],
-    ["Validation Service",        "Hoch",     "5901 / 6901 (NIP-90)",   "M", "Dezentrales QA-Netzwerk"],
-    ["Documents (openCDE)",       "Hoch",     "30930",                  "M", "ISO-19650-konforme Doc-Verteilung"],
-    ["Foundation (openCDE)",      "Hoch",     "—  (NIP-29 + 30902)",   "S", "Projekt-Container ohne Server"],
-    ["Use Case Management",       "Hoch",     "30840",                  "S", "Föderierte Use-Case-Bibliothek"],
-    ["PSD (BIMbots-Repo)",        "Hoch",     "30821",                  "S", "Hersteller-Pset-Verteilung"],
-    ["Product Data Templates",    "Hoch",     "30850",                  "M", "EU-DPP-Anbindung"],
-    ["LOIN (EN 17412)",           "Hoch",     "30811",                  "S", "LOIN als signierter Anforderungsblock"],
-    ["bSDD",                      "Mittel",   "30820–30823",            "L", "Föderiertes Datenwörterbuch"],
-    ["Telemetrie (BACnet-Bridge)","Hoch",     "1230",                   "M", "ESG/EPBD-Monitoring"],
-    ["IDM",                       "Mittel",   "30023 (NIP-23)",         "S", "Prozess-Doku in Long-form"],
-    ["IFC (File-Level)",          "Hoch",     "1063 (NIP-94)",          "S", "Modell-Provenance, OTS-Anker"],
-    ["IFC (Entity-Level)",        "Niedrig",  "—",                       "L", "—"],
-    ["ifcOWL",                    "Niedrig",  "—",                       "—", "—"],
-    ["BimJSON",                   "Niedrig",  "—",                       "—", "—"],
-    ["COBie",                     "Niedrig",  "1063 (NIP-94)",          "S", "Handover-Anhang"],
-    ["ISO 19650",                 "Mittel",   "Tag-Convention",         "S", "States über alle NIPs hinweg"],
+    ["Standard", "Suitability", "Event kind (proposal)", "Effort", "Killer use case"],
+    ["IDS",                       "Very high", "30810 + 1180",          "M", "Sovereign client requirements"],
+    ["BCF",                       "High",      "30900–30904 / 1170–72", "M", "Coordination issues without a platform"],
+    ["Validation Service",        "High",     "5901 / 6901 (NIP-90)",   "M", "Decentralised QA network"],
+    ["Documents (openCDE)",       "High",     "30930",                  "M", "ISO 19650-compliant doc distribution"],
+    ["Foundation (openCDE)",      "High",     "—  (NIP-29 + 30902)",   "S", "Project container without a server"],
+    ["Use Case Management",       "High",     "30840",                  "S", "Federated use-case library"],
+    ["PSD (BIMbots repo)",        "High",     "30821",                  "S", "Manufacturer Pset distribution"],
+    ["Product Data Templates",    "High",     "30850",                  "M", "EU DPP connection"],
+    ["LOIN (EN 17412)",           "High",     "30811",                  "S", "LOIN as a signed requirement block"],
+    ["bSDD",                      "Medium",   "30820–30823",            "L", "Federated data dictionary"],
+    ["Telemetry (BACnet bridge)", "High",     "1230",                   "M", "ESG/EPBD monitoring"],
+    ["IDM",                       "Medium",   "30023 (NIP-23)",         "S", "Process docs in long-form"],
+    ["IFC (file level)",          "High",     "1063 (NIP-94)",          "S", "Model provenance, OTS anchor"],
+    ["IFC (entity level)",        "Low",      "—",                       "L", "—"],
+    ["ifcOWL",                    "Low",      "—",                       "—", "—"],
+    ["BimJSON",                   "Low",      "—",                       "—", "—"],
+    ["COBie",                     "Low",      "1063 (NIP-94)",          "S", "Handover attachment"],
+    ["ISO 19650",                 "Medium",   "Tag convention",         "S", "States across all NIPs"],
 ]
 
 tbl = Table(matrix, colWidths=[3.7*cm, 2.0*cm, 4.0*cm, 1.2*cm, 6.0*cm], repeatRows=1)
@@ -659,12 +659,12 @@ tbl_style = [
     ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#f6f6f6")]),
     ("GRID", (0,0), (-1,-1), 0.25, RULE),
 ]
-# color-code Eignungs-Zelle
+# color-code suitability cell
 for i, row in enumerate(matrix[1:], start=1):
     rating = row[1].lower()
-    if rating in ("sehr hoch", "hoch"):
+    if rating in ("very high", "high"):
         c = HIGH
-    elif rating == "mittel":
+    elif rating == "medium":
         c = MID
     else:
         c = LOW
@@ -674,127 +674,127 @@ tbl.setStyle(TableStyle(tbl_style))
 story.append(tbl)
 story.append(gap(8))
 story.append(P(
-    "<b>Beobachtung.</b> Die Eignung verdichtet sich auf eine kleine Gruppe von "
-    "Metadaten-getriebenen Standards (IDS, BCF, UCM, LOIN, PSD/PDT) plus einer "
-    "DVM-fähigen Service-Schicht (Validation). Modell-Daten (IFC) und Linked-Data-"
-    "Konstrukte (ifcOWL) sind die schwächsten Kandidaten — was logisch ist: Nostr "
-    "ist ein Event-Stream-Protokoll, kein Graph-Store und kein BLOB-Layer."))
+    "<b>Observation.</b> Suitability concentrates on a small group of "
+    "metadata-driven standards (IDS, BCF, UCM, LOIN, PSD/PDT) plus a "
+    "DVM-capable service layer (Validation). Model data (IFC) and linked-data "
+    "constructs (ifcOWL) are the weakest candidates — which is logical: Nostr "
+    "is an event-stream protocol, not a graph store and not a BLOB layer."))
 
 story.append(PageBreak())
 
 # ---------- 6. Top-Kandidaten ----------
-story.append(H1("6. Top-Kandidaten — Skizzen"))
+story.append(H1("6. Top candidates — sketches"))
 story.append(P(
-    "Drei Standards bilden ein zusammenhängendes Minimum Viable Set, das für sich allein "
-    "schon Nutzen liefert und sich gegenseitig verstärkt: <b>IDS</b>, <b>BCF</b> und "
-    "<b>Validation</b>. Plus ein vierter, regulatorisch starker Anker: <b>Product Data "
+    "Three standards form a coherent minimum viable set that already delivers "
+    "value on its own and mutually reinforces: <b>IDS</b>, <b>BCF</b> and "
+    "<b>Validation</b>. Plus a fourth, regulatorily strong anchor: <b>Product Data "
     "Templates</b>."))
 
-story.append(H3("6.1 IDS-NIP — Souveräne Anforderungen"))
+story.append(H3("6.1 IDS NIP — sovereign requirements"))
 story.append(bullets([
-    "<b>Scope.</b> IDS-1.0-Specs als parameterized replaceable Events publizieren, "
-    "abonnierbar, signiert.",
-    "<b>Event-Kinds.</b> 30810 (Spec), 1180 (Validation-Result).",
-    "<b>Datei-Layer.</b> Inline ids-XML in content für kleine Specs (&lt; 16 kB), sonst "
-    "Blossom-Referenz + NIP-94.",
-    "<b>Berechtigung.</b> Öffentlich publizierbar; Pflicht-IDS innerhalb eines Projekts "
-    "via NIP-29-Gruppen-Channel.",
-    "<b>MVP.</b> CLI <font face='Courier'>ids2nostr</font> + Web-Viewer in 2–3 Wochen "
-    "machbar.",
-    "<b>Ökosystem-Synergie.</b> Schließt nahtlos an BCF-NIP an: failed Validation → "
-    "automatischer BCF-Topic mit Cross-Reference.",
+    "<b>Scope.</b> Publish IDS 1.0 specs as parameterized replaceable events, "
+    "subscribable, signed.",
+    "<b>Event kinds.</b> 30810 (spec), 1180 (validation result).",
+    "<b>File layer.</b> Inline ids-XML in content for small specs (&lt; 16 kB), otherwise "
+    "a Blossom reference + NIP-94.",
+    "<b>Authorisation.</b> Publicly publishable; mandatory IDS within a project "
+    "via a NIP-29 group channel.",
+    "<b>MVP.</b> CLI <font face='Courier'>ids2nostr</font> + web viewer feasible in 2–3 "
+    "weeks.",
+    "<b>Ecosystem synergy.</b> Connects seamlessly to the BCF NIP: failed validation → "
+    "automatic BCF topic with cross-reference.",
 ]))
 
-story.append(H3("6.2 Validation-NIP — DVM für IFC-Audit"))
+story.append(H3("6.2 Validation NIP — DVM for IFC audit"))
 story.append(bullets([
-    "<b>Scope.</b> IFC-Validierung als Service über NIP-90 (Data Vending Machine).",
-    "<b>Event-Kinds.</b> 5901 (Request), 6901 (Result), 7000 (Payment/Feedback).",
-    "<b>Anbieter.</b> Initial 1–2 Validatoren (z. B. bSI-Service als Bot, eine "
-    "unabhängige Instanz auf Basis IFCOpenShell-Validator).",
-    "<b>Bezahlung.</b> Lightning, LNbits oder Cashu-Mint des DVM-Operators.",
-    "<b>Ökosystem-Synergie.</b> Konsumiert IDS-Specs (3.1) und erzeugt BCF-Topics (3.3) "
-    "bei Fehlern. Das ist der Kreis, der einen kompletten openBIM-QA-Workflow ohne "
-    "zentrale Plattform schließt.",
+    "<b>Scope.</b> IFC validation as a service via NIP-90 (Data Vending Machine).",
+    "<b>Event kinds.</b> 5901 (request), 6901 (result), 7000 (payment/feedback).",
+    "<b>Providers.</b> Initially 1–2 validators (e.g. the bSI service as a bot, an "
+    "independent instance based on the IfcOpenShell validator).",
+    "<b>Payment.</b> Lightning, LNbits or the Cashu mint of the DVM operator.",
+    "<b>Ecosystem synergy.</b> Consumes IDS specs (3.1) and produces BCF topics (3.3) "
+    "on errors. This is the loop that closes a complete openBIM QA workflow without "
+    "a central platform.",
 ]))
 
-story.append(H3("6.3 PDT-NIP — Produktdaten am DPP-Andock"))
+story.append(H3("6.3 PDT NIP — product data at the DPP connection"))
 story.append(bullets([
-    "<b>Scope.</b> Hersteller-Property-Sets als signierte Events, an ISO 23387 / 23386 "
-    "und EU Digital Product Passport (Verordnung 2024/1781, ESPR) anschlussfähig.",
-    "<b>Event-Kinds.</b> 30850 (Template), optional 30851 (Charge/Lot-spezifisches Datenblatt).",
-    "<b>Berechtigung.</b> Hersteller-npub mit NIP-58-Badge von akkreditierter Stelle.",
-    "<b>Praxis.</b> Anbindung an Material-Pass-Konzept aus dem Sovereign-Engineering-Set: "
-    "jedes Bauteil bekommt PDT-Referenz, kann zerlegt und gehandelt werden.",
-    "<b>Politischer Hebel.</b> EU-DPP-Pflicht ab 2027 für Baustoffe in Vorbereitung — "
-    "wer jetzt souveräne Alternative spezifiziert, ist nicht-trivial vorne.",
+    "<b>Scope.</b> Manufacturer property sets as signed events, connectable to ISO 23387 / 23386 "
+    "and the EU Digital Product Passport (Regulation 2024/1781, ESPR).",
+    "<b>Event kinds.</b> 30850 (template), optionally 30851 (batch/lot-specific data sheet).",
+    "<b>Authorisation.</b> Manufacturer npub with a NIP-58 badge from an accredited body.",
+    "<b>Practice.</b> Connection to the material-passport concept from the Sovereign Engineering set: "
+    "each component gets a PDT reference, can be disassembled and traded.",
+    "<b>Political leverage.</b> The EU DPP obligation from 2027 for construction materials is in preparation — "
+    "whoever specifies a sovereign alternative now is non-trivially ahead.",
 ]))
 
-story.append(H3("6.4 Documents-NIP — openCDE light"))
+story.append(H3("6.4 Documents NIP — openCDE light"))
 story.append(bullets([
-    "<b>Scope.</b> Document Records (Pläne, Berichte, Spec-Sheets) mit Versionierung und "
-    "ISO-19650-State.",
-    "<b>Event-Kind.</b> 30930.",
-    "<b>Datei-Layer.</b> Blossom + NIP-94.",
-    "<b>MVP-Aufwand.</b> Wochenend-Projekt für den Kern, weil semantisch nahe an "
-    "klassischen File-Stores.",
-    "<b>Ökosystem-Synergie.</b> Ergänzt BCF-NIP (Issue verlinkt Document), "
-    "IDS-NIP (Specification verlinkt referenzierte Dokumente).",
+    "<b>Scope.</b> Document records (drawings, reports, spec sheets) with versioning and "
+    "ISO 19650 state.",
+    "<b>Event kind.</b> 30930.",
+    "<b>File layer.</b> Blossom + NIP-94.",
+    "<b>MVP effort.</b> A weekend project for the core, because it is semantically close to "
+    "classic file stores.",
+    "<b>Ecosystem synergy.</b> Complements the BCF NIP (issue links a document), "
+    "the IDS NIP (specification links referenced documents).",
 ]))
 
 story.append(PageBreak())
 
 # ---------- 7. Roadmap ----------
-story.append(H1("7. Roadmap-Vorschlag"))
+story.append(H1("7. Roadmap proposal"))
 story.append(P(
-    "Reihenfolge nach Aufwand und Zugkraft. Phase 1 produziert sichtbare Ergebnisse "
-    "in 6–8 Wochen, Phase 2 erweitert auf den vollen Workflow, Phase 3 öffnet die "
-    "regulatorische und service-orientierte Ebene."))
+    "Order by effort and traction. Phase 1 produces visible results "
+    "in 6–8 weeks, phase 2 extends to the full workflow, phase 3 opens up the "
+    "regulatory and service-oriented layer."))
 
-story.append(H3("Phase 1 — Quick Wins (Wochen 1–8)"))
+story.append(H3("Phase 1 — quick wins (weeks 1–8)"))
 story.append(bullets([
-    "BCF-NIP-Draft + Referenzimplementierung (separat in Arbeit).",
-    "IDS-NIP-Draft (kind 30810) + CLI ids2nostr, deminstrierbarer Web-Viewer.",
-    "UCM-NIP-Draft (kind 30840) — kleinstes Risiko, schnell publishbar als bSI-Use-Case-"
-    "Spiegel.",
-    "Documents-NIP (kind 30930) als Basis für CDE-Lite.",
+    "BCF NIP draft + reference implementation (in progress separately).",
+    "IDS NIP draft (kind 30810) + CLI ids2nostr, a demonstrable web viewer.",
+    "UCM NIP draft (kind 30840) — smallest risk, quickly publishable as a bSI use-case "
+    "mirror.",
+    "Documents NIP (kind 30930) as the basis for CDE-lite.",
 ]))
 
-story.append(H3("Phase 2 — Workflow-Schluss (Wochen 9–16)"))
+story.append(H3("Phase 2 — closing the workflow (weeks 9–16)"))
 story.append(bullets([
-    "Validation-NIP (NIP-90 DVM für IFC) — koppelt IDS + BCF.",
-    "LOIN-Event-Convention (kind 30811) als Annex zum IDS-NIP.",
-    "OpenCDE-HTTP-Adapter: bestehende Tools sprechen openCDE-REST, Adapter terminiert "
-    "auf Nostr-Events. Übergangsweg für klassische BIM-Teams.",
+    "Validation NIP (NIP-90 DVM for IFC) — couples IDS + BCF.",
+    "LOIN event convention (kind 30811) as an annex to the IDS NIP.",
+    "openCDE HTTP adapter: existing tools speak openCDE REST, the adapter terminates "
+    "on Nostr events. A transition path for classic BIM teams.",
 ]))
 
-story.append(H3("Phase 3 — Regulatorik und Service-Layer (Wochen 17–28)"))
+story.append(H3("Phase 3 — regulation and service layer (weeks 17–28)"))
 story.append(bullets([
-    "PDT-NIP (kind 30850) mit ISO-23387/23386- und EU-DPP-Andock; "
-    "Anbindung an Material-Pass-Konzept.",
-    "bSDD-NIP (Phase 1: Klassen + Properties) — föderierter Spiegel mit "
-    "Kuratorensicht-Filter.",
-    "HKLS-Telemetrie-NIP (kind 1230) für Live-Daten aus dem Gebäudebetrieb, koppelt "
-    "an ESG/EPBD-Reporting.",
+    "PDT NIP (kind 30850) with ISO 23387/23386 and EU DPP connection; "
+    "connection to the material-passport concept.",
+    "bSDD NIP (phase 1: classes + properties) — a federated mirror with "
+    "a curator-view filter.",
+    "HVAC telemetry NIP (kind 1230) for live data from building operation, couples "
+    "to ESG/EPBD reporting.",
 ]))
 
-story.append(H3("Quer durch alle Phasen"))
+story.append(H3("Across all phases"))
 story.append(bullets([
-    "Konsens-Sondierung in der bSI-Open-Source-Community zu jedem Draft, bevor "
-    "Final-Spec gefroren wird.",
-    "PRs gegen <font face='Courier'>nostr-protocol/nips</font> mit Kind-Bereich-"
-    "Reservierungen.",
-    "Test-Vektoren aus offiziellen bSI-Repositories für Round-trip-Konformität.",
-    "Praxis-Validierung an einem eigenen Bau- oder Sanierungsprojekt — Risikominimal, "
-    "schneller Reality-Check.",
+    "Consensus sounding in the bSI open-source community for each draft, before "
+    "the final spec is frozen.",
+    "PRs against <font face='Courier'>nostr-protocol/nips</font> with kind-range "
+    "reservations.",
+    "Test vectors from official bSI repositories for round-trip conformance.",
+    "Practical validation on an own construction or renovation project — minimal risk, "
+    "a fast reality check.",
 ]))
 
 story.append(PageBreak())
 
-# ---------- 8. Quellen ----------
-story.append(H1("8. Quellen"))
+# ---------- 8. Sources ----------
+story.append(H1("8. Sources"))
 sources = [
     ("openBIMstandards.org / GitHub", "http://openbimstandards.org/ — github.com/openBIMstandards"),
-    ("buildingSMART openBIM-Übersicht", "https://www.buildingsmart.org/about/openbim/"),
+    ("buildingSMART openBIM overview", "https://www.buildingsmart.org/about/openbim/"),
     ("Industry Foundation Classes (IFC)", "https://www.buildingsmart.org/standards/bsi-standards/industry-foundation-classes/"),
     ("Information Delivery Specification (IDS) 1.0", "https://www.buildingsmart.org/standards/bsi-standards/information-delivery-specification-ids/"),
     ("BIM Collaboration Format (BCF)", "https://www.buildingsmart.org/standards/bsi-standards/bim-collaboration-format/"),
@@ -815,7 +815,7 @@ for name, url in sources:
     story.append(P(f"<b>{name}.</b> {url}", small))
 
 story.append(gap(20))
-story.append(P("<i>Ende des Research-Dokuments. Korrekturen, Ergänzungen und PRs willkommen.</i>", muted))
+story.append(P("<i>End of the research document. Corrections, additions and PRs welcome.</i>", muted))
 
 # ---------- Build ----------
 doc.build(story, onFirstPage=on_page, onLaterPages=on_page)

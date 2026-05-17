@@ -15,7 +15,7 @@ software tenant.
 ├── site/       Static website. Deploy this folder as the web root.
 ├── modules/    Embeddable browser components for Nostr/BIM-CVP workflows.
 ├── docs/       Source documentation, standards notes and architecture docs.
-├── app/        Local development tools and older HTML prototypes.
+├── webapp/     Managed-onboarding web app (served at app.bimcvp.com).
 ├── tools/      CLI utilities for ingest and verification workflows.
 ├── skills/     Local IFC/IDS audit and classification helpers.
 └── ifc/        Local project data placeholder. Real model data is gitignored.

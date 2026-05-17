@@ -12,15 +12,15 @@ Common errors when running `Bulk_Classify_IFC_NoInputs.py` inside Dynamo, and wh
 
 ### CSV not found
 
-**Symptom:** `IOError: Mapping-CSV nicht gefunden: <path>`
+**Symptom:** `IOError: Mapping CSV not found: <path>`
 
 **Fix:** The path constant at the top of the script points to a file that doesn't exist. Either:
 - Adjust the `MAPPING_CSV` and `FAMILY_CSV` constants in the script to the actual paths on the machine
 - Copy the bundled CSVs from `<skill>/assets/` to the configured paths
 
-### Family-CSV missing (only Linear-Klass)
+### Family CSV missing (Linear class only)
 
-**Symptom:** Script runs, but `Family-Mapping: 0 Patterns` in the summary. Many `no_match` entries.
+**Symptom:** Script runs, but `Family mapping: 0 patterns` in the summary. Many `no_match` entries.
 
 **Fix:** `FAMILY_CSV` constant points to a file that doesn't exist. The script tolerates this (returns empty mapping) but falls back to Linear-only classification. Fix the path.
 
@@ -62,7 +62,7 @@ Common errors when running `Bulk_Classify_IFC_NoInputs.py` inside Dynamo, and wh
 - `Export IFC common property sets` is ON
 - `Export base quantities` is ON
 
-Classification alone doesn't fill Psets — they need the export schalter.
+Classification alone doesn't fill Psets — they need the export switches.
 
 ### Pipe Types have `0 pass` even though classification is set
 

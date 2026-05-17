@@ -1,37 +1,37 @@
 # ──────────────────────────────────────────────────────────────────────────────
-#  Bulk_Classify_IFC_NoInputs.py — VARIANTE A (keine Dynamo-Inputs noetig)
+#  Bulk_Classify_IFC_NoInputs.py — VARIANT A (no Dynamo inputs needed)
 #
-#  Bimbeam — Building HKLS — IFC Klassifizierungs-Automat
+#  Bimbeam — Building HVAC — IFC classification automation
 #  Engine: CPython3
 #
-#  Zwei-Stufige Klassifikation:
-#    1. Linear-Klassifikation (LIN_CLASSIFICATION_LINEAR) -> linear-to-ifc-mapping.csv
-#    2. Fallback: Family-Name-Pattern -> family-to-ifc-mapping.csv
-#       (faengt Standard-Revit-Familien wie CHW-WL, AHU-Komponenten,
-#        Panel Tempering Circuit etc. ab, die keinen Linear-Param tragen)
+#  Two-stage classification:
+#    1. Linear classification (LIN_CLASSIFICATION_LINEAR) -> linear-to-ifc-mapping.csv
+#    2. Fallback: family-name pattern -> family-to-ifc-mapping.csv
+#       (catches standard Revit families such as CHW-WL, AHU components,
+#        Panel Tempering Circuit etc. that carry no Linear parameter)
 #
-#  Verwendung:
-#    1. Dynamo oeffnen, Python Script Node anlegen, Engine CPython3
-#    2. Diesen kompletten Inhalt in den Editor einfuegen
-#    3. Output-Port mit Watch-Node verbinden
-#    4. Run klicken
+#  Usage:
+#    1. Open Dynamo, create a Python Script node, engine CPython3
+#    2. Paste this entire content into the editor
+#    3. Connect the output port to a Watch node
+#    4. Click Run
 #
-#  Toggle Dry-Run vs. Produktiv:
-#    DRY_RUN unten in der KONFIG-Sektion auf True (Sicherheit) oder False setzen,
-#    Skript speichern, neu Run klicken.
+#  Toggle dry-run vs. production:
+#    Set DRY_RUN in the CONFIG section below to True (safe) or False,
+#    save the script, click Run again.
 #
-#  Stand 2026-05-16 — Bimbeam — Felix Hitthaler — CC BY 4.0
+#  As of 2026-05-16 — Bimbeam — Felix Hitthaler — CC BY 4.0
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
-# ║  KONFIG                                                                    ║
+# ║  CONFIG                                                                    ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
 MAPPING_CSV = r"G:\projekte\buildingClaude\Rohrmassen\IDS\linear-to-ifc-mapping.csv"
 FAMILY_CSV  = r"G:\projekte\buildingClaude\Rohrmassen\IDS\family-to-ifc-mapping.csv"
 LOG_CSV     = r"G:\projekte\buildingClaude\Rohrmassen\IDS\classify_log.csv"
-DRY_RUN     = True   # True = nichts schreiben, nur loggen
-                     # False = tatsaechlich klassifizieren
+DRY_RUN     = True   # True = write nothing, only log
+                     # False = actually classify
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║  Code                                                                      ║
@@ -88,10 +88,10 @@ HKLS_CATEGORIES = [
 
 
 def load_mapping(csv_path):
-    """Linear-Klass -> IfcExportAs/IfcExportType"""
+    """Linear class -> IfcExportAs/IfcExportType"""
     mapping = {}
     if not os.path.exists(csv_path):
-        raise IOError("Mapping-CSV nicht gefunden: {}".format(csv_path))
+        raise IOError("Mapping CSV not found: {}".format(csv_path))
     with open(csv_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -106,7 +106,7 @@ def load_mapping(csv_path):
 
 
 def load_family_mapping(csv_path):
-    """Family-Pattern -> IfcExportAs/IfcExportType. Liste behaelt Reihenfolge."""
+    """Family pattern -> IfcExportAs/IfcExportType. List preserves order."""
     patterns = []
     if not os.path.exists(csv_path):
         return patterns
@@ -126,7 +126,7 @@ def load_family_mapping(csv_path):
 
 
 def family_lookup(family_name, type_name, patterns):
-    """Sucht erste Pattern-Uebereinstimmung in Family- oder Type-Name (case insensitive, substring)."""
+    """Finds first pattern match in family or type name (case insensitive, substring)."""
     if not patterns:
         return None
     fname = (family_name or "").lower()
@@ -260,24 +260,24 @@ try:
 
             target = None
 
-            # Stufe 1: Linear-Klassifikation
+            # Stage 1: Linear classification
             if lin_value:
                 target = mapping.get(lin_value.strip())
                 if target:
                     match_source = "linear_class"
                 else:
-                    # Linear hat klassifiziert, wir kennen den Wert aber nicht
+                    # Linear classified it, but we don't recognize the value
                     results["unmapped"] += 1
                     log_rows.append({
                         "status": "UNMAPPED",
                         "source": "",
                         "category": cat_name, "family": fam_name, "type": type_name,
                         "lin_class": lin_value, "ifc_class": "", "ifc_predef": "",
-                        "note": "Linear-Klasse nicht in linear-to-ifc-mapping.csv"
+                        "note": "Linear class not in linear-to-ifc-mapping.csv"
                     })
                     continue
 
-            # Stufe 2: Family-Name-Fallback
+            # Stage 2: family-name fallback
             if target is None:
                 fp = family_lookup(fam_name, type_name, family_patterns)
                 if fp:
@@ -287,7 +287,7 @@ try:
                     }
                     match_source = "family_pattern:" + fp["pattern"]
 
-            # Kein Treffer in beiden Stufen
+            # No match in either stage
             if target is None:
                 results["no_match"] += 1
                 log_rows.append({
@@ -295,7 +295,7 @@ try:
                     "source": "",
                     "category": cat_name, "family": fam_name, "type": type_name,
                     "lin_class": lin_value, "ifc_class": "", "ifc_predef": "",
-                    "note": "weder Linear-Klass noch Family-Pattern getroffen — manuell setzen"
+                    "note": "neither Linear class nor family pattern matched — set manually"
                 })
                 continue
 
@@ -310,7 +310,7 @@ try:
                     "category": cat_name, "family": fam_name, "type": type_name,
                     "lin_class": lin_value,
                     "ifc_class": target["IfcExportAs"], "ifc_predef": target["IfcExportType"],
-                    "note": "IfcExportAs[Type] / IfcExportType[Type] nicht verfuegbar"
+                    "note": "IfcExportAs[Type] / IfcExportType[Type] not available"
                 })
                 continue
 
@@ -351,7 +351,7 @@ try:
                         "category": cat_name, "family": fam_name, "type": type_name,
                         "lin_class": lin_value,
                         "ifc_class": target["IfcExportAs"], "ifc_predef": target["IfcExportType"],
-                        "note": "Parameter readonly oder nicht schreibbar"
+                        "note": "Parameter read-only or not writable"
                     })
 
         except Exception as ex_inner:
@@ -384,33 +384,33 @@ try:
     total_applied = results["applied_lin"] + results["applied_fam"]
 
     summary = []
-    summary.append("Bimbeam IFC Bulk-Classifier — Zusammenfassung")
+    summary.append("Bimbeam IFC Bulk Classifier — Summary")
     summary.append("=" * 50)
-    summary.append("Modus:               {}".format("DRY-RUN (nichts geschrieben)" if DRY_RUN else "PRODUKTIV (geschrieben)"))
-    summary.append("Linear-Mapping:      {} Eintraege".format(len(mapping)))
-    summary.append("Family-Mapping:      {} Patterns".format(len(family_patterns)))
-    summary.append("ElementTypes geprueft: {}".format(len(element_types)))
+    summary.append("Mode:                {}".format("DRY-RUN (nothing written)" if DRY_RUN else "PRODUCTION (written)"))
+    summary.append("Linear mapping:      {} entries".format(len(mapping)))
+    summary.append("Family mapping:      {} patterns".format(len(family_patterns)))
+    summary.append("ElementTypes checked: {}".format(len(element_types)))
     summary.append("")
-    summary.append("Befunde:")
+    summary.append("Findings:")
     if DRY_RUN:
-        summary.append("  via Linear-Klass:  {}".format(results["would_apply_lin"]))
-        summary.append("  via Family-Patt.:  {}".format(results["would_apply_fam"]))
-        summary.append("  -> wuerde anwenden: {} gesamt".format(total_would))
+        summary.append("  via Linear class:  {}".format(results["would_apply_lin"]))
+        summary.append("  via family patt.:  {}".format(results["would_apply_fam"]))
+        summary.append("  -> would apply:    {} total".format(total_would))
     else:
-        summary.append("  via Linear-Klass:  {}".format(results["applied_lin"]))
-        summary.append("  via Family-Patt.:  {}".format(results["applied_fam"]))
-        summary.append("  -> angewendet:     {} gesamt".format(total_applied))
-    summary.append("  Linear-Klass UNMAPPED: {}".format(results["unmapped"]))
-    summary.append("  Kein Match (manuell): {}".format(results["no_match"]))
-    summary.append("  IFC-Param fehlt:   {}".format(results["skipped_param_missing"]))
-    summary.append("  Fehler:            {}".format(results["errors"]))
+        summary.append("  via Linear class:  {}".format(results["applied_lin"]))
+        summary.append("  via family patt.:  {}".format(results["applied_fam"]))
+        summary.append("  -> applied:        {} total".format(total_applied))
+    summary.append("  Linear class UNMAPPED: {}".format(results["unmapped"]))
+    summary.append("  No match (manual): {}".format(results["no_match"]))
+    summary.append("  IFC param missing: {}".format(results["skipped_param_missing"]))
+    summary.append("  Errors:            {}".format(results["errors"]))
     summary.append("")
     summary.append("Log:  {}".format(LOG_CSV))
     summary.append("")
     if DRY_RUN:
-        summary.append("=> DRY_RUN oben im Skript auf False setzen und neu Run, sobald die Zahlen passen.")
+        summary.append("=> Set DRY_RUN at the top of the script to False and run again once the numbers look right.")
     else:
-        summary.append("=> Aenderungen sind aktiv. Strg+Z in Revit macht alles rueckgaengig.")
+        summary.append("=> Changes are live. Ctrl+Z in Revit undoes everything.")
 
     OUT = "\n".join(summary)
 
@@ -420,4 +420,4 @@ except Exception as ex_outer:
             TransactionManager.Instance.ForceCloseTransaction()
         except Exception:
             pass
-    OUT = "FEHLER beim Lauf:\n{}\n\nTraceback:\n{}".format(str(ex_outer), traceback.format_exc())
+    OUT = "ERROR during run:\n{}\n\nTraceback:\n{}".format(str(ex_outer), traceback.format_exc())

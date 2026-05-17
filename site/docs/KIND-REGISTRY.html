@@ -165,11 +165,11 @@
 <p>Per PRINCIPLES section 4 (Public ledger, private conversation): every signed public event MAY carry references to corresponding off-chain private artifacts. Identity stays <code>npub</code>-rooted; both layers share the same actor.</p>
 <table><thead><tr><th>Tag</th><th>Values</th><th>Meaning</th></tr></thead><tbody>
 <tr><td><code>white-noise-group</code></td><td>MLS group identifier</td><td>Private team discussion that preceded or accompanies this public event. Allows audit-traceback without disclosure.</td></tr>
-<tr><td><code>bitcredit-note</code></td><td>Bitcredit note identifier (URI / hash)</td><td>Real Bill issued against this event as underwriting substrate. Use on approved Abschlagsrechnung / Lieferantenkredit events.</td></tr>
-<tr><td><code>lnurl-pay</code></td><td>LNURL-Pay endpoint or Lightning Address</td><td>Payment endpoint for service-bound events (DVM marketplace, Bauleistung-Pay-Per-Item).</td></tr>
+<tr><td><code>bitcredit-note</code></td><td>Bitcredit note identifier (URI / hash)</td><td>Real Bill issued against this event as underwriting substrate. Use on approved progress-invoice / supplier-credit events.</td></tr>
+<tr><td><code>lnurl-pay</code></td><td>LNURL-Pay endpoint or Lightning Address</td><td>Payment endpoint for service-bound events (DVM marketplace, construction-work pay-per-item).</td></tr>
 <tr><td><code>cashu-mint</code></td><td>Cashu mint URL</td><td>For anonymous reviews or whistleblower channels coupled to this event.</td></tr>
 <tr><td><code>nip-44-key</code></td><td>hex pubkey</td><td>Encryption key for NIP-17 fallback when White Noise unavailable. Per PRINCIPLES §4 production-readiness clause.</td></tr>
-<tr><td><code>fedimint-fed</code></td><td>Federation invitation code</td><td>Shared-treasury context (Bauherrengemeinschaft, planning office liquidity pool).</td></tr>
+<tr><td><code>fedimint-fed</code></td><td>Federation invitation code</td><td>Shared-treasury context (joint building-owner venture, planning office liquidity pool).</td></tr>
 </tbody></table>
 <p>Usage example on a <code>kind:30970</code> Approval event:</p>
 <pre><code>[&quot;a&quot;, &quot;30902:&lt;pubkey&gt;:building-2026&quot;]
@@ -213,11 +213,11 @@
 <hr />
 <h3 id="path-to-nip">Path to NIP</h3>
 <ol>
-<li><strong>Run through phases 0–6 of the Building pilot</strong> (see <code>building-pilot-build-plan.md</code>).</li>
+<li><strong>Run through phases 0–6 of the Building pilot</strong>.</li>
 <li><strong>Review the event corpus</strong> — which tags were actually used, which were dead, which were missing.</li>
 <li><strong>Run schema validation</strong> over the gathered material, mark inconsistencies.</li>
 <li><strong>Write the NIP draft</strong> with real events as test vectors.</li>
-<li><strong>Consensus sondierung</strong> with 1–2 other AEC builders before PR.</li>
+<li><strong>Consensus sounding</strong> with 1–2 other AEC builders before PR.</li>
 <li><strong>PR against <code>nostr-protocol/nips</code></strong> with the allocated range reservation.</li>
 </ol>
 <p>Earliest Q4 2026, realistically Q1/Q2 2027.</p>

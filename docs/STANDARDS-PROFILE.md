@@ -1,6 +1,6 @@
 # Standards Profile — Gemeinwert / BIM CVP
 
-**Purpose.** Fixes which versions of which buildingSMART and ISO standards the pilot uses exactly, with reasoning per choice. Based on the deep research from May 2026 and the CDE market research (`docs/cde-research.md`).
+**Purpose.** Fixes which versions of which buildingSMART and ISO standards the pilot uses exactly, with reasoning per choice. Based on the deep research from May 2026 and the CDE market research.
 
 **Principle.** Not generic "IFC4" or "BCF" — but exact pinned versions. Otherwise the pilot drifts into incompatibilities and the NIP draft has no test vectors.
 
@@ -323,7 +323,7 @@ Since 25.11.2025 mandatory for Italian public construction procurement (D.Lgs. 3
 - **2.3.16 Piano di manutenzione** — maintenance documentation archived in BIM, IFC-compliant
 - **2.3.17 Piano di decostruzione** — new in 2025, at least 70% of building part weight reusable or selectively recyclable, per UNI PdR 75 + UNI 8290-1
 
-LCA / LCC per **EN 15804** (products), **EN 15978** (buildings), **EN 16627** (LCC). Reporting framework **Level(s)** (EU). Full analysis in `docs/cam-edilizia-2025-analyse.md`.
+LCA / LCC per **EN 15804** (products), **EN 15978** (buildings), **EN 16627** (LCC). Reporting framework **Level(s)** (EU).
 
 ### Honesty tags — source labeling
 

@@ -10,19 +10,19 @@ Failure patterns observed across MEP / HKLS projects, mapped to concrete CAD-sid
 
 **Fix in Revit:**
 1. `File → Export → IFC → Modify Setup → Property Sets`
-2. Häkchen **`Export IFC common property sets`** AN
-3. Falls einzelne Properties trotzdem leer bleiben: Custom Pset-Datei einbinden, in der das Mapping zwischen Revit-Parametername und IFC-Property-Name spezifiziert ist.
+2. Check **`Export IFC common property sets`** ON
+3. If individual properties still stay empty: include a custom Pset file that specifies the mapping between the Revit parameter name and the IFC property name.
 
 **Fix in Archicad:**
 1. `File → Interoperability → IFC → IFC Translators`
-2. Wähle / dupliziere passenden Translator (z.B. "General Translator")
-3. `Property Mapping for Export` → stelle sicher dass Standard-Psets gemappt sind
-4. Falls Properties nicht mit IFC-Namen übereinstimmen: in Property Mapping editor anpassen
+2. Select / duplicate a suitable translator (e.g. "General Translator")
+3. `Property Mapping for Export` → make sure standard Psets are mapped
+4. If properties don't match the IFC names: adjust in the Property Mapping editor
 
 **Fix in Allplan:**
-1. IFC Export Settings → Property Sets Tab
-2. Standard Property Sets aktivieren
-3. Optional: Custom Properties Mapping konfigurieren
+1. IFC Export Settings → Property Sets tab
+2. Enable standard property sets
+3. Optional: configure custom properties mapping
 
 ## #2 — Qto_*BaseQuantities missing (very common)
 
@@ -32,125 +32,125 @@ Failure patterns observed across MEP / HKLS projects, mapped to concrete CAD-sid
 
 **Fix in Revit:**
 1. `File → Export → IFC → Modify Setup → Property Sets`
-2. Häkchen **`Export base quantities`** AN
-3. Speichern, neu exportieren
+2. Check **`Export base quantities`** ON
+3. Save, re-export
 
-**Fix in Archicad:** Translator → `Geometry Conversion` → `Export Base Quantities` aktivieren.
+**Fix in Archicad:** Translator → `Geometry Conversion` → enable `Export Base Quantities`.
 
-**Fix in Allplan:** IFC-Settings → Quantities/Mengen → Standard-Mengen aktivieren.
+**Fix in Allplan:** IFC Settings → Quantities → enable standard quantities.
 
 ## #3 — Material missing on element types
 
 **Pattern:** `Material()`
 
-**Cause:** Family/Family-Type hat kein Material zugewiesen. Klassischer Linear-Familien-Fehler bei Custom-Templates.
+**Cause:** Family/family type has no material assigned. A classic Linear-family error with custom templates.
 
 **Fix in Revit:**
-1. Pipe Type oder Family-Type öffnen
-2. `Edit Type → Identity Data → Material` (oder bei Pipe: `Routing Preferences → Materials per Segment`)
-3. Material zuweisen (z.B. "Stahl C-Stahl C235", "PE-X RAUTITAN")
+1. Open the pipe type or family type
+2. `Edit Type → Identity Data → Material` (or for pipes: `Routing Preferences → Materials per Segment`)
+3. Assign a material (e.g. "Steel C-steel C235", "PE-X RAUTITAN")
 
-Bei Bulk: Schedule erstellen mit Family + Type + Material, leere Material-Zellen filtern, Material via Schedule eintragen.
+In bulk: create a schedule with family + type + material, filter empty material cells, enter the material via the schedule.
 
 ## #4 — Classification (Prezzario/Uniclass) missing
 
-**Pattern:** `Classification(system=Prezzario_BZ_2025)` oder ähnlich
+**Pattern:** `Classification(system=Prezzario_BZ_2025)` or similar
 
-**Cause:** IfcClassificationReference wurde nicht im IFC exportiert. Entweder fehlt der Shared Parameter mit dem Code, oder die Classification Settings im IFC-Setup zeigen auf den falschen Parameter.
+**Cause:** IfcClassificationReference was not exported in the IFC. Either the shared parameter holding the code is missing, or the Classification Settings in the IFC setup point to the wrong parameter.
 
 **Fix in Revit:**
-1. Shared Parameter (z.B. `CodicePrezzario_BZ`) am Type-Level binden, alle relevanten Kategorien
-2. Wert pro Familientyp füllen (manuell, Schedule, oder via Linear Klassifikations-Werkzeug)
+1. Bind a shared parameter (e.g. `CodicePrezzario_BZ`) at type level, for all relevant categories
+2. Fill the value per family type (manually, via schedule, or via the Linear classification tool)
 3. `File → Export → IFC → Modify Setup → Classification Settings`
-4. Konfigurieren:
-   - Source: z.B. "Prezzario Provincia Bolzano 2025"
-   - Field Name: `CodicePrezzario_BZ` (Name des Shared Parameters)
-5. Neu exportieren
+4. Configure:
+   - Source: e.g. "Prezzario Provincia Bolzano 2025"
+   - Field Name: `CodicePrezzario_BZ` (name of the shared parameter)
+5. Re-export
 
 ## #5 — Attribute(name=PredefinedType) missing
 
 **Pattern:** `Attribute(name=PredefinedType)`
 
-**Cause:** Familientyp hat keinen IFC-PredefinedType gesetzt. Wird besonders bei nicht-klassifizierten Linear-Familien oder Standard-Revit-Equipment zum Problem.
+**Cause:** Family type has no IFC PredefinedType set. This becomes a problem especially with unclassified Linear families or standard Revit equipment.
 
-**Fix in Revit (mit LINEAR Desktop):**
-1. `LINEAR Desktop → Werkzeuge → Klassifikation → IFC-Klassifizierung`
-2. Familientyp suchen, Spalte `IfcExportAs[Type]` + `IfcExportType[Type]` setzen
-3. Anwenden
+**Fix in Revit (with LINEAR Desktop):**
+1. `LINEAR Desktop → Tools → Classification → IFC classification`
+2. Find the family type, set the `IfcExportAs[Type]` + `IfcExportType[Type]` columns
+3. Apply
 
-**Fix in Revit (manuell ohne Linear):**
-1. Family Editor öffnen
+**Fix in Revit (manually, without Linear):**
+1. Open the Family Editor
 2. Family Type Properties → IFC parameters
-3. `IfcExportAs[Type]` und `IfcExportType[Type]` auf gültige Werte setzen (siehe IFC4 entity cheatsheet)
-4. Family neu laden
+3. Set `IfcExportAs[Type]` and `IfcExportType[Type]` to valid values (see IFC4 entity cheatsheet)
+4. Reload the family
 
-**Skill-Empfehlung:** Wenn viele Familien zu klassifizieren sind, das `linear-ifc-classify` Skill verwenden — es macht das in einem Dynamo-Lauf bulk.
+**Skill recommendation:** If many families need classifying, use the `linear-ifc-classify` skill — it does this in bulk in a single Dynamo run.
 
 ## #6 — Pset_*.Reference missing
 
 **Pattern:** `Property(propertySet=Pset_PipeSegmentCommon; baseName=Reference)`
 
-**Cause:** `Reference` ist typisch eine LV-Position, Type Mark, oder Hersteller-Code. Wird selten automatisch befüllt.
+**Cause:** `Reference` is typically a bill-of-quantities position, Type Mark, or manufacturer code. It is rarely filled automatically.
 
 **Fix:**
-1. Shared Parameter `Reference` (oder bestehender Type Mark) an Type binden
-2. Pro Familientyp Wert füllen — entweder die LV-Position aus dem Capitolato, oder eine interne Bezugsnummer
-3. Custom Pset-Datei einbinden die `Reference` als Type-Property an Pset_*Common bindet (Mapping siehe Pset-Definition-Datei aus dem `linear-ifc-classify` Skill für ein Beispiel)
+1. Bind the shared parameter `Reference` (or an existing Type Mark) to the type
+2. Fill the value per family type — either the bill-of-quantities position from the Capitolato, or an internal reference number
+3. Include a custom Pset file that binds `Reference` as a type property to Pset_*Common (for an example mapping, see the Pset definition file from the `linear-ifc-classify` skill)
 
-## #7 — IfcDistributionSystem nicht gesetzt
+## #7 — IfcDistributionSystem not set
 
-**Pattern:** Selten direkt als IDS-Fail, aber MEP-Systeme erscheinen als zusammenhangslose Bauteile
+**Pattern:** Rarely a direct IDS fail, but MEP systems appear as disconnected components
 
-**Cause:** Revit System Types haben keine "System Classification" oder die Klassifikation mappt nicht auf IfcDistributionSystem.PredefinedType.
+**Cause:** Revit system types have no "System Classification", or the classification doesn't map to IfcDistributionSystem.PredefinedType.
 
 **Fix in Revit:**
 1. `Manage → MEP Settings → Mechanical Settings → Pipe/Duct Systems`
-2. Pro System Type "System Classification" prüfen (z.B. "Hydronic Supply" → wird zu HEATING im IFC, "Domestic Cold Water" → DOMESTICCOLDWATER, etc.)
-3. System Names sauber halten ("H_Vorlauf" statt "Heizung Vorlauf 1") — wird zu IfcDistributionSystem.Name
+2. Check "System Classification" per system type (e.g. "Hydronic Supply" → becomes HEATING in the IFC, "Domestic Cold Water" → DOMESTICCOLDWATER, etc.)
+3. Keep system names clean ("H_Supply" instead of "Heating Supply 1") — becomes IfcDistributionSystem.Name
 
-## #8 — GUID-Instabilität
+## #8 — GUID instability
 
-**Pattern:** Bei wiederholten Exports ändern sich IfcGUIDs, BCF-Markups werden invalide.
+**Pattern:** On repeated exports the IfcGUIDs change, BCF markups become invalid.
 
-**Cause:** Im Revit-IFC-Setup ist "Store IFC GUID in file after export" nicht aktiviert.
-
-**Fix:**
-1. `File → Export → IFC → Modify Setup → Advanced/Erweitert`
-2. **"Store the IFC GUID in the file after export"** AN
-3. Speichern, neu exportieren
-
-Damit werden GUIDs pro Type/Element fixiert und bleiben über Re-Exports stabil.
-
-## #9 — Geometrie-Repräsentation fehlt
-
-**Pattern:** Pset/Qto sind da, aber Bauteile haben keinen sichtbaren Body im IFC-Viewer.
-
-**Cause:** Reference View 1.2 hat Geometrie als Mesh, aber bei extreme Detail-Level oder bei nicht-Geometry-Familien kann der Body leer bleiben.
+**Cause:** In the Revit IFC setup, "Store IFC GUID in file after export" is not enabled.
 
 **Fix:**
-1. Setup → Level of Detail / Detailgenauigkeit → "Level of detail for geometry" = **High**
-2. Tessellated Geometry as Triangulation = AN
-3. Bei nicht-Geometry-Familien (Linear PartialNetworkStart etc.): das ist erwartet, nicht zu fixen
+1. `File → Export → IFC → Modify Setup → Advanced`
+2. **"Store the IFC GUID in the file after export"** ON
+3. Save, re-export
+
+This fixes GUIDs per type/element and keeps them stable across re-exports.
+
+## #9 — Geometry representation missing
+
+**Pattern:** Pset/Qto are present, but components have no visible body in the IFC viewer.
+
+**Cause:** Reference View 1.2 has geometry as mesh, but at extreme detail levels or for non-geometry families the body can stay empty.
+
+**Fix:**
+1. Setup → Level of Detail → "Level of detail for geometry" = **High**
+2. Tessellated Geometry as Triangulation = ON
+3. For non-geometry families (Linear PartialNetworkStart etc.): this is expected, nothing to fix
 
 ## #10 — Schema-Mismatch IFC4 vs IFC4X3
 
 **Pattern:** IDS verlangt `ifcVersion="IFC4X3_ADD2"` aber IFC ist `IFC4`.
 
-**Cause:** Export war auf IFC4 (häufig — IFC4X3 ADD2 noch nicht überall stabil), IDS verlangt aber 4.3.
+**Cause:** Export was to IFC4 (common — IFC4X3 ADD2 not yet stable everywhere), but the IDS requires 4.3.
 
 **Fix:**
-- Entweder IDS auf `ifcVersion="IFC4 IFC4X3_ADD2"` setzen (akzeptiert beide)
-- Oder Revit OS-IFC-Exporter neueste Version installieren (unterstützt IFC4X3 ADD2)
-- Bei kritischen Übergaben: IFC4 als Default verwenden, 4X3 erst wenn alle Tools im Workflow es können
+- Either set the IDS to `ifcVersion="IFC4 IFC4X3_ADD2"` (accepts both)
+- Or install the latest version of the Revit open-source IFC exporter (supports IFC4X3 ADD2)
+- For critical handovers: use IFC4 as the default, switch to 4X3 only when all tools in the workflow can handle it
 
-## Failure-Reihenfolge für Iter-Strategie
+## Failure order for the iteration strategy
 
-Geht man die Top 3 Failures pro Iter an, klappt es typischerweise so:
+Tackling the top 3 failures per iteration, it typically goes like this:
 
-- **Iter 1:** Klassifikation (PredefinedType + IfcExportAs) → 50-70% der Elemente von "BuildingElementProxy" zu spezifischen Klassen
-- **Iter 2:** Common Psets + Base Quantities aktivieren → 70-85% pass
-- **Iter 3:** Material + Reference befüllen → 85-95% pass  
-- **Iter 4:** Classification-Codes (Prezzario etc.) befüllen → 90-98% pass
-- **Iter 5:** Edge cases manuell — 95-100%
+- **Iter 1:** Classification (PredefinedType + IfcExportAs) → 50-70% of elements from "BuildingElementProxy" to specific classes
+- **Iter 2:** Enable common Psets + base quantities → 70-85% pass
+- **Iter 3:** Fill material + reference → 85-95% pass
+- **Iter 4:** Fill classification codes (Prezzario etc.) → 90-98% pass
+- **Iter 5:** Edge cases manually — 95-100%
 
-Pro Iter typisch 30-60 Min Aufwand auf der CAD-Seite + 5 Min für Audit-Re-Run.
+Per iteration typically 30-60 min effort on the CAD side + 5 min for the audit re-run.

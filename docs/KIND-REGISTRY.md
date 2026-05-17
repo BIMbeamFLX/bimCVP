@@ -209,7 +209,7 @@ access-layer property, not an on-ledger fact. Recovery never changes the npub
 
 ## Path to NIP
 
-1. **Run through phases 0–6 of the Building pilot** (see `building-pilot-build-plan.md`).
+1. **Run through phases 0–6 of the Building pilot.**
 2. **Review the event corpus** — which tags were actually used, which were dead, which were missing.
 3. **Run schema validation** over the gathered material, mark inconsistencies.
 4. **Write the NIP draft** with real events as test vectors.

@@ -1,185 +1,185 @@
-# BCF over Nostr — Research für einen NIP-Draft
+# BCF over Nostr — Research for a NIP Draft
 
-**Status:** Research-Vorlauf für ein NIP („BCF — BIM Collaboration over Nostr")
-**Autor:** Felix (npub tbd) — Diskussionsentwurf
-**Stand:** 2026-05-14
-**Bezug:** buildingSMART BCF 3.0 (XML + REST API), Nostr Protocol (NIP-01 ff.)
+**Status:** Research groundwork for a NIP ("BCF — BIM Collaboration over Nostr")
+**Author:** Felix (npub tbd) — discussion draft
+**Date:** 2026-05-14
+**Reference:** buildingSMART BCF 3.0 (XML + REST API), Nostr Protocol (NIP-01 ff.)
 
 ---
 
 ## 0. Executive Summary
 
-BCF (BIM Collaboration Format) ist der buildingSMART-Standard für Issue-/Koordinations-Kommunikation in BIM-Projekten und existiert in zwei Ausprägungen: BCF-XML (Container-Format, `.bcfzip`) und BCF-API (REST). Beide setzen heute einen klassischen Server-Client-Stack mit zentraler Autorität voraus (BIMcollab, ACC Issues, Solibri, Trimble Connect, usnap u. a.).
+BCF (BIM Collaboration Format) is the buildingSMART standard for issue/coordination communication in BIM projects and exists in two flavours: BCF-XML (container format, `.bcfzip`) and BCF-API (REST). Both currently assume a classic server-client stack with a central authority (BIMcollab, ACC Issues, Solibri, Trimble Connect, usnap and others).
 
-Nostr bietet einen alternativen Transport: signierte Events, npub-basierte Identität, Relay-föderierung, keine Plattform-Hoheit. Dieses Dokument beschreibt, wie BCF verlustfrei auf Nostr-Events abgebildet werden kann, schlägt einen Event-Kind-Bereich, eine Tag-Taxonomie und eine Mapping-Tabelle vor, und identifiziert die Stellen, an denen BCF und Nostr nicht trivial zusammengehen (Berechtigungen, Reihenfolge, Anhänge, Lifecycle).
+Nostr offers an alternative transport: signed events, npub-based identity, relay federation, no platform sovereignty. This document describes how BCF can be mapped onto Nostr events without loss, proposes an event kind range, a tag taxonomy and a mapping table, and identifies the points where BCF and Nostr do not combine trivially (permissions, ordering, attachments, lifecycle).
 
-Ziel ist ein NIP-Draft, der
+The goal is a NIP draft that
 
-1. eine eindeutige Repräsentation von BCF-Topics, Viewpoints und Comments als Nostr-Events definiert,
-2. einen verlustfreien Round-trip BCF-XML ↔ Nostr ermöglicht,
-3. die Identitäts- und Berechtigungslücke pragmatisch (NIP-29 + NIP-58) schließt,
-4. Datei-Anhänge (Snapshot, IFC, BimSnippet) sauber über Blossom/NIP-94 löst.
+1. defines an unambiguous representation of BCF topics, viewpoints and comments as Nostr events,
+2. enables a lossless round-trip BCF-XML ↔ Nostr,
+3. pragmatically closes the identity and permission gap (NIP-29 + NIP-58),
+4. cleanly solves file attachments (snapshot, IFC, BimSnippet) via Blossom/NIP-94.
 
 ---
 
-## 1. BCF in 5 Minuten
+## 1. BCF in 5 minutes
 
-BCF transportiert Koordinationsthemen, nicht Modelle. Ein BCF-Container hat ein Manifest und pro Topic einen Ordner.
+BCF transports coordination topics, not models. A BCF container has a manifest and one folder per topic.
 
-**BCF-XML 3.0 — Kernelemente:**
+**BCF-XML 3.0 — core elements:**
 
-- **Project Markup** (`project.bcfp`, optional): `Project @Guid`, `Name`, `ExtensionSchema` mit Listen für `TopicTypes`, `TopicStatuses`, `Priorities`, `TopicLabels`, `Users`, `SnippetTypes`, `Stages`.
-- **Markup pro Topic** (`markup.bcf`):
-  - `Header.Files.File` — Referenzen auf zugehörige IFC-Files (`IfcProject`, `IfcSpatialStructureElement`, Hash, Datum, Filename, `@IsExternal`).
-  - `Topic @Guid @TopicType @TopicStatus @ServerAssignedId` — Titel, Priorität, Index, Labels, CreationDate, CreationAuthor, ModifiedDate, ModifiedAuthor, DueDate, AssignedTo, Stage, Description, BimSnippet, DocumentReferences, RelatedTopics.
-  - `Comments.Comment @Guid` — Date, Author, Comment-Text, Viewpoint-Ref, ModifiedDate, ModifiedAuthor.
-  - `Viewpoints.ViewPoint @Guid` — Referenz auf Viewpoint-File und Snapshot.
+- **Project Markup** (`project.bcfp`, optional): `Project @Guid`, `Name`, `ExtensionSchema` with lists for `TopicTypes`, `TopicStatuses`, `Priorities`, `TopicLabels`, `Users`, `SnippetTypes`, `Stages`.
+- **Markup per topic** (`markup.bcf`):
+  - `Header.Files.File` — references to associated IFC files (`IfcProject`, `IfcSpatialStructureElement`, hash, date, filename, `@IsExternal`).
+  - `Topic @Guid @TopicType @TopicStatus @ServerAssignedId` — title, priority, index, labels, CreationDate, CreationAuthor, ModifiedDate, ModifiedAuthor, DueDate, AssignedTo, Stage, Description, BimSnippet, DocumentReferences, RelatedTopics.
+  - `Comments.Comment @Guid` — Date, Author, comment text, viewpoint ref, ModifiedDate, ModifiedAuthor.
+  - `Viewpoints.ViewPoint @Guid` — reference to viewpoint file and snapshot.
 - **Viewpoint** (`viewpoint.bcfv`):
-  - `Components` (`Selection`, `Visibility` mit `DefaultVisibility` und `Exceptions`, `ViewSetupHints`, `Coloring`),
-  - `OrthogonalCamera` oder `PerspectiveCamera`,
+  - `Components` (`Selection`, `Visibility` with `DefaultVisibility` and `Exceptions`, `ViewSetupHints`, `Coloring`),
+  - `OrthogonalCamera` or `PerspectiveCamera`,
   - `Lines`, `ClippingPlanes`, `Bitmaps`.
-- **Snapshot** (`snapshot.png` o. ä.) — Bildreferenz, im Viewpoint verankert.
+- **Snapshot** (`snapshot.png` or similar) — image reference, anchored in the viewpoint.
 
-**BCF-API:** REST mit Resourcen `projects/{guid}/topics/{guid}/comments`, `viewpoints`, `files`, `documents`, `events`. Authentifizierung über OAuth, Rollenmodell pro Projekt.
+**BCF-API:** REST with resources `projects/{guid}/topics/{guid}/comments`, `viewpoints`, `files`, `documents`, `events`. Authentication via OAuth, a role model per project.
 
-**Was BCF nicht ist:** kein Modelltransport (IFC-Aufgabe), keine Aufwandskalkulation, keine Vertragsschicht.
-
----
-
-## 2. Nostr in 5 Minuten (für BIM-Leser)
-
-- **Identität:** secp256k1-Keypair, öffentliche Form als `npub1…` (bech32). Kein Konto-System.
-- **Event:** signiertes JSON mit `id`, `pubkey`, `created_at`, `kind`, `tags[][]`, `content`, `sig`.
-- **Kind-Bereiche** (siehe NIP-01):
-  - `0–9999` regulär (alle Replicas behalten),
-  - `10000–19999` replaceable (nur jüngstes Event pro `pubkey+kind`),
-  - `20000–29999` ephemeral (Relays sollen nicht persistieren),
-  - `30000–39999` parameterized replaceable (jüngstes pro `pubkey+kind+d-tag`),
-  - `40000+` reserviert für weitere Kategorien.
-- **Tags:** array von arrays, erstes Element ist Tagname (Konvention: kurz, lowercase).
-- **Relays:** WebSocket-Server, push/pull-fähig, frei wählbar. Auth via NIP-42 möglich.
-- **Wichtige NIPs für unseren Kontext:** NIP-09 (Delete), NIP-10 (Threading), NIP-17 (DM), NIP-19 (bech32), NIP-23 (Long-form), NIP-29 (Groups), NIP-42 (Auth), NIP-44 (Encryption), NIP-51 (Lists), NIP-58 (Badges), NIP-65 (Relay-Listen), NIP-72 (Communities), NIP-89 (Handler), NIP-94 (File-Metadata), NIP-96 (HTTP-File-Storage), Blossom (Blob-Storage, kein NIP, aber etabliert).
+**What BCF is not:** not model transport (that is IFC's job), no effort costing, no contract layer.
 
 ---
 
-## 3. Design-Entscheidungen
+## 2. Nostr in 5 minutes (for BIM readers)
 
-Die wichtigsten Weichen, die ein NIP stellen muss:
+- **Identity:** secp256k1 keypair, public form as `npub1…` (bech32). No account system.
+- **Event:** signed JSON with `id`, `pubkey`, `created_at`, `kind`, `tags[][]`, `content`, `sig`.
+- **Kind ranges** (see NIP-01):
+  - `0–9999` regular (all replicas keep them),
+  - `10000–19999` replaceable (only the latest event per `pubkey+kind`),
+  - `20000–29999` ephemeral (relays should not persist them),
+  - `30000–39999` parameterized replaceable (latest per `pubkey+kind+d-tag`),
+  - `40000+` reserved for further categories.
+- **Tags:** an array of arrays, the first element is the tag name (convention: short, lowercase).
+- **Relays:** WebSocket servers, push/pull-capable, freely choosable. Auth via NIP-42 possible.
+- **Relevant NIPs for our context:** NIP-09 (Delete), NIP-10 (Threading), NIP-17 (DM), NIP-19 (bech32), NIP-23 (Long-form), NIP-29 (Groups), NIP-42 (Auth), NIP-44 (Encryption), NIP-51 (Lists), NIP-58 (Badges), NIP-65 (Relay lists), NIP-72 (Communities), NIP-89 (Handler), NIP-94 (File metadata), NIP-96 (HTTP file storage), Blossom (blob storage, not a NIP, but established).
 
-### 3.1 Topic-Identität: replaceable vs. immutable
+---
 
-BCF-Topics ändern sich (Status, Assignee, Priority). Drei Optionen:
+## 3. Design decisions
 
-| Option | Vorteile | Nachteile |
+The most important choices a NIP must make:
+
+### 3.1 Topic identity: replaceable vs. immutable
+
+BCF topics change (status, assignee, priority). Three options:
+
+| Option | Advantages | Disadvantages |
 |---|---|---|
-| A) Topic = parameterized replaceable event (`kind 30900`, `d=topic-guid`) | klare „current state"-Sicht, identisch mit BCF-Semantik | History fehlt, Audit nur über zusätzliche Events |
-| B) Topic = immutable event, Updates über separate Patch-Events (`e`-tag) | volle History, append-only | mehrere Events müssen reduziert werden, kompliziert für Clients |
-| C) Hybrid: replaceable für „current", parallel immutable Audit-Event je Änderung | beste Welt, Round-trip möglich | doppelte Schreiblast |
+| A) Topic = parameterized replaceable event (`kind 30900`, `d=topic-guid`) | clear "current state" view, identical to BCF semantics | no history, audit only via additional events |
+| B) Topic = immutable event, updates via separate patch events (`e`-tag) | full history, append-only | several events must be reduced, complicated for clients |
+| C) Hybrid: replaceable for "current", in parallel an immutable audit event per change | best of both, round-trip possible | doubled write load |
 
-**Empfehlung: Option C.** `kind:30900` trägt den aktuellen Zustand (replaceable), `kind:1171` (regulär) ist ein unveränderlicher Audit-Eintrag pro Änderung. Clients ohne Audit-Bedarf konsumieren nur 30900, forensische Tools rekonstruieren History aus 1171.
+**Recommendation: Option C.** `kind:30900` carries the current state (replaceable), `kind:1171` (regular) is an immutable audit entry per change. Clients without an audit need consume only 30900; forensic tools reconstruct history from 1171.
 
-### 3.2 Comments: dedizierter Kind oder kind:1 mit Tags?
+### 3.2 Comments: a dedicated kind or kind:1 with tags?
 
-- **kind:1 + Tags:** maximale Reichweite (jeder Nostr-Client zeigt Kommentare), schwächere Semantik.
-- **dedizierter kind:1170:** klare Semantik, aber nur BCF-aware Clients rendern.
+- **kind:1 + tags:** maximum reach (every Nostr client shows comments), weaker semantics.
+- **dedicated kind:1170:** clear semantics, but only BCF-aware clients render it.
 
-**Empfehlung: dedizierter `kind:1170`,** zusätzlich Spiegelung als `kind:1`-Reply (optional, mit `nip:42`-tag-Hinweis), wenn der Autor Cross-Posting wünscht. Trade-off zwischen Spec-Sauberkeit und Reichweite explizit lösen.
+**Recommendation: a dedicated `kind:1170`,** additionally mirrored as a `kind:1` reply (optional, with a `nip:42`-tag hint) if the author wants cross-posting. Resolve the trade-off between spec cleanliness and reach explicitly.
 
 ### 3.3 Viewpoints
 
-Viewpoints sind technisch eigene Artefakte mit eigener GUID, in BCF schon entkoppelt. Wir nutzen `kind:30901` mit `d=viewpoint-guid` für adressierbares Lookup, verbieten aber das erneute Publizieren derselben `d`-Identität: Viewpoints sind im BCF-Profil unveränderlich. Eine geänderte Kamera, Selektion, Schnittebene oder Snapshot-Referenz erzeugt einen neuen Viewpoint-GUID. Snapshot ist ein File (NIP-94, siehe 3.5).
+Viewpoints are technically separate artefacts with their own GUID, already decoupled in BCF. We use `kind:30901` with `d=viewpoint-guid` for addressable lookup, but forbid re-publishing the same `d` identity: viewpoints are immutable in the BCF profile. A changed camera, selection, clipping plane or snapshot reference produces a new viewpoint GUID. The snapshot is a file (NIP-94, see 3.5).
 
-### 3.4 Projektkontext
+### 3.4 Project context
 
-Projekte werden als Container nicht im Topic selbst, sondern als separates Event modelliert:
+Projects are modelled as containers not in the topic itself but as a separate event:
 
-- **`kind:30902` BCF-Project** (parameterized replaceable, `d=project-guid`) — trägt Projekt-Metadaten, Extension-Schema (Listen für TopicTypes, Statuses, Priorities, Labels, Stages, SnippetTypes), Referenzen auf zugehörige IFC-Files.
-- **Topic verweist via `a`-Tag** auf das Project-Event (Format `30902:<pubkey>:<project-guid>`).
-- Für mehrnutzer-Projekte: Project-Event wird im Namen einer **NIP-29-Gruppe** publiziert (Group-Schlüssel signiert), nicht im Namen einer Einzelperson. Mitglieder schreiben in den Group-Container und Topics tragen den `h`-Tag der Gruppe.
+- **`kind:30902` BCF-Project** (parameterized replaceable, `d=project-guid`) — carries project metadata, extension schema (lists for TopicTypes, Statuses, Priorities, Labels, Stages, SnippetTypes), references to associated IFC files.
+- **The topic references the project event via an `a`-tag** (format `30902:<pubkey>:<project-guid>`).
+- For multi-user projects: the project event is published in the name of a **NIP-29 group** (signed with the group key), not in the name of an individual. Members write into the group container and topics carry the `h`-tag of the group.
 
-### 3.5 Anhänge (Snapshot, IFC, BimSnippet, DocumentReference)
+### 3.5 Attachments (snapshot, IFC, BimSnippet, DocumentReference)
 
-Binärdaten gehören nicht in Event-Content. Drei Pfade:
+Binary data does not belong in event content. Three paths:
 
-- **Blossom** (sha256-adressiert, simpel, etabliert) — empfohlen für Snapshots, BimSnippets, DocumentReferences.
-- **NIP-96 HTTP-File-Storage** — alternativ, wenn Pinning/Quota gewünscht.
-- **NIP-94 File-Metadata-Event** — für Provenance und Discovery: jedes File bekommt ein eigenes Event mit `url`, `m` (mime), `x` (sha256), `size`, `dim` etc.
+- **Blossom** (sha256-addressed, simple, established) — recommended for snapshots, BimSnippets, DocumentReferences.
+- **NIP-96 HTTP file storage** — alternative if pinning/quota is desired.
+- **NIP-94 file metadata event** — for provenance and discovery: every file gets its own event with `url`, `m` (mime), `x` (sha256), `size`, `dim` etc.
 
-**Empfehlung:** Blob auf Blossom, Discovery + Hash via NIP-94, Reference im Topic/Viewpoint via `e`-tag auf das NIP-94-Event ODER direkt via `imeta`/`x`/`url`-Tag.
+**Recommendation:** the blob on Blossom, discovery + hash via NIP-94, the reference in the topic/viewpoint via an `e`-tag to the NIP-94 event OR directly via an `imeta`/`x`/`url` tag.
 
-### 3.6 Berechtigungen
+### 3.6 Permissions
 
-BCF-API kennt Rollen pro Projekt. Nostr hat keine eingebauten Rollen. Lösung:
+The BCF-API has roles per project. Nostr has no built-in roles. Solution:
 
-- **Gruppe (NIP-29)** definiert Mitgliedschaft + Mod-Rechte am Relay-Layer.
-- **Berufliche Verifikation** über NIP-58-Badges, ausgegeben von Kammern/Verbänden (Ingenieurkammer, bvfi, CNI/Albo). Das Badge ist ein attestiertes Event auf den npub, das Clients zur Anzeige des „verified"-Stempels nutzen.
-- **Vertragliche Bindung** (Werkvertrag, Berufshaftpflicht) bleibt offchain — siehe Abschnitt 11.
+- **A group (NIP-29)** defines membership + mod rights at the relay layer.
+- **Professional verification** via NIP-58 badges, issued by chambers/associations (chamber of engineers, bvfi, CNI/Albo). The badge is an attested event on the npub that clients use to display the "verified" stamp.
+- **Contractual binding** (work contract, professional liability) stays offchain — see section 11.
 
-### 3.7 Identifier-Stabilität & Round-trip
+### 3.7 Identifier stability & round-trip
 
-BCF-GUIDs (UUID v4) müssen erhalten bleiben. Wir benutzen sie als `d`-Tag-Werte für die replaceable Events, nicht als Event-IDs. Das ist sauber, weil:
+BCF GUIDs (UUID v4) must be preserved. We use them as `d`-tag values for the replaceable events, not as event IDs. This is clean because:
 
-- die Nostr-Event-ID aus dem Inhalt deterministisch berechnet wird,
-- der `d`-Tag-Wert frei wählbar und stabil über Replacements ist,
-- ein BCF-XML-Export trivial die ursprünglichen GUIDs aus `d`-Tags rekonstruiert.
-
----
-
-## 4. Vorgeschlagener Event-Kind-Bereich
-
-| Kind | Name | Replaceable? | Zweck |
-|---|---|---|---|
-| `30900` | BCF Topic | parameterized replaceable | aktueller Topic-Zustand |
-| `30901` | BCF Viewpoint | addressable, no republish | Viewpoint-Definition |
-| `30902` | BCF Project | parameterized replaceable | Projekt-Metadaten + Extension-Schema |
-| `30903` | BCF Document Reference | parameterized replaceable | externes Dokument (DocumentReferences-Pendant) |
-| `30904` | BCF File Reference | parameterized replaceable | IFC-/Modell-Datei-Referenz mit Hash, IfcProject, IfcSpatialStructureElement |
-| `1170` | BCF Comment | regulär | Kommentar zu Topic oder Viewpoint |
-| `1171` | BCF Audit Event | regulär | unveränderlicher Audit-Eintrag (Statuswechsel, Assignee-Change, Priority-Change) |
-| `1172` | BCF Reaction | regulär | leichte Bestätigung („gesehen", „bearbeite ich") — orthogonal zu Status |
-
-Begründung des Bereichs: 30900–30999 ist im Block für parameterized replaceable, lässt Raum für künftige BCF-Erweiterungen (etwa LOIN-Anforderungen, Mängel-Klassifikationen, IFC-Issue-Diagnoses), und 1170–1179 hält Comment-/Audit-/Reaction-Familie eng zusammen.
+- the Nostr event ID is computed deterministically from the content,
+- the `d`-tag value is freely choosable and stable across replacements,
+- a BCF-XML export trivially reconstructs the original GUIDs from `d` tags.
 
 ---
 
-## 5. Tag-Taxonomie
+## 4. Proposed event kind range
 
-| Tag | Werteform | Zweck | Pflicht? |
+| Kind | Name | Replaceable? | Purpose |
 |---|---|---|---|
-| `d` | UUID (BCF-GUID) | Identität replaceable Event | bei 309xx ja |
-| `a` | `30902:<pubkey>:<project-guid>` | Projekt-Referenz | bei 30900, 30901, 1170, 1171 ja |
-| `h` | NIP-29 group-id | Gruppen-Kontext | falls Projekt in NIP-29-Gruppe |
-| `e` | event-id (parent/topic/viewpoint/file) | Verknüpfung | Comment → Topic: ja |
-| `p` | pubkey | beteiligte Personen (Assignee, Reporter, Watcher) | wo zutreffend |
-| `t` | string | BCF-Label oder freier Tag | optional |
-| `s` | string | indexierter Spiegel von `bcf-status` | bei 30900 ja |
-| `bcf-guid` | UUID | originaler BCF-GUID für Round-trip | bei 30900/30901 ja |
-| `bcf-status` | string | aktueller Status (Open, InProgress, Resolved, Closed, …) | bei 30900 ja |
-| `bcf-type` | string | TopicType (Issue, Clash, RFI, …) | bei 30900 ja |
-| `bcf-priority` | string | Priorität (Low, Normal, High, Critical) | optional |
-| `bcf-stage` | string | Projektphase | optional |
+| `30900` | BCF Topic | parameterized replaceable | current topic state |
+| `30901` | BCF Viewpoint | addressable, no republish | viewpoint definition |
+| `30902` | BCF Project | parameterized replaceable | project metadata + extension schema |
+| `30903` | BCF Document Reference | parameterized replaceable | external document (DocumentReferences counterpart) |
+| `30904` | BCF File Reference | parameterized replaceable | IFC/model file reference with hash, IfcProject, IfcSpatialStructureElement |
+| `1170` | BCF Comment | regular | comment on a topic or viewpoint |
+| `1171` | BCF Audit Event | regular | immutable audit entry (status change, assignee change, priority change) |
+| `1172` | BCF Reaction | regular | lightweight acknowledgement ("seen", "working on it") — orthogonal to status |
+
+Rationale for the range: 30900–30999 is in the block for parameterized replaceable, leaves room for future BCF extensions (e.g. LOIN requirements, defect classifications, IFC issue diagnoses), and 1170–1179 keeps the comment/audit/reaction family tightly together.
+
+---
+
+## 5. Tag taxonomy
+
+| Tag | Value form | Purpose | Required? |
+|---|---|---|---|
+| `d` | UUID (BCF-GUID) | identity of the replaceable event | for 309xx yes |
+| `a` | `30902:<pubkey>:<project-guid>` | project reference | for 30900, 30901, 1170, 1171 yes |
+| `h` | NIP-29 group-id | group context | if the project is in a NIP-29 group |
+| `e` | event-id (parent/topic/viewpoint/file) | linkage | comment → topic: yes |
+| `p` | pubkey | involved people (assignee, reporter, watcher) | where applicable |
+| `t` | string | BCF label or free tag | optional |
+| `s` | string | indexed mirror of `bcf-status` | for 30900 yes |
+| `bcf-guid` | UUID | original BCF GUID for round-trip | for 30900/30901 yes |
+| `bcf-status` | string | current status (Open, InProgress, Resolved, Closed, …) | for 30900 yes |
+| `bcf-type` | string | TopicType (Issue, Clash, RFI, …) | for 30900 yes |
+| `bcf-priority` | string | priority (Low, Normal, High, Critical) | optional |
+| `bcf-stage` | string | project phase | optional |
 | `bcf-due` | unix-ts | DueDate | optional |
-| `bcf-index` | int | Index | optional |
-| `e` mit Marker `viewpoint` | event-id | Viewpoint-Referenz für Topic/Comment | optional |
-| `e` mit Marker `snapshot` | event-id | Snapshot-Referenz auf kind:1063 | optional |
-| `ifc` | IFC-GUID | referenziertes IFC-Element | mehrfach erlaubt |
-| `ifc-file` | event-id (kind 30904) | referenzierte Modelldatei | mehrfach erlaubt |
-| `audit-field` | string | bei 1171: welches Feld geändert wurde | bei 1171 ja |
-| `audit-from`, `audit-to` | string | alter/neuer Wert | bei 1171 ja |
-| `bcf-version` | string | „3.0" — BCF-Schemaversion | bei 30900 ja |
-| `client` | string | Erzeuger-Client (analog NIP-89) | optional |
+| `bcf-index` | int | index | optional |
+| `e` with marker `viewpoint` | event-id | viewpoint reference for a topic/comment | optional |
+| `e` with marker `snapshot` | event-id | snapshot reference to kind:1063 | optional |
+| `ifc` | IFC-GUID | referenced IFC element | multiple allowed |
+| `ifc-file` | event-id (kind 30904) | referenced model file | multiple allowed |
+| `audit-field` | string | for 1171: which field changed | for 1171 yes |
+| `audit-from`, `audit-to` | string | old/new value | for 1171 yes |
+| `bcf-version` | string | "3.0" — BCF schema version | for 30900 yes |
+| `client` | string | producing client (analogous to NIP-89) | optional |
 
-**Konvention:** alle BCF-spezifischen Tags mit `bcf-`-Präfix, damit sie in generischen Nostr-Clients nicht mit Standard-Tags kollidieren.
+**Convention:** all BCF-specific tags use the `bcf-` prefix so they do not collide with standard tags in generic Nostr clients.
 
 ---
 
-## 6. Vollständige Mapping-Tabelle BCF-XML → Nostr
+## 6. Complete mapping table BCF-XML → Nostr
 
 ### 6.1 Project Markup (`project.bcfp`) → `kind:30902`
 
 | BCF | Nostr |
 |---|---|
-| `Project @Guid` | `d`-Tag |
+| `Project @Guid` | `d`-tag |
 | `Project.Name` | `content.name` |
 | `ExtensionSchema.TopicTypes/Type` | `content.extension.topic_types[]` |
 | `ExtensionSchema.TopicStatuses/Status` | `content.extension.topic_statuses[]` |
@@ -187,64 +187,64 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 | `ExtensionSchema.TopicLabels/Label` | `content.extension.topic_labels[]` |
 | `ExtensionSchema.Stages/Stage` | `content.extension.stages[]` |
 | `ExtensionSchema.SnippetTypes/SnippetType` | `content.extension.snippet_types[]` |
-| `ExtensionSchema.Users/User` | `content.extension.users[]` (string-Liste, optional + `p`-Tag-Spiegelung) |
+| `ExtensionSchema.Users/User` | `content.extension.users[]` (string list, optional + `p`-tag mirroring) |
 
 ### 6.2 Markup → `kind:30900` (Topic)
 
 | BCF | Nostr |
 |---|---|
-| `Topic @Guid` | `d`-Tag |
+| `Topic @Guid` | `d`-tag |
 | `Topic @ServerAssignedId` | `content.server_assigned_id` |
-| `Topic @TopicType` | `bcf-type`-Tag |
-| `Topic @TopicStatus` | `bcf-status`-Tag |
+| `Topic @TopicType` | `bcf-type`-tag |
+| `Topic @TopicStatus` | `bcf-status`-tag |
 | `Topic.Title` | `content.title` |
-| `Topic.Priority` | `bcf-priority`-Tag |
-| `Topic.Index` | `bcf-index`-Tag |
-| `Topic.Labels/Label[]` | `t`-Tags (eins pro Label) |
-| `Topic.CreationDate` | `content.created_date` (ISO 8601) + Event-`created_at` als unix-ts |
-| `Topic.CreationAuthor` | `content.created_author` (E-Mail oder Klarname) + Event-`pubkey` |
-| `Topic.ModifiedDate` | Event-`created_at` der jüngsten Replaceable-Revision |
-| `Topic.ModifiedAuthor` | Event-`pubkey` der jüngsten Revision |
-| `Topic.DueDate` | `bcf-due`-Tag (unix-ts) + `content.due_date` (ISO 8601) |
-| `Topic.AssignedTo` | `p`-Tag mit zusätzlichem 4. Element „assignee" + `content.assigned_to` (E-Mail-Fallback) |
-| `Topic.Stage` | `bcf-stage`-Tag |
+| `Topic.Priority` | `bcf-priority`-tag |
+| `Topic.Index` | `bcf-index`-tag |
+| `Topic.Labels/Label[]` | `t`-tags (one per label) |
+| `Topic.CreationDate` | `content.created_date` (ISO 8601) + event `created_at` as unix-ts |
+| `Topic.CreationAuthor` | `content.created_author` (email or real name) + event `pubkey` |
+| `Topic.ModifiedDate` | event `created_at` of the latest replaceable revision |
+| `Topic.ModifiedAuthor` | event `pubkey` of the latest revision |
+| `Topic.DueDate` | `bcf-due`-tag (unix-ts) + `content.due_date` (ISO 8601) |
+| `Topic.AssignedTo` | `p`-tag with an additional 4th element "assignee" + `content.assigned_to` (email fallback) |
+| `Topic.Stage` | `bcf-stage`-tag |
 | `Topic.Description` | `content.description` |
-| `Topic.BimSnippet` | `e`-Tag → kind 30903 (Document Reference, type=snippet) |
-| `Topic.DocumentReferences/DocumentReference` | `e`-Tag(s) → kind 30903 |
-| `Topic.RelatedTopics/RelatedTopic` | `e`-Tag → andere kind:30900 mit Marker „related" |
-| `Topic.Comments` | nicht eingebettet — Comments sind eigene Events (kind:1170) mit `e`-Tag auf Topic |
-| `Topic.Viewpoints` | `e`-Tags mit Marker `viewpoint` → kind:30901 |
-| `Header.Files/File` | `ifc-file`-Tags → kind:30904 |
+| `Topic.BimSnippet` | `e`-tag → kind 30903 (Document Reference, type=snippet) |
+| `Topic.DocumentReferences/DocumentReference` | `e`-tag(s) → kind 30903 |
+| `Topic.RelatedTopics/RelatedTopic` | `e`-tag → other kind:30900 with marker "related" |
+| `Topic.Comments` | not embedded — comments are their own events (kind:1170) with an `e`-tag to the topic |
+| `Topic.Viewpoints` | `e`-tags with marker `viewpoint` → kind:30901 |
+| `Header.Files/File` | `ifc-file`-tags → kind:30904 |
 
 ### 6.3 Comment → `kind:1170`
 
 | BCF | Nostr |
 |---|---|
-| `Comment @Guid` | `content.guid` (UUID, beibehalten für Round-trip) — Event-`id` ist Nostr-nativ |
-| `Comment.Date` | Event-`created_at` |
-| `Comment.Author` | Event-`pubkey` (+ `content.author_email` für Round-trip) |
+| `Comment @Guid` | `content.guid` (UUID, kept for round-trip) — event `id` is Nostr-native |
+| `Comment.Date` | event `created_at` |
+| `Comment.Author` | event `pubkey` (+ `content.author_email` for round-trip) |
 | `Comment.Comment` | `content.text` |
-| `Comment.Viewpoint @Guid` | `e`-Tag mit Marker `viewpoint` → kind:30901 Event-id |
-| `Comment.ModifiedDate` | bei Edit: separates kind:1170-Event mit `e`-Tag „replaces" auf Vorgänger; Original via NIP-09-Delete entfernen (siehe 8.3) |
-| `Comment.ModifiedAuthor` | Event-`pubkey` der neuen Version |
+| `Comment.Viewpoint @Guid` | `e`-tag with marker `viewpoint` → kind:30901 event-id |
+| `Comment.ModifiedDate` | on edit: a separate kind:1170 event with an `e`-tag "replaces" to the predecessor; remove the original via NIP-09 delete (see 8.3) |
+| `Comment.ModifiedAuthor` | event `pubkey` of the new version |
 
 ### 6.4 Viewpoint → `kind:30901`
 
 | BCF | Nostr |
 |---|---|
-| `VisualizationInfo @Guid` | `d`-Tag |
-| `Components.Selection/Component[]` | `content.components.selection[]` (Liste mit `ifc_guid`, `originating_system`, `authoring_tool_id`) + `ifc`-Tags pro Element |
+| `VisualizationInfo @Guid` | `d`-tag |
+| `Components.Selection/Component[]` | `content.components.selection[]` (list with `ifc_guid`, `originating_system`, `authoring_tool_id`) + `ifc`-tags per element |
 | `Components.Visibility @DefaultVisibility` | `content.components.visibility.default` |
 | `Components.Visibility.Exceptions/Component[]` | `content.components.visibility.exceptions[]` |
-| `Components.Visibility.ViewSetupHints` | `content.components.view_setup_hints` (Object) |
+| `Components.Visibility.ViewSetupHints` | `content.components.view_setup_hints` (object) |
 | `Components.Coloring/Color[]` | `content.components.coloring[]` |
-| `OrthogonalCamera` oder `PerspectiveCamera` | `content.camera` (typed object mit `type`, `view_point`, `direction`, `up_vector`, `view_to_world_scale` / `field_of_view`) |
+| `OrthogonalCamera` or `PerspectiveCamera` | `content.camera` (typed object with `type`, `view_point`, `direction`, `up_vector`, `view_to_world_scale` / `field_of_view`) |
 | `Lines/Line[]` | `content.lines[]` |
 | `ClippingPlanes/ClippingPlane[]` | `content.clipping_planes[]` |
-| `Bitmaps/Bitmap[]` | `content.bitmaps[]` (mit Blossom-Hash-Referenzen) |
-| `snapshot.png` | `e`-Tag mit Marker `snapshot` → NIP-94-Event |
+| `Bitmaps/Bitmap[]` | `content.bitmaps[]` (with Blossom hash references) |
+| `snapshot.png` | `e`-tag with marker `snapshot` → NIP-94 event |
 
-### 6.5 IFC-File-Referenz → `kind:30904`
+### 6.5 IFC file reference → `kind:30904`
 
 | BCF | Nostr |
 |---|---|
@@ -253,20 +253,20 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 | `File @IsExternal` | `content.is_external` (bool) |
 | `File.Filename` | `content.filename` |
 | `File.Date` | `content.date` (ISO 8601) |
-| `File.Reference` | `content.reference` (url) + `x`-Tag (sha256) |
+| `File.Reference` | `content.reference` (url) + `x`-tag (sha256) |
 
 ### 6.6 Document Reference → `kind:30903`
 
 | BCF | Nostr |
 |---|---|
-| `DocumentReference @Guid` | `d`-Tag |
+| `DocumentReference @Guid` | `d`-tag |
 | `DocumentReference.DocumentGuid` | `content.document_guid` (BCF 3.0) |
 | `DocumentReference.Url` | `content.url` |
 | `DocumentReference.Description` | `content.description` |
 
 ---
 
-## 7. Beispiele
+## 7. Examples
 
 ### 7.1 Project (`kind:30902`)
 
@@ -279,7 +279,7 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["bcf-version", "3.0"],
     ["h", "proj-rueckhaltebecken-st-pauli"]
   ],
-  "content": "{\"name\":\"Rückhaltebecken St. Pauli\",\"extension\":{\"topic_types\":[\"Issue\",\"Clash\",\"RFI\"],\"topic_statuses\":[\"Open\",\"InProgress\",\"Resolved\",\"Closed\"],\"priorities\":[\"Low\",\"Normal\",\"High\",\"Critical\"],\"topic_labels\":[\"HKLS\",\"Statik\",\"Architektur\",\"ELT\"],\"stages\":[\"LP3\",\"LP4\",\"LP5\",\"LP6\"],\"snippet_types\":[\"clash\",\"mvd\"],\"users\":[]}}",
+  "content": "{\"name\":\"Retention Basin St. Pauli\",\"extension\":{\"topic_types\":[\"Issue\",\"Clash\",\"RFI\"],\"topic_statuses\":[\"Open\",\"InProgress\",\"Resolved\",\"Closed\"],\"priorities\":[\"Low\",\"Normal\",\"High\",\"Critical\"],\"topic_labels\":[\"HVAC\",\"Structural\",\"Architecture\",\"Electrical\"],\"stages\":[\"LP3\",\"LP4\",\"LP5\",\"LP6\"],\"snippet_types\":[\"clash\",\"mvd\"],\"users\":[]}}",
   "pubkey": "<group-pubkey>",
   "id": "<sha256>",
   "sig": "<schnorr-sig>"
@@ -305,15 +305,15 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["bcf-index", "42"],
     ["bcf-due", "1749600000"],
     ["bcf-stage", "LP4"],
-    ["t", "HKLS"],
-    ["t", "Statik"],
+    ["t", "HVAC"],
+    ["t", "Structural"],
     ["p", "<assignee-pubkey>", "", "assignee"],
     ["ifc", "0aB1cD2eF3gH4iJ5kL6mN7"],
     ["ifc-file", "<kind-30904-event-id>"],
     ["e", "<kind-30901-event-id>", "", "viewpoint"],
     ["e", "<nip94-snapshot-event-id>", "", "snapshot"]
   ],
-  "content": "{\"title\":\"Lüftungsleitung kreuzt Hauptträger Achse 4\",\"description\":\"Kollision im Bereich Decke EG bei Achse 4/B. Vorschlag: Lüftung auf -350 mm absenken, Träger-Voute prüfen.\",\"created_date\":\"2026-05-14T08:20:34Z\",\"created_author\":\"felix@bimbeam.example\",\"due_date\":\"2026-06-11T00:00:00Z\",\"server_assigned_id\":\"BSP-2026-042\"}",
+  "content": "{\"title\":\"Ventilation duct crosses main girder on axis 4\",\"description\":\"Clash in the ground-floor ceiling area at axis 4/B. Proposal: lower the ventilation to -350 mm, check the girder haunch.\",\"created_date\":\"2026-05-14T08:20:34Z\",\"created_author\":\"felix@bimbeam.example\",\"due_date\":\"2026-06-11T00:00:00Z\",\"server_assigned_id\":\"BSP-2026-042\"}",
   "pubkey": "<felix-pubkey>",
   "id": "<sha256>",
   "sig": "<schnorr-sig>"
@@ -333,14 +333,14 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
     ["p", "<felix-pubkey>"],
     ["e", "<kind-30901-event-id>", "", "viewpoint"]
   ],
-  "content": "{\"text\":\"Träger kann nicht abgesenkt werden, Stahlbau ist freigegeben. Vorschlag: Lüftung über Träger führen, Querschnitt 800x300 → 600x400.\",\"guid\":\"7a9b2c3d-4e5f-9c3b-4a5c-1d6e4a2b8b1f\"}",
+  "content": "{\"text\":\"The girder cannot be lowered, the steelwork is already released. Proposal: route the ventilation above the girder, cross-section 800x300 → 600x400.\",\"guid\":\"7a9b2c3d-4e5f-9c3b-4a5c-1d6e4a2b8b1f\"}",
   "pubkey": "<statik-pubkey>",
   "id": "<sha256>",
   "sig": "<schnorr-sig>"
 }
 ```
 
-### 7.4 Audit-Event (`kind:1171`)
+### 7.4 Audit event (`kind:1171`)
 
 ```json
 {
@@ -380,54 +380,54 @@ Begründung des Bereichs: 30900–30999 ist im Block für parameterized replacea
 
 ---
 
-## 8. Verhalten & Algorithmen
+## 8. Behaviour & algorithms
 
-### 8.1 Topic-Status: Quelle der Wahrheit
+### 8.1 Topic status: source of truth
 
-Das jüngste `kind:30900`-Event (per `created_at`, Ties durch lexikografisch kleinste Event-`id` gebrochen — analog NIP-01 für replaceable) ist der aktuelle Zustand. Audit-Events (`kind:1171`) sind erklärend, nicht autoritativ.
+The latest `kind:30900` event (by `created_at`, ties broken by the lexicographically smallest event `id` — analogous to NIP-01 for replaceable) is the current state. Audit events (`kind:1171`) are explanatory, not authoritative.
 
-Konfliktfall: zwei Replacements mit identischem `created_at` und konfligierenden Werten — Algorithmus wählt deterministisch, aber Clients SOLLEN den Konflikt sichtbar machen und Vorschlag „letzter Autor entscheidet" oder „eskalieren an Mod" anbieten.
+Conflict case: two replacements with an identical `created_at` and conflicting values — the algorithm chooses deterministically, but clients SHOULD make the conflict visible and offer the proposal "last author decides" or "escalate to mod".
 
-### 8.2 Reihenfolge bei Comments
+### 8.2 Ordering of comments
 
-Comments sind kausal sortiert über `created_at`. Replies an Comments (Threading) verwenden NIP-10 Marker („reply"/„root"). BCF kennt kein Threading nativ — wir erweitern hier vorsichtig: ein Comment kann optional einen anderen Comment per `e`-Tag mit Marker „reply" referenzieren; bei BCF-XML-Export wird das auf flache Comment-Liste platt gemacht (Reihenfolge nach `created_at`).
+Comments are causally sorted by `created_at`. Replies to comments (threading) use NIP-10 markers ("reply"/"root"). BCF does not know threading natively — we extend cautiously here: a comment can optionally reference another comment via an `e`-tag with marker "reply"; on BCF-XML export this is flattened to a flat comment list (ordered by `created_at`).
 
-### 8.3 Comment-Edits
+### 8.3 Comment edits
 
-Nostr-Events sind unveränderlich. Comment-Edit-Workflow:
+Nostr events are immutable. Comment edit workflow:
 
-1. Autor publiziert neues `kind:1170`-Event mit `e`-Tag-Marker „replaces" auf Vorgänger-Event-id.
-2. Autor publiziert NIP-09 Delete (`kind:5`) auf Vorgänger.
-3. Clients zeigen jüngste Version, behalten aber alle Versionen lokal im Audit-Cache.
+1. The author publishes a new `kind:1170` event with an `e`-tag marker "replaces" to the predecessor event-id.
+2. The author publishes a NIP-09 delete (`kind:5`) for the predecessor.
+3. Clients show the latest version but keep all versions locally in the audit cache.
 
-Bei BCF-XML-Export gewinnt die jüngste, `ModifiedDate`/`ModifiedAuthor` werden gesetzt.
+On BCF-XML export the latest wins, `ModifiedDate`/`ModifiedAuthor` are set.
 
-### 8.4 Topic-Schließen, -Wiederaufmachen, -Löschen
+### 8.4 Closing, reopening, deleting a topic
 
-- Schließen: Status-Replacement auf "Closed". Topic bleibt persistent.
-- Wiederaufmachen: Status-Replacement auf "Open" oder "InProgress".
-- Löschen: NIP-09 Delete-Event vom Topic-Autor oder Gruppen-Mod; Relays sollen replizieren, müssen aber nicht löschen (eventually consistent). Praxistipp: harte Löschungen vermeiden, lieber Status "Closed" + Label "WONTFIX" oder ähnlich.
+- Close: status replacement to "Closed". The topic stays persistent.
+- Reopen: status replacement to "Open" or "InProgress".
+- Delete: NIP-09 delete event from the topic author or a group mod; relays should replicate but need not delete (eventually consistent). Practical tip: avoid hard deletes, prefer status "Closed" + label "WONTFIX" or similar.
 
-### 8.5 Round-trip-Garantien
+### 8.5 Round-trip guarantees
 
-Implementierungen MÜSSEN folgendes Round-trip-Verhalten zeigen:
+Implementations MUST exhibit the following round-trip behaviour:
 
-1. BCF-XML → Nostr-Events → BCF-XML produziert ein semantisch äquivalentes Output (alle Topic-GUIDs, Viewpoint-GUIDs, Comment-GUIDs unverändert; Reihenfolge der Comments per `created_at`).
-2. Nostr-Events → BCF-XML → Nostr-Events ist nicht garantiert kanonisch (Event-IDs ändern sich, weil Inhalt evtl. neu serialisiert wird), aber semantisch äquivalent.
+1. BCF-XML → Nostr events → BCF-XML produces a semantically equivalent output (all topic GUIDs, viewpoint GUIDs, comment GUIDs unchanged; comment ordering by `created_at`).
+2. Nostr events → BCF-XML → Nostr events is not guaranteed canonical (event IDs change because the content may be re-serialised), but it is semantically equivalent.
 
-Test-Vektoren: jedes BCF-3.0-Beispiel aus dem offiziellen `bcf-xml`-Repository (buildingSMART) wird mit erwartetem Nostr-Event-Set abgelegt. Siehe Abschnitt 13.
+Test vectors: every BCF 3.0 example from the official `bcf-xml` repository (buildingSMART) is stored with the expected Nostr event set. See section 13.
 
 ---
 
-## 9. Datei-Layer
+## 9. File layer
 
 ### 9.1 Blossom
 
-Empfohlener Default. Server akzeptiert PUT mit Body, antwortet mit `{url, sha256, size, type}`. Client speichert `url` + `sha256` als Tag-Werte.
+Recommended default. The server accepts a PUT with a body and answers with `{url, sha256, size, type}`. The client stores `url` + `sha256` as tag values.
 
-### 9.2 NIP-94 Begleit-Event
+### 9.2 NIP-94 companion event
 
-Für jede relevante Datei (Snapshot ≥ 1 MB, IFC, BimSnippet, Document) publiziert der Client ein `kind:1063`-Event:
+For every relevant file (snapshot ≥ 1 MB, IFC, BimSnippet, document) the client publishes a `kind:1063` event:
 
 ```json
 {
@@ -440,114 +440,114 @@ Für jede relevante Datei (Snapshot ≥ 1 MB, IFC, BimSnippet, Document) publizi
     ["dim", "1920x1080"],
     ["a", "30902:<group-pubkey>:<project-guid>"]
   ],
-  "content": "Snapshot für Topic Achse 4/B"
+  "content": "Snapshot for topic axis 4/B"
 }
 ```
 
-Vorteile: konsistente Provenance, Suchbarkeit, einfacher Mirror auf Sekundär-Blossom.
+Advantages: consistent provenance, searchability, simple mirror to a secondary Blossom.
 
-### 9.3 IFC-Modelle
+### 9.3 IFC models
 
-Große IFC-Files (>200 MB) sind grenzwertig für Blossom. Pragmatisch:
+Large IFC files (>200 MB) are borderline for Blossom. Pragmatically:
 
-- IFC-File auf privatem Blossom des Projekts (Pinning durch Owner).
-- `kind:30904` BCF-File-Reference verlinkt url + sha256.
-- Optional: zusätzlich OpenTimestamps-Anker auf der Timechain für Notar-Funktion (siehe „IFC-Notar"-Projekt).
+- IFC file on the project's private Blossom (pinning by the owner).
+- `kind:30904` BCF-File-Reference links url + sha256.
+- Optionally: an additional OpenTimestamps anchor on the timechain for a notary function (see the "IFC notary" project).
 
-### 9.4 Verschlüsselung
+### 9.4 Encryption
 
-Falls Projekt vertraulich (Sicherheits-Infrastruktur, militärisch, KRITIS):
+If the project is confidential (security infrastructure, military, critical infrastructure):
 
-- Blob-Verschlüsselung clientseitig (AES-256-GCM), Schlüssel im Group-Event (NIP-29) für Mitglieder verfügbar.
-- Event-Content (Topic-Description, Comment-Text) optional NIP-44-verschlüsselt; Tag-Werte bleiben Cleartext, müssen entsprechend kuratiert sein.
+- Blob encryption client-side (AES-256-GCM), the key available to members in the group event (NIP-29).
+- Event content (topic description, comment text) optionally NIP-44-encrypted; tag values stay cleartext and must be curated accordingly.
 
 ---
 
-## 10. Beziehung zu bestehenden NIPs
+## 10. Relation to existing NIPs
 
-| NIP | Verwendung in BCF-over-Nostr |
+| NIP | Use in BCF-over-Nostr |
 |---|---|
-| NIP-01 | Basis-Eventformat, replaceable-Semantik |
-| NIP-09 | Delete von Topics/Comments |
-| NIP-10 | Comment-Threading (Marker „reply"/„root") |
-| NIP-17 | optionale private Coordination-DMs (z. B. „Auftraggeber bittet um Rückruf") |
-| NIP-19 | Bech32-Encoding für Cross-Tool-Links (`naddr1…` für Topics) |
-| NIP-23 | Long-form-Begründungen, gerne als Annex zu Topics (separates Event, via `e`-Tag verlinkt) |
-| NIP-29 | Projekt-Container (private Gruppe), Mitgliedschaft, Mod-Rechte |
-| NIP-42 | Relay-Auth (Pflicht für nicht-öffentliche Projekt-Relays) |
-| NIP-44 | Content-Verschlüsselung bei vertraulichen Projekten |
-| NIP-51 | Listen für „beobachtete Topics", „Lesezeichen" |
-| NIP-58 | Berufs-Badges (Kammer-Attestation, Zertifizierung) |
-| NIP-65 | Relay-Listen pro Planer |
-| NIP-72 | öffentliche Tribes / Communities (Bauwesen-DACH, Sovereign Engineering DACH) |
-| NIP-89 | Recommended-Apps-Handling (Client-Empfehlungen für unbekannte Kinds) |
-| NIP-94 | File-Metadata pro Snapshot / IFC / BimSnippet |
-| NIP-96 | optional alternative zum Blossom-Storage |
+| NIP-01 | base event format, replaceable semantics |
+| NIP-09 | delete of topics/comments |
+| NIP-10 | comment threading (markers "reply"/"root") |
+| NIP-17 | optional private coordination DMs (e.g. "client asks for a callback") |
+| NIP-19 | bech32 encoding for cross-tool links (`naddr1…` for topics) |
+| NIP-23 | long-form rationales, ideally as an annex to topics (separate event, linked via an `e`-tag) |
+| NIP-29 | project container (private group), membership, mod rights |
+| NIP-42 | relay auth (mandatory for non-public project relays) |
+| NIP-44 | content encryption for confidential projects |
+| NIP-51 | lists for "watched topics", "bookmarks" |
+| NIP-58 | professional badges (chamber attestation, certification) |
+| NIP-65 | relay lists per planner |
+| NIP-72 | public tribes / communities (construction sector, Sovereign Engineering) |
+| NIP-89 | recommended-apps handling (client recommendations for unknown kinds) |
+| NIP-94 | file metadata per snapshot / IFC / BimSnippet |
+| NIP-96 | optional alternative to Blossom storage |
 
 ---
 
-## 11. Gap-Analyse: was BCF kann, Nostr nicht (out-of-the-box)
+## 11. Gap analysis: what BCF can do, Nostr cannot (out of the box)
 
-| BCF-Funktion | Nostr-Lücke | Lösung im NIP |
+| BCF function | Nostr gap | Solution in the NIP |
 |---|---|---|
-| Rollen pro Projekt (Reviewer, Manager, Read-only) | keine Standardrollen | NIP-29 Mod-Layer + 4. Element in `p`-Tag („role"); für stempelnde Rollen NIP-58 Badge |
-| Server-assigned Topic-IDs | nicht zentral | `server_assigned_id` im `content` belassen; Vergabe entweder durch Mod-Bot im Group-Container (deterministisch nach `created_at`) oder freihändig durch Autor |
-| Aktivitätslog-Endpoint (BCF-API `/events`) | nicht standardisiert | Audit-Events (`kind:1171`) + Filter `kinds:[1171]`+`#a:[<project>]` |
-| Datei-Quota / Pinning | keine Garantie | Blossom mit Bezahl-/Member-Modell; Eigentümer pinnt selbst |
-| Permanenz | Relays können löschen | Eigenes Projekt-Relay (strfry, nostr-rs-relay) + OpenTimestamps-Anker für Final-Stände |
-| Standardisierte TopicTypes / Statuses | Free-form Tags | Über `kind:30902 ExtensionSchema` projektweise definiert (BCF-Original-Mechanik) |
-| Verbindliche Identität | npub ist Pseudonym | Kammern-Badge per NIP-58 + offchain Werkvertrag mit Klarnamen-Bindung |
-| Lieferschein/Abnahmedokument | nicht in Nostr | Optional separates Event `kind:30910` „BCF Hand-over" mit kompletter Topic-Liste + OTS-Anker — Erweiterung im NIP empfehlen |
+| Roles per project (reviewer, manager, read-only) | no standard roles | NIP-29 mod layer + 4th element in the `p`-tag ("role"); for stamping roles a NIP-58 badge |
+| Server-assigned topic IDs | not central | keep `server_assigned_id` in `content`; assignment either by a mod bot in the group container (deterministic by `created_at`) or freely by the author |
+| Activity log endpoint (BCF-API `/events`) | not standardised | audit events (`kind:1171`) + filter `kinds:[1171]`+`#a:[<project>]` |
+| File quota / pinning | no guarantee | Blossom with a paid/member model; the owner pins themselves |
+| Permanence | relays can delete | own project relay (strfry, nostr-rs-relay) + OpenTimestamps anchor for final states |
+| Standardised TopicTypes / Statuses | free-form tags | defined per project via `kind:30902 ExtensionSchema` (original BCF mechanic) |
+| Binding identity | npub is a pseudonym | chamber badge via NIP-58 + offchain work contract with real-name binding |
+| Delivery note / acceptance document | not in Nostr | optionally a separate event `kind:30910` "BCF Hand-over" with a complete topic list + OTS anchor — recommend this extension in the NIP |
 
 ---
 
-## 12. Sicherheits- und Privacy-Modell
+## 12. Security and privacy model
 
-### 12.1 Bedrohungsmodell
+### 12.1 Threat model
 
-- **Manipulation:** durch Schnorr-Signatur ausgeschlossen pro Event; Replacement-Reihenfolge muss überwacht werden (siehe 8.1).
-- **Repudiation:** ausgeschlossen — jede Aktion signiert.
-- **Vertraulichkeit:** Standard Cleartext im Relay. Für sensible Projekte NIP-29 + NIP-44 + Blob-Verschlüsselung.
-- **Verfügbarkeit:** Relay-Ausfall → mehrere Relays empfehlen (NIP-65 Outbox-Pattern). Empfohlen: Eigenes Projekt-Relay (Pflicht-Schreiben) + 2 redundante Spiegel.
-- **Sybil:** in öffentlichen Tribes über NIP-58-Badges / NIP-72-Mod-Layer.
-- **Spam:** Relay-seitig (Allowlist, Auth, PoW NIP-13 optional).
+- **Tampering:** excluded per event by the Schnorr signature; replacement ordering must be monitored (see 8.1).
+- **Repudiation:** excluded — every action is signed.
+- **Confidentiality:** cleartext in the relay by default. For sensitive projects NIP-29 + NIP-44 + blob encryption.
+- **Availability:** relay outage → recommend multiple relays (NIP-65 outbox pattern). Recommended: own project relay (mandatory write) + 2 redundant mirrors.
+- **Sybil:** in public tribes via NIP-58 badges / NIP-72 mod layer.
+- **Spam:** relay-side (allowlist, auth, PoW NIP-13 optional).
 
-### 12.2 Schlüsselverwaltung
+### 12.2 Key management
 
-Empfehlung: Planer-npub im Hardware-Signer (Amber/nsec.app/NSec-Bunker). Verbindung zu beruflicher Identität via NIP-58 Badge, ausgegeben von Kammer; Badge ist widerrufbar (NIP-09 Delete vom Aussteller).
+Recommendation: the planner npub in a hardware signer (Amber/nsec.app/NSec bunker). Connection to professional identity via a NIP-58 badge issued by a chamber; the badge is revocable (NIP-09 delete by the issuer).
 
-### 12.3 Datenschutz (DSGVO, GDPR)
+### 12.3 Data protection (GDPR)
 
-- Comment-Inhalte und Topic-Beschreibungen können personenbezogene Daten enthalten.
-- Recht auf Löschung: NIP-09 nur best-effort. Für DSGVO-konforme Projekte: privates Relay mit klarem Operator → Auftragsverarbeitung; öffentliche Tribes nicht für personenbezogene Inhalte verwenden.
-- Empfehlung im NIP: Hinweis-Abschnitt „Privacy Considerations" mit obigen Punkten.
-
----
-
-## 13. Referenzimplementierung & Test-Vektoren
-
-### 13.1 Minimaler Stack für Proof-of-Concept
-
-- Web-Client: Next.js / Astro, `nostr-tools` oder `ndk`, Three.js / xeokit für Viewpoint-Rendering.
-- Relay: `nostr-rs-relay` oder `strfry` mit NIP-42, NIP-29-Patch.
-- Blob: einer der etablierten Blossom-Server (`blossom-server-rs`).
-- Importer/Exporter: TypeScript-CLI `bcf-nostr` mit Subcommands `import <file.bcfzip>` und `export <project-naddr> <out.bcfzip>`.
-
-### 13.2 Test-Vektoren
-
-Für jedes BCF-3.0-Beispiel aus dem `buildingSMART/BCF-XML`-Repo werden abgelegt:
-
-- Eingangs-`.bcfzip`,
-- Zielmenge Nostr-Events (kanonisch sortiert, deterministischer `created_at` via Date des BCF),
-- Round-trip-Output `.bcfzip` mit Hash-Vergleich der `markup.bcf`-XML-Elemente nach Normalisierung.
-
-Damit ist Konformität messbar.
+- Comment content and topic descriptions can contain personal data.
+- Right to erasure: NIP-09 is only best-effort. For GDPR-compliant projects: a private relay with a clear operator → data processing agreement; do not use public tribes for personal content.
+- Recommendation in the NIP: a "Privacy Considerations" note section with the above points.
 
 ---
 
-## 14. NIP-Draft-Skelett
+## 13. Reference implementation & test vectors
 
-Ein konkreter NIP-Draft sollte folgende Sektionen enthalten:
+### 13.1 Minimal stack for a proof of concept
+
+- Web client: Next.js / Astro, `nostr-tools` or `ndk`, Three.js / xeokit for viewpoint rendering.
+- Relay: `nostr-rs-relay` or `strfry` with NIP-42, NIP-29 patch.
+- Blob: one of the established Blossom servers (`blossom-server-rs`).
+- Importer/exporter: TypeScript CLI `bcf-nostr` with subcommands `import <file.bcfzip>` and `export <project-naddr> <out.bcfzip>`.
+
+### 13.2 Test vectors
+
+For every BCF 3.0 example from the `buildingSMART/BCF-XML` repo, store:
+
+- the input `.bcfzip`,
+- the target set of Nostr events (canonically sorted, deterministic `created_at` via the BCF date),
+- the round-trip output `.bcfzip` with a hash comparison of the `markup.bcf` XML elements after normalisation.
+
+This makes conformance measurable.
+
+---
+
+## 14. NIP draft skeleton
+
+A concrete NIP draft should contain the following sections:
 
 ```
 NIP-XXX: BCF over Nostr
@@ -564,8 +564,8 @@ issues, comments, viewpoints, projects, and file references on Nostr.
 
 Motivation
 ~~~~~~~~~~
-[ca. 200 Wörter — Bezug auf Plattform-Lock-in, BIM-Koordination, Souveränität,
-verlustfreier Austausch]
+[approx. 200 words — relating to platform lock-in, BIM coordination, sovereignty,
+lossless exchange]
 
 Event Kinds
 ~~~~~~~~~~~
@@ -585,68 +585,68 @@ audit-to, bcf-version, client
 
 Schema (JSON, BCF 3.0 Mapping)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-[siehe Mapping-Tabelle Abschnitt 6]
+[see the mapping table in section 6]
 
 Behavior
 ~~~~~~~~
-[8.1–8.5 als normative Klauseln, MUST/SHOULD]
+[8.1–8.5 as normative clauses, MUST/SHOULD]
 
 File Handling
 ~~~~~~~~~~~~~
-[NIP-94 / Blossom — Empfehlung, kein Zwang]
+[NIP-94 / Blossom — recommendation, not mandatory]
 
 Relations to Other NIPs
 ~~~~~~~~~~~~~~~~~~~~~~~
-[Tabelle aus Abschnitt 10]
+[table from section 10]
 
 Security Considerations
 ~~~~~~~~~~~~~~~~~~~~~~~
-[Abschnitt 12]
+[section 12]
 
 Test Vectors
 ~~~~~~~~~~~~
-[Link auf Referenz-Repo]
+[link to the reference repo]
 ```
 
 ---
 
-## 15. Offene Fragen / Diskussions­bedarf
+## 15. Open questions / discussion needs
 
-1. **Kind-Bereich:** ist `30900–30904 / 1170–1172` mit der bestehenden Allokationspraxis kompatibel? PR an `nostr-protocol/nips` erforderlich, um die Reservierung zu sichern.
-2. **Verhältnis BCF-API ↔ Nostr-NIP:** soll der NIP nur den XML-Container abbilden, oder auch BCF-API-Endpoints semantisch ersetzen? Empfehlung: zunächst XML-paritätisch, API als Folge-NIP.
-3. **Zukunft BCF 4.0:** Welche zu erwartenden Felder (z. B. erweiterte LOIN-Referenzen, multi-modale Snapshots) brauchen jetzt schon Reserveraum?
-4. **Mod-Layer:** reicht NIP-29 oder ist ein dedizierter NIP für „Project-Roles" sinnvoll, der über reine Group-Mods hinausgeht (Reviewer, Approver, Stamper)?
-5. **OpenTimestamps-Integration:** Standardisieren als Tag (`ots`-Tag mit OTS-Proof) oder dem Anwender überlassen? Empfehlung: Standardisieren, weil das einer der stärksten Use-Cases ist.
-6. **Localization:** Topic-Beschreibungen mehrsprachig? Vorschlag: `content.title_i18n` als Map, sonst Sprach-Tag `lang`.
-7. **Cashu-/Lightning-Hook:** Soll ein Topic optional eine Bounty tragen (Auszahlung bei Status=Resolved)? Andocken an DVM-Logik (NIP-90) als optionaler Begleit-Event. Empfehlung: ja, als optionales Feature außerhalb des Kern-NIP.
-
----
-
-## 16. Empfohlene nächste Schritte
-
-1. **Konsens-Sondierung in der buildingSMART-Open-Source-Community** (Slack `bsi`, Forum) — frühe Diskussion vermeidet Doppelarbeit.
-2. **Nostr-Seite:** Issue im `nostr-protocol/nips`-Repo eröffnen, Kind-Bereich allokieren lassen.
-3. **Referenz-Importer/Exporter** als CLI auf GitHub, MIT-Lizenz.
-4. **Web-Demo** mit einem öffentlichen Test-Tribe (z. B. „BCF-Test-DACH"), kuratiert.
-5. **Test-Vektoren** aus offiziellem `BCF-XML`-Repo automatisiert durch CI laufen lassen.
-6. **NIP-Draft als PR** sobald (3) und (5) funktionieren — empirische Validierung vor Spec-Freeze.
-7. **Pilotprojekt** mit echtem Bauvorhaben (klein, idealerweise eigenes), um die Praxis zu härten (Round-trip mit Solibri / BIMcollab-Import getestet).
+1. **Kind range:** is `30900–30904 / 1170–1172` compatible with the existing allocation practice? A PR to `nostr-protocol/nips` is required to secure the reservation.
+2. **Relationship BCF-API ↔ Nostr NIP:** should the NIP only map the XML container, or also semantically replace BCF-API endpoints? Recommendation: first XML-parity, the API as a follow-up NIP.
+3. **Future BCF 4.0:** which expected fields (e.g. extended LOIN references, multi-modal snapshots) already need reserved space now?
+4. **Mod layer:** is NIP-29 sufficient or is a dedicated NIP for "project roles" sensible that goes beyond pure group mods (reviewer, approver, stamper)?
+5. **OpenTimestamps integration:** standardise as a tag (`ots`-tag with an OTS proof) or leave it to the user? Recommendation: standardise, because it is one of the strongest use cases.
+6. **Localization:** multilingual topic descriptions? Proposal: `content.title_i18n` as a map, otherwise a language tag `lang`.
+7. **Cashu/Lightning hook:** should a topic optionally carry a bounty (payout on Status=Resolved)? Hook into DVM logic (NIP-90) as an optional companion event. Recommendation: yes, as an optional feature outside the core NIP.
 
 ---
 
-## Anhang A: Glossar
+## 16. Recommended next steps
 
-- **BCF** — BIM Collaboration Format, buildingSMART-Standard.
-- **IFC** — Industry Foundation Classes, offenes Modellaustauschformat.
+1. **Consensus sounding in the buildingSMART open-source community** (Slack `bsi`, forum) — early discussion avoids duplicate work.
+2. **Nostr side:** open an issue in the `nostr-protocol/nips` repo, have the kind range allocated.
+3. **Reference importer/exporter** as a CLI on GitHub, MIT licence.
+4. **Web demo** with a public test tribe (e.g. "BCF-Test"), curated.
+5. **Test vectors** from the official `BCF-XML` repo run automatically through CI.
+6. **NIP draft as a PR** once (3) and (5) work — empirical validation before spec freeze.
+7. **Pilot project** with a real building project (small, ideally your own) to harden the practice (round-trip tested with Solibri / BIMcollab import).
+
+---
+
+## Appendix A: Glossary
+
+- **BCF** — BIM Collaboration Format, buildingSMART standard.
+- **IFC** — Industry Foundation Classes, open model exchange format.
 - **LOIN** — Level of Information Need (DIN EN 17412).
-- **Topic** — BCF-Issue mit Metadaten, Comments, Viewpoints.
-- **Viewpoint** — Kamera + Sichtbarkeitsstatus + Snapshot.
-- **NIP** — Nostr Implementation Possibility, Spec-Erweiterung von Nostr.
-- **Replaceable Event** — Nostr-Event-Klasse, von der jüngste Version je `(pubkey, kind[, d-tag])` autoritativ ist.
-- **Blossom** — Blob-Storage-Spec für Nostr-Ökosystem (sha256-adressiert).
-- **OTS** — OpenTimestamps, Bitcoin-Timechain-basiertes Notar-Protokoll.
+- **Topic** — a BCF issue with metadata, comments, viewpoints.
+- **Viewpoint** — camera + visibility state + snapshot.
+- **NIP** — Nostr Implementation Possibility, a spec extension of Nostr.
+- **Replaceable event** — a Nostr event class for which the latest version per `(pubkey, kind[, d-tag])` is authoritative.
+- **Blossom** — blob storage spec for the Nostr ecosystem (sha256-addressed).
+- **OTS** — OpenTimestamps, a Bitcoin-timechain-based notary protocol.
 
-## Anhang B: Referenzen
+## Appendix B: References
 
 - buildingSMART BCF: https://github.com/buildingSMART/BCF
 - buildingSMART BCF-API: https://github.com/buildingSMART/BCF-API
@@ -657,4 +657,4 @@ Test Vectors
 
 ---
 
-*Ende des Research-Dokuments. Diskussion willkommen — PRs an die offene Frage-Liste in Abschnitt 15 zuerst.*
+*End of the research document. Discussion welcome — PRs to the open-questions list in section 15 first.*

@@ -26,54 +26,54 @@ FIX_PATTERNS = [
     # Pset_*Common properties — typical Revit setup miss
     (
         r"Property\(propertySet=Pset_\w+Common; baseName=\w+\)",
-        "Revit IFC-Export: 'Export IFC common property sets' AN (Tab Property Sets). "
-        "Falls Property-Namen abweichen: Custom Pset-Datei einbinden mit Mapping Revit-Param → IFC-Name.",
+        "Revit IFC export: turn 'Export IFC common property sets' ON (Property Sets tab). "
+        "If property names differ: include a custom Pset file mapping Revit param -> IFC name.",
         "Revit export setup",
     ),
     # Qto_*BaseQuantities — quantities missing
     (
         r"Property\(propertySet=Qto_\w+BaseQuantities; baseName=\w+\)",
-        "Revit IFC-Export: 'Export base quantities' AN (Tab Property Sets). "
-        "Diese Mengen werden automatisch aus der Revit-Geometrie berechnet.",
+        "Revit IFC export: turn 'Export base quantities' ON (Property Sets tab). "
+        "These quantities are calculated automatically from the Revit geometry.",
         "Revit export setup",
     ),
     # Material missing
     (
         r"Material\(",
-        "Family Type braucht eine Material-Zuweisung. Im Family Editor oder Type Properties "
-        "ein Material zuweisen. Bei Linear-Familien: 'Material'-Parameter am Pipe/Duct-Type setzen.",
+        "Family type needs a material assignment. Assign a material in the Family Editor "
+        "or Type Properties. For Linear families: set the 'Material' parameter on the Pipe/Duct type.",
         "Revit family type editor",
     ),
     # Classification missing
     (
         r"Classification\(system=\w+",
-        "IfcClassificationReference fehlt. Shared Parameter (z.B. 'CodicePrezzario_BZ') "
-        "an Type-Level binden, Wert pro Familientyp füllen, und im Revit-IFC-Export "
-        "Classification Settings konfigurieren (Field Name = der Shared Parameter).",
+        "IfcClassificationReference is missing. Bind a shared parameter (e.g. 'CodicePrezzario_BZ') "
+        "at type level, fill the value per family type, and configure Classification Settings "
+        "in the Revit IFC export (Field Name = the shared parameter).",
         "Revit shared parameter + export setup",
     ),
     # Entity-Attribute (PredefinedType etc.)
     (
         r"Attribute\(name=PredefinedType\)",
-        "Family hat keinen PredefinedType gesetzt. Im Klassifikations-Werkzeug (z.B. LINEAR Desktop) "
-        "oder direkt im Family Type den Parameter 'Typ Vordefinierter IFC-Typ' / 'IfcExportType[Type]' "
-        "auf einen gültigen IFC-Enum-Wert setzen.",
+        "Family has no PredefinedType set. In the classification tool (e.g. LINEAR Desktop) "
+        "or directly in the family type, set the 'Type Predefined IFC Type' / 'IfcExportType[Type]' "
+        "parameter to a valid IFC enum value.",
         "Family classification",
     ),
     # Specific Pset properties that are typically calculated
     (
         r"Property\(propertySet=Pset_\w+; baseName=Reference\)",
-        "'Reference'-Property fehlt. Das ist typisch ein Type Mark / Bezugscode. "
-        "Shared Parameter 'Reference' an Type binden und pro Familientyp füllen "
-        "(z.B. mit der LV-Position oder Hersteller-Referenz).",
+        "'Reference' property is missing. This is typically a Type Mark / reference code. "
+        "Bind the shared parameter 'Reference' to the type and fill it per family type "
+        "(e.g. with the bill-of-quantities position or manufacturer reference).",
         "Revit type parameter",
     ),
     # Geometric properties — diameter etc.
     (
         r"Property\(propertySet=Pset_\w+; baseName=NominalDiameter\)",
-        "NominalDiameter fehlt im Common Pset. Bei Linear-Familien sollte der Diameter "
-        "am Pipe Type automatisch ins Pset_PipeSegmentCommon mapped werden. "
-        "Falls nicht: Custom Pset-Datei mit Mapping Revit 'Diameter' → IFC 'NominalDiameter'.",
+        "NominalDiameter is missing in the common Pset. For Linear families the diameter "
+        "on the Pipe type should map automatically into Pset_PipeSegmentCommon. "
+        "If not: custom Pset file mapping Revit 'Diameter' -> IFC 'NominalDiameter'.",
         "Revit pset mapping",
     ),
 ]
@@ -85,8 +85,8 @@ def find_fix(pattern: str) -> tuple[str, str]:
         if re.search(regex, pattern):
             return fix, source
     return (
-        "Manuelle Analyse erforderlich. Failure-Pattern in references/common-failures.md nachschlagen "
-        "oder direkt im HTML-Report die betroffenen Elemente inspizieren.",
+        "Manual analysis required. Look up the failure pattern in references/common-failures.md "
+        "or inspect the affected elements directly in the HTML report.",
         "manual",
     )
 
@@ -165,7 +165,7 @@ def main():
     print("1. Fix the top 3 patterns first — they unlock the most elements per action")
     print("2. Re-export IFC from CAD")
     print("3. Re-run: python run_audit.py --ifc <ifc> --ids <ids> --out <out>")
-    print("4. Repeat until pass-rate hits target (95-100% for grün)")
+    print("4. Repeat until pass-rate hits target (95-100% for green)")
 
 
 if __name__ == "__main__":
