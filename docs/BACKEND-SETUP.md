@@ -747,6 +747,14 @@ geloggt), (d) Recovery läuft über E-Mail → E-Mail-Kontosicherheit ist Teil d
 Risikomodells; Magic-Links sind einmalig, kurzlebig, signiert. Post-Pilot:
 Export in Self-Custody / NIP-46-Bunker.
 
+**DSFA — Relay-Vertraulichkeit (offene Entscheidung, Abschnitt 3/6 ergänzen):**
+Das öffentliche Relay gated nur Schreiben; **Lesen ist offen** → BCF-Inhalte
+sind im Klartext öffentlich. Für vertrauliche Projektdaten **nicht** zulässig.
+Optionen + Empfehlung (privates Relay → NIP-44 pro Projekt → MLS) sind in
+`relay-confidentiality.md` analysiert; Entscheidung **noch offen**. Bis dahin:
+keine vertraulichen Projektdaten auf dem öffentlichen Relay; öffentliche Demos
+nur mit fiktiven Daten.
+
 ### 16.5 Recovery (Kurzfassung — Details in identity-architecture.md)
 
 Key verloren ≠ Key kompromittiert. Verlust: LNbits-Login → neuer Bunker-Token →
