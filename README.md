@@ -33,7 +33,6 @@ Built by wiring, not reinventing.
 ├── docs/       Source documentation, standards notes and architecture docs.
 ├── webapp/     Managed-onboarding web app (served at app.bimcvp.com).
 ├── tools/      CLI utilities for ingest and verification workflows.
-├── skills/     Local IFC/IDS audit and classification helpers.
 └── ifc/        Local project data placeholder. Real model data is gitignored.
 ```
 
@@ -157,12 +156,13 @@ For a local smoke test, serve `site/` and check:
 Core docs:
 
 - [`docs/PRINCIPLES.md`](docs/PRINCIPLES.md)
-- [`docs/BRAND.md`](docs/BRAND.md)
 - [`docs/STANDARDS-PROFILE.md`](docs/STANDARDS-PROFILE.md)
 - [`docs/KIND-REGISTRY.md`](docs/KIND-REGISTRY.md)
 - [`docs/bcf-nostr-nip-research.md`](docs/bcf-nostr-nip-research.md)
 - [`docs/BACKEND-SETUP.md`](docs/BACKEND-SETUP.md)
 - [`docs/identity-architecture.md`](docs/identity-architecture.md)
+- [`docs/relay-confidentiality.md`](docs/relay-confidentiality.md)
+- [`docs/nodrive-concept.md`](docs/nodrive-concept.md)
 
 The canonical public reading surface is the static website under `site/`.
 

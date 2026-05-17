@@ -688,7 +688,7 @@ remains at most an admin access route to the VPS.
 
 ### 16.2 DNS (domains at your DNS provider; do not touch your existing mail domain)
 
-Domain split (matches `BRAND.md`): **gemeinwert.com** = brand website
+Domain split: **gemeinwert.com** = brand website
 (human audience). **bimcvp.com** = protocol/identity/services
 (international, dev/NIP). No 301 — they cross-link. Both via the same
 VPS Caddy.

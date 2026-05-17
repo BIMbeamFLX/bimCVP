@@ -11,7 +11,7 @@ repo.** Real secrets (`lnbits/.env`, later the bunker keystore) live **only on
 the server**. Architecture rationale: `docs/identity-architecture.md` +
 `docs/BACKEND-SETUP.md §16` in the public repo.
 
-Domain split (per BRAND.md): **gemeinwert.com** = brand website (DACH, human
+Domain split: **gemeinwert.com** = brand website (human
 audience, static only). **bimcvp.com** = protocol hub: relay, NIP-05 identity
 `name@bimcvp.com`, wallet, blossom, dev/NIP docs. No 301 — they cross-link.
 Both served by this one Caddy.

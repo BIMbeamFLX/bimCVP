@@ -1,4 +1,0 @@
-filename,authoring_tool,schema_version,discipline,path,project_guid,notes
-ARC_Building_V01.ifc,ArchiCAD,IFC4,architecture,./ifc/ARC_Building_V01.ifc,,
-TWP_Building_V03.ifc,Allplan,IFC4,structural,./ifc/TWP_Building_V03.ifc,,
-MEP_Building_V02.ifc,Revit,IFC4,mep,./ifc/MEP_Building_V02.ifc,,
