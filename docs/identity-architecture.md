@@ -5,6 +5,17 @@ Gemeinwert / BIM CVP pilot. Binding for the backend setup and the future app
 build. Read together with `PRINCIPLES.md` (§3 amended by this document) and
 `BACKEND-SETUP.md`.
 
+> **Implementation status (v1, 2026-05).** Tier-1 custodial onboarding is now
+> built: the `provision` service (private `backend-deploy/`, encrypted
+> keystore, LNbits + nostrnip5 + relay-allowlist cron) + the `webapp/` UI
+> (email magic-link join/login/recover, project code/QR self-enrol). v1 signs
+> **server-side** in `provision` (key decrypted in memory only there) — fully
+> meets "no nsec in the browser, managed, email-recoverable". The **standalone
+> NIP-46 bunker** (so the *same* managed key also works in external Nostr
+> clients / White Noise) is the documented **next increment** — no migration,
+> same keys. Tier-2 (NIP-07) / Tier-3 (throwaway) remain as written for power
+> users; not used by the v1 managed flow.
+
 ---
 
 ## Why this exists

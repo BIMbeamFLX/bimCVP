@@ -1,0 +1,60 @@
+@import url("./tokens.css");
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); line-height: 1.6;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; }
+.brand { font-weight: 700; letter-spacing: .04em; color: var(--ink); }
+.brand .cvp { color: var(--gold); }
+h1 { font-size: 1.5rem; margin: .2em 0 .1em; }
+p.lede { color: var(--muted); margin-top: 0; }
+a { color: var(--blue); }
+
+.card {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 20px; margin: 16px 0;
+}
+label { display: block; font-size: .85rem; color: var(--muted); margin: 12px 0 4px; }
+input, select, textarea {
+  width: 100%; background: #0d1217; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+  font: inherit;
+}
+textarea { min-height: 90px; resize: vertical; }
+button {
+  background: var(--gold); color: #1a1205; border: 0; border-radius: 8px;
+  padding: 11px 18px; font: inherit; font-weight: 600; cursor: pointer;
+  margin-top: 16px;
+}
+button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+.note { font-size: .85rem; color: var(--muted); }
+.banner {
+  border-radius: 8px; padding: 12px 14px; margin: 14px 0; font-size: .92rem;
+}
+.banner.ok   { background: rgba(74,222,128,.12);  border: 1px solid var(--ok); }
+.banner.warn { background: rgba(248,113,113,.12); border: 1px solid var(--warn); }
+
+.pill {
+  display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--muted);
+}
+.pill.Open { color: var(--gold); border-color: var(--gold); }
+.pill.Resolved, .pill.Closed { color: var(--ok); border-color: var(--ok); }
+
+.topic { border-top: 1px solid var(--line); padding: 14px 0; }
+.topic h3 { margin: 0 0 4px; font-size: 1rem; }
+.topic .meta { font-size: .78rem; color: var(--muted); }
+.topic .desc { color: var(--ink); opacity: .85; margin: 6px 0 0; font-size: .9rem; }
+
+.status-line { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+.status-line .live { color: var(--ok); }
+canvas.qr { background: #fff; border-radius: 8px; padding: 10px; }
+code.codebox {
+  display: inline-block; background: #0d1217; border: 1px solid var(--line);
+  border-radius: 6px; padding: 6px 10px; font-family: var(--font-mono);
+}

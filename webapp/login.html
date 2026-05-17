@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign in — BIM CVP</title>
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">gemeinwert · BIM <span class="cvp">CVP</span></p>
+  <h1 id="h">Sign in</h1>
+  <div class="card">
+    <div id="banner"></div>
+    <div id="ask">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+      <button id="go">Email me a sign-in link</button>
+      <p class="note">One-time link, no password. Managed identity — nothing to copy.</p>
+    </div>
+    <p id="working" class="note" hidden>Signing you in…</p>
+  </div>
+  <p class="note"><a href="./join.html">Have a project code?</a> ·
+  <a href="./recover.html">Lost access?</a></p>
+</div>
+
+<script type="module">
+import { PROVISION_URL } from "./config.js";
+import * as signer from "./lib/signer.js";
+const $ = (i)=>document.getElementById(i);
+const token = new URLSearchParams(location.search).get("token");
+
+if (token) {
+  // Magic-link landing: exchange token -> bunker session.
+  $("ask").hidden = true; $("working").hidden = false; $("h").textContent = "Signing in…";
+  try {
+    const r = await fetch(PROVISION_URL + "/api/session?token=" + encodeURIComponent(token));
+    if (!r.ok) throw new Error();
+    const { bunkerUri, sessionToken, role, npub } = await r.json();
+    // v1: managed identity signs server-side via provision (no browser key).
+    // bunkerUri (NIP-46) is the documented next increment; if present, use it.
+    if (bunkerUri) { try { await signer.connect(bunkerUri); } catch {} }
+    if (sessionToken) sessionStorage.setItem("bimcvp.session", sessionToken);
+    if (npub) sessionStorage.setItem("bimcvp.npub", npub);   // used in JS only, never shown
+    location.href = (role === "admin") ? "./admin.html" : "./index.html";
+  } catch {
+    $("working").hidden = true; $("ask").hidden = false; $("h").textContent = "Sign in";
+    $("banner").innerHTML = '<div class="banner warn">That link is invalid or expired. Request a new one below.</div>';
+  }
+} else {
+  $("go").addEventListener("click", async () => {
+    const email = $("email").value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      $("banner").innerHTML = '<div class="banner warn">Enter a valid email.</div>'; return;
+    }
+    $("go").disabled = true;
+    try {
+      const r = await fetch(PROVISION_URL + "/api/login", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (r.ok) { location.href = "./check-email.html"; return; }
+      $("banner").innerHTML = '<div class="banner warn">Could not send a link.</div>';
+    } catch {
+      $("banner").innerHTML = '<div class="banner warn">Service unreachable.</div>';
+    } finally { $("go").disabled = false; }
+  });
+}
+</script>
+</body>
+</html>

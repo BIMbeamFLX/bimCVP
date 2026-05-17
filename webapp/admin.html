@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Project admin — BIM CVP</title>
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">gemeinwert · BIM <span class="cvp">CVP</span></p>
+  <h1>Project admin</h1>
+
+  <div id="needauth" class="card" hidden>
+    <p>Admin sign-in required.</p>
+    <a href="./login.html"><button>Sign in as admin</button></a>
+    <p class="note">You need an admin account (assigned by the operator).</p>
+  </div>
+
+  <div id="panel" hidden>
+    <div class="card">
+      <h3 style="margin-top:0">Create a project</h3>
+      <div id="banner"></div>
+      <label>Project title</label>
+      <input id="p-title" placeholder="e.g. Building — HKLS coordination" />
+      <label>Description</label>
+      <textarea id="p-desc" placeholder="Short scope"></textarea>
+      <label>Address (optional)</label>
+      <input id="p-addr" placeholder="Street, city" />
+      <button id="p-create">Create project</button>
+    </div>
+
+    <div id="result" class="card" hidden>
+      <h3 style="margin-top:0">Invite members</h3>
+      <p>Project code:</p>
+      <p><code class="codebox" id="r-code"></code></p>
+      <canvas class="qr" id="r-qr" width="220" height="220"></canvas>
+      <p class="note">Members open the QR / code at the join page, enter email +
+      name, and are onboarded automatically.</p>
+      <p class="note">Project reference: <code class="codebox" id="r-ref"></code></p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Members</h3>
+      <div id="members"><p class="note">—</p></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { PROVISION_URL } from "./config.js";
+import QRCode from "https://esm.sh/qrcode@1.5.3";
+const $ = (i)=>document.getElementById(i);
+const session = sessionStorage.getItem("bimcvp.session");
+const authH = session ? { "authorization": "Bearer " + session } : {};
+
+$("needauth").hidden = !!session;
+$("panel").hidden = !session;
+
+async function loadMembers() {
+  try {
+    const r = await fetch(PROVISION_URL + "/api/admin/members", { headers: authH });
+    if (!r.ok) return;
+    const list = await r.json();
+    $("members").innerHTML = list.length
+      ? list.map(m => `<div class="topic"><h3>${esc(m.name||"(member)")}</h3>
+          <div class="meta">${esc(m.project||"")} · ${esc(m.status||"")}</div></div>`).join("")
+      : '<p class="note">No members yet.</p>';
+  } catch {}
+}
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+if (session) {
+  loadMembers();
+  $("p-create").addEventListener("click", async () => {
+    $("banner").innerHTML = "";
+    const title = $("p-title").value.trim();
+    if (!title) { $("banner").innerHTML = '<div class="banner warn">Title required.</div>'; return; }
+    $("p-create").disabled = true;
+    try {
+      const r = await fetch(PROVISION_URL + "/api/admin/project", {
+        method: "POST", headers: { "content-type": "application/json", ...authH },
+        body: JSON.stringify({ title, description: $("p-desc").value.trim(), address: $("p-addr").value.trim() }),
+      });
+      if (!r.ok) {
+        $("banner").innerHTML = '<div class="banner warn">Could not create project.</div>';
+        return;
+      }
+      const { projectRef, projectCode } = await r.json();
+      $("r-code").textContent = projectCode;
+      $("r-ref").textContent = projectRef;
+      const joinUrl = location.origin + location.pathname.replace(/admin\.html$/, "") + "join.html?p=" + encodeURIComponent(projectCode);
+      QRCode.toCanvas($("r-qr"), joinUrl, { width: 220 });
+      $("result").hidden = false;
+      loadMembers();
+    } catch {
+      $("banner").innerHTML = '<div class="banner warn">Service unreachable.</div>';
+    } finally { $("p-create").disabled = false; }
+  });
+}
+</script>
+</body>
+</html>

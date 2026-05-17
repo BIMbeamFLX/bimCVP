@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Join a project — BIM CVP</title>
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">gemeinwert · BIM <span class="cvp">CVP</span></p>
+  <h1>Join your project</h1>
+  <p class="lede">Enter the project code (or scan the QR your project admin gave
+  you) and your email. We create and manage your signing identity for you — there
+  is no key to handle.</p>
+
+  <div class="card">
+    <div id="banner"></div>
+    <label>Project code</label>
+    <input id="code" placeholder="e.g. RAU-7F3K" autocomplete="off" />
+    <label>Your name</label>
+    <input id="name" placeholder="e.g. Anna Berger" autocomplete="name" />
+    <label>Email (used only for sign-in and recovery)</label>
+    <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+    <button id="go">Request join link</button>
+    <p class="note">You will get an email with a one-time link. Opening it signs
+    you in on this device. Your email is how you recover access later.</p>
+  </div>
+  <p class="note"><a href="./login.html">Already joined? Sign in</a></p>
+</div>
+
+<script type="module">
+import { PROVISION_URL } from "./config.js";
+const $ = (i)=>document.getElementById(i);
+const params = new URLSearchParams(location.search);
+if (params.get("p")) $("code").value = params.get("p");
+
+$("go").addEventListener("click", async () => {
+  const code = $("code").value.trim(), name = $("name").value.trim(), email = $("email").value.trim();
+  $("banner").innerHTML = "";
+  if (!code || !name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    $("banner").innerHTML = '<div class="banner warn">Please fill code, name and a valid email.</div>';
+    return;
+  }
+  $("go").disabled = true;
+  try {
+    const r = await fetch(PROVISION_URL + "/api/enrol", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ projectCode: code, name, email }),
+    });
+    if (r.ok) { location.href = "./check-email.html"; return; }
+    const msg = (await r.json().catch(()=>({}))).error || "Could not request a join link.";
+    $("banner").innerHTML = `<div class="banner warn">${msg}</div>`;
+  } catch {
+    $("banner").innerHTML = '<div class="banner warn">Service unreachable. Try again later.</div>';
+  } finally { $("go").disabled = false; }
+});
+</script>
+</body>
+</html>

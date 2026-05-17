@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BIM CVP — Project</title>
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">gemeinwert · BIM <span class="cvp">CVP</span></p>
+  <h1>Project coordination</h1>
+  <p class="lede">Signed BCF topics for your project. Your identity is managed for
+  you — there is no key to copy or lose.</p>
+
+  <div id="auth" class="card" hidden>
+    <p>You are not signed in to this device.</p>
+    <a href="./login.html"><button>Sign in</button></a>
+    <a href="./join.html"><button class="secondary">Join with a project code</button></a>
+  </div>
+
+  <div id="compose" class="card" hidden>
+    <h3 style="margin-top:0">New topic</h3>
+    <div id="banner"></div>
+    <label>Title</label>
+    <input id="t-title" maxlength="140" placeholder="e.g. Duct clashes beam, axis 4" />
+    <label>Description</label>
+    <textarea id="t-desc" placeholder="What is wrong, where, what is proposed"></textarea>
+    <div style="display:flex; gap:12px">
+      <div style="flex:1"><label>Type</label><select id="t-type"></select></div>
+      <div style="flex:1"><label>Status</label><select id="t-status"></select></div>
+      <div style="flex:1"><label>Priority</label><select id="t-prio"></select></div>
+    </div>
+    <button id="t-send">Publish topic</button>
+    <p class="status-line" id="compose-status"></p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Project topics</h3>
+    <p class="status-line" id="feed-status">connecting…</p>
+    <div id="feed"></div>
+  </div>
+</div>
+
+<script type="module">
+// v1: the managed identity signs SERVER-SIDE via provision (no browser key,
+// no nsec ever). Reads of the relay are open and need no session.
+import * as cfg from "./config.js";
+import * as relay from "./lib/relay.js";
+import { buildTopicEvent, validateTopicEvent, parseTopic, STATUSES, TYPES, PRIORITIES } from "./lib/bcf.js";
+
+const $ = (id) => document.getElementById(id);
+for (const [sel, list, def] of [["t-type",TYPES,"Issue"],["t-status",STATUSES,"Open"],["t-prio",PRIORITIES,"Normal"]]) {
+  $(sel).innerHTML = list.map(v => `<option ${v===def?"selected":""}>${v}</option>`).join("");
+}
+
+const projectRef = cfg.getProjectRef();
+const feed = $("feed"), topics = new Map();
+
+function render() {
+  const arr = [...topics.values()].sort((a,b)=>b.createdAt-a.createdAt);
+  feed.innerHTML = arr.length ? arr.map(t => `
+    <div class="topic">
+      <h3>${esc(t.title)} <span class="pill ${t.status}">${t.status}</span></h3>
+      <div class="meta">${esc(t.type)}${t.priority?" · "+esc(t.priority):""} · ${rel(t.createdAt)} · a participant</div>
+      ${t.description?`<p class="desc">${esc(t.description)}</p>`:""}
+    </div>`).join("") : `<p class="note">No topics yet.</p>`;
+}
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function rel(ts){const d=Math.max(0,Date.now()/1000-ts);if(d<3600)return Math.floor(d/60)+"m ago";if(d<86400)return Math.floor(d/3600)+"h ago";return Math.floor(d/86400)+"d ago";}
+
+// Feed: open reads, no sign-in needed.
+if (!projectRef) {
+  $("feed-status").textContent = "No project configured on this device.";
+} else {
+  relay.subscribe(cfg.RELAY_URL, { kinds:[30900], "#a":[projectRef] }, {
+    onEvent: (ev) => {
+      if (!validateTopicEvent(ev).valid) return;
+      const t = parseTopic(ev), cur = topics.get(t.id);
+      if (!cur || ev.created_at >= cur.createdAt) { topics.set(t.id, t); render(); }
+    },
+    onEose: () => { $("feed-status").innerHTML = '<span class="live">live</span> · reading project'; }
+  });
+}
+
+// Auth: a managed session is present iff login stored a session token + npub.
+const session = sessionStorage.getItem("bimcvp.session");
+const myPub = sessionStorage.getItem("bimcvp.npub") || "";
+const connected = !!(session && /^[0-9a-f]{64}$/.test(myPub));
+$("auth").hidden = connected;
+$("compose").hidden = !connected || !projectRef;
+if (connected && !projectRef) $("compose-status").textContent = "No project configured.";
+
+$("t-send").addEventListener("click", async () => {
+  const btn = $("t-send"); btn.disabled = true;
+  $("banner").innerHTML = ""; $("compose-status").textContent = "publishing…";
+  try {
+    const unsigned = buildTopicEvent({
+      projectRef, pubkey: myPub,
+      title: $("t-title").value, description: $("t-desc").value,
+      status: $("t-status").value, type: $("t-type").value, priority: $("t-prio").value,
+    });
+    const v = validateTopicEvent({ ...unsigned, id: "x" });
+    if (!v.valid) throw new Error(v.errors.join(", "));
+    // Managed identity signs in provision (server-side); browser holds no key.
+    const r = await fetch(cfg.PROVISION_URL + "/api/sign-publish", {
+      method: "POST",
+      headers: { "content-type": "application/json", "authorization": "Bearer " + session },
+      body: JSON.stringify({ kind: 30900, content: unsigned.content, tags: unsigned.tags }),
+    });
+    if (r.ok) {
+      $("banner").innerHTML = '<div class="banner ok">Topic published.</div>';
+      $("t-title").value = ""; $("t-desc").value = "";
+      const t = parseTopic(unsigned); topics.set(t.id, t); render();
+    } else if (r.status === 401) {
+      $("banner").innerHTML = '<div class="banner warn">Your sign-in expired. '
+        + '<a href="./login.html">Sign in again</a>.</div>';
+    } else {
+      $("banner").innerHTML = '<div class="banner warn">Could not publish yet. '
+        + 'If you just joined, posting is enabled within ~2 minutes — try again '
+        + 'shortly.</div>';
+    }
+  } catch (e) {
+    $("banner").innerHTML = '<div class="banner warn">Could not publish. Please try again.</div>';
+  } finally {
+    btn.disabled = false; $("compose-status").textContent = "";
+  }
+});
+</script>
+</body>
+</html>
