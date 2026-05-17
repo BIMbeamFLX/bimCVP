@@ -81,7 +81,8 @@ const TY_COLOR = { Issue:"#f87171", Clash:"#f4c430", RFI:"#5b9bd5", Information:
 
 function renderDashboard(arr) {
   const dash = $("dash");
-  if (!arr.length) { dash.hidden = true; return; }
+  // Showcase dashboard is for the public demo view only; real projects stay plain.
+  if (!arr.length || !isDemo) { dash.hidden = true; return; }
   dash.hidden = false;
   const total = arr.length;
   const open = arr.filter(t => t.status==="Open"||t.status==="InProgress").length;
