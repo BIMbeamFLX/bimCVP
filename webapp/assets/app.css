@@ -60,3 +60,39 @@ code.codebox {
 }
 
 .req { color: #f0a; font-size: .8em; font-weight: 600; }
+
+/* --- live dashboard --------------------------------------------------------- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 4px 0 18px; }
+.kpi {
+  background: #0d1217; border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 10px; text-align: center;
+}
+.kpi-v { display: block; font-size: 1.7rem; font-weight: 700; line-height: 1; }
+.kpi-k { display: block; font-size: .72rem; color: var(--muted); margin-top: 6px; letter-spacing: .03em; }
+.charts { display: flex; gap: 22px; flex-wrap: wrap; }
+.chart { flex: 1; min-width: 220px; }
+.chart-h { font-size: .8rem; color: var(--muted); margin: 0 0 10px; letter-spacing: .04em; text-transform: uppercase; }
+.donut-row { display: flex; align-items: center; gap: 18px; }
+.donut {
+  position: relative; width: 116px; height: 116px; border-radius: 50%;
+  flex: none; display: grid; place-items: center;
+}
+.donut::after {
+  content: ""; position: absolute; inset: 24%; border-radius: 50%;
+  background: var(--panel);
+}
+.donut span { position: relative; z-index: 1; font-weight: 700; font-size: 1.25rem; }
+.legend { list-style: none; margin: 0; padding: 0; font-size: .85rem; }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 3px 0; color: var(--muted); }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.legend b { color: var(--ink); margin-left: auto; }
+.bars { display: flex; flex-direction: column; gap: 9px; }
+.bar { display: flex; align-items: center; gap: 10px; font-size: .82rem; }
+.bar-k { width: 84px; color: var(--muted); flex: none; }
+.bar-t { flex: 1; height: 9px; background: #0d1217; border-radius: 5px; overflow: hidden; }
+.bar-f { display: block; height: 100%; border-radius: 5px; transition: width .4s ease; }
+.bar-v { width: 22px; text-align: right; color: var(--ink); flex: none; }
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .charts { gap: 18px; }
+}

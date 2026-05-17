@@ -35,6 +35,24 @@
     <p class="status-line" id="compose-status"></p>
   </div>
 
+  <div id="dash" class="card" hidden>
+    <h3 style="margin-top:0">Overview</h3>
+    <div class="kpis" id="kpis"></div>
+    <div class="charts">
+      <div class="chart">
+        <p class="chart-h">By status</p>
+        <div class="donut-row">
+          <div class="donut" id="donut"><span id="donut-total"></span></div>
+          <ul class="legend" id="st-legend"></ul>
+        </div>
+      </div>
+      <div class="chart">
+        <p class="chart-h">By type</p>
+        <div class="bars" id="ty-bars"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <h3 style="margin-top:0">Project topics</h3>
     <p class="status-line" id="feed-status">connecting…</p>
@@ -58,8 +76,48 @@ const isDemo = !cfg.getProjectRef();
 const projectRef = cfg.getProjectRef() || cfg.DEMO_PROJECT_REF;
 const feed = $("feed"), topics = new Map();
 
+const ST_COLOR = { Open:"#f4c430", InProgress:"#5b9bd5", Resolved:"#4ade80", Closed:"#8a9aab" };
+const TY_COLOR = { Issue:"#f87171", Clash:"#f4c430", RFI:"#5b9bd5", Information:"#8a9aab", Decision:"#4ade80" };
+
+function renderDashboard(arr) {
+  const dash = $("dash");
+  if (!arr.length) { dash.hidden = true; return; }
+  dash.hidden = false;
+  const total = arr.length;
+  const open = arr.filter(t => t.status==="Open"||t.status==="InProgress").length;
+  const done = arr.filter(t => t.status==="Resolved"||t.status==="Closed").length;
+  const hot  = arr.filter(t => t.priority==="High"||t.priority==="Critical").length;
+  $("kpis").innerHTML = [
+    ["Topics", total, "var(--ink)"], ["Open", open, "#f4c430"],
+    ["Resolved", done, "#4ade80"], ["High / Critical", hot, "#f87171"],
+  ].map(([k,v,c]) => `<div class="kpi"><span class="kpi-v" style="color:${c}">${v}</span><span class="kpi-k">${k}</span></div>`).join("");
+
+  // Status donut (conic-gradient) + legend.
+  const byS = {}; for (const t of arr) byS[t.status]=(byS[t.status]||0)+1;
+  let acc = 0; const stops = [];
+  for (const s of ["Open","InProgress","Resolved","Closed"]) {
+    const n = byS[s]||0; if (!n) continue;
+    const a = acc/total*360, b = (acc+n)/total*360; acc += n;
+    stops.push(`${ST_COLOR[s]} ${a}deg ${b}deg`);
+  }
+  $("donut").style.background = `conic-gradient(${stops.join(",")||"var(--line) 0deg 360deg"})`;
+  $("donut-total").textContent = total;
+  $("st-legend").innerHTML = ["Open","InProgress","Resolved","Closed"]
+    .filter(s => byS[s]).map(s => `<li><i style="background:${ST_COLOR[s]}"></i>${s} <b>${byS[s]}</b></li>`).join("");
+
+  // Type bars.
+  const byT = {}; for (const t of arr) byT[t.type]=(byT[t.type]||0)+1;
+  const max = Math.max(1, ...Object.values(byT));
+  $("ty-bars").innerHTML = ["Issue","Clash","RFI","Information","Decision"]
+    .filter(ty => byT[ty]).map(ty => `
+      <div class="bar"><span class="bar-k">${ty}</span>
+        <span class="bar-t"><span class="bar-f" style="width:${(byT[ty]/max*100).toFixed(1)}%;background:${TY_COLOR[ty]}"></span></span>
+        <span class="bar-v">${byT[ty]}</span></div>`).join("");
+}
+
 function render() {
   const arr = [...topics.values()].sort((a,b)=>b.createdAt-a.createdAt);
+  renderDashboard(arr);
   feed.innerHTML = arr.length ? arr.map(t => `
     <div class="topic">
       <h3>${esc(t.title)} <span class="pill ${t.status}">${t.status}</span></h3>
