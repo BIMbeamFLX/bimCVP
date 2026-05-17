@@ -184,3 +184,10 @@ test-tribe-*/
 # Lokale OTS-Proofs (Cache)
 ots-cache/
 *.ots
+
+# ============================================================
+# Operative Handoffs / Server-Details — NIE ins public Repo
+# (enthalten Server-IP, Betriebsdetails; Trust-Boundary)
+# ============================================================
+DEPLOY-HANDOFF.md
+**/DEPLOY-HANDOFF.md
