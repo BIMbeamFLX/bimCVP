@@ -151,7 +151,7 @@ gebaeudebuch-*.pdf
 !docs/gebaeudebuch-generator-scope.md
 
 # ============================================================
-# Test data (außer expliziter Test-Vektoren)
+# Test data (except explicit test vectors)
 # ============================================================
 test-data/
 fixtures/runtime/

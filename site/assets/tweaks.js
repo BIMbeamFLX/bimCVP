@@ -26,8 +26,8 @@
 
   const MOTTOS = {
     en:   { eyebrow: 'GEMEINWERT · BIM CVP · COMMON VALUE PROTOCOL', title: 'The open layer for <em>signed</em> construction.' },
-    de:   { eyebrow: 'GEMEINWERT · BIM CVP · COMMON VALUE PROTOCOL', title: 'Die offene Schicht für <em>signiertes</em> Bauwesen.' },
-    it:   { eyebrow: 'GEMEINWERT · BIM CVP · COMMON VALUE PROTOCOL', title: 'Lo strato aperto per l\u2019<em>edilizia firmata</em>.' },
+    de:   { eyebrow: 'GEMEINWERT · BIM CVP · COMMON VALUE PROTOCOL', title: 'The open layer for <em>signed</em> construction.' },
+    it:   { eyebrow: 'GEMEINWERT · BIM CVP · COMMON VALUE PROTOCOL', title: 'The open layer for <em>signed</em> construction.' },
     short:{ eyebrow: 'GEMEINWERT · BIM CVP', title: '<em>Gemeinwert.</em> Signed.' },
   };
 

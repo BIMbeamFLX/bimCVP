@@ -6,14 +6,14 @@
 
 ## Name
 
-- **Gemeinwert** (German / Italian / DACH market)
+- **Gemeinwert** (brand proper noun)
 - **BIM CVP — Common Value Protocol** (English / international / standards discourse)
 
-One word as German proper noun. English as a three-letter acronym in the buildingSMART family style (BCF, IDS, IDM, MVD … now CVP), long form *Common Value Protocol* as standards frame.
+One word as a proper noun. English as a three-letter acronym in the buildingSMART family style (BCF, IDS, IDM, MVD … now CVP), long form *Common Value Protocol* as standards frame.
 
 **Usage:**
 
-- DACH context (PA, architects, site managers): **Gemeinwert**
+- General audience (PA, architects, site managers): **Gemeinwert**
 - International / openBIM standards context: **BIM CVP**
 - English dev docs: **CVP** as short form, *Common Value Protocol* spelled out on first occurrence
 - NIP draft to `nostr-protocol/nips`: *BIM CVP* in the title, *Common Value Protocol* in the description
@@ -30,12 +30,12 @@ One word as German proper noun. English as a three-letter acronym in the buildin
 
 | Audience | Motto |
 |---|---|
-| DACH / PA / architects | **„Die offene Schicht für signiertes Bauwesen."** |
-| International / standards | **„The open layer for signed construction."** |
-| Dev / Nostr space | **„build better with nostr"** |
-| openBIM insiders | **„BIM CVP — Common Value Protocol"** as self-explanation |
+| PA / architects | **"The open layer for signed construction."** |
+| International / standards | **"The open layer for signed construction."** |
+| Dev / Nostr space | **"build better with nostr"** |
+| openBIM insiders | **"BIM CVP — Common Value Protocol"** as self-explanation |
 
-Main site uses the DACH motto. Dev docs and GitHub README use *build better with nostr* as subtitle. Standards PRs use the full English name.
+The main site uses the English motto. Dev docs and the GitHub README use *build better with nostr* as the subtitle. Standards PRs use the full English name.
 
 ## Brand positioning
 
@@ -57,7 +57,7 @@ Used as ultra-short marketing slogan if needed. Expresses mission and mechanism 
 ```
 Gemeinwert / BIM CVP            — platform / standards / movement
   ├─ wiki                       — buildingSMART knowledge, standards mapping
-  ├─ tools                      — character / admin / keys / more HTML tools
+  ├─ app                        — managed onboarding (app.bimcvp.com)
   ├─ marketplace                — DVM listings (NIP-90-based)
   └─ providers
        ├─ Bimbeam               — Felix's services: HKLS / MEP / CAM
@@ -93,13 +93,10 @@ Pure wordmark is the simplest path until a logo is decided.
 
 ## Language conventions
 
+- **Single site language: English.** The brand site, dev docs, code, NIP drafts and GitHub are all English. There is no separate German or Italian site version.
 - **Source of truth:** English (dev docs, code, NIP drafts, GitHub)
-- **DACH market language:** German (PA, architects, planners in DE/AT/CH/Südtirol)
-- **Italian market language:** Italian (Provincia di Bolzano, Italian public procurement)
 
-DE and IT versions are **sourced from English** — translated, not authored separately. This keeps standards-compliance vocabulary consistent across languages.
-
-Italian tagline draft: *„Lo strato aperto per l'edilizia firmata."* — needs native-speaker validation before going live.
+Standards-compliance vocabulary is kept consistent in English throughout.
 
 ## Voice / tone
 
@@ -135,8 +132,7 @@ These terms live in the secondary motto (*build better with nostr*) for dev audi
 | `web/admin.html` | rebrand | next pass |
 | `web/keys.html` | rebrand | next pass |
 | Knowledge wiki pages | EN versions to be authored | follow-on waves |
-| Research docs (cde-research, cam-edilizia, deep-research-*) | keep in original language for now | low priority |
 
 ---
 
-*Stand: May 2026. Brand fixed. All future dev-related docs author in English first. DACH/IT translations follow as derivative.*
+*Status: May 2026. Brand fixed. All docs are authored in English.*

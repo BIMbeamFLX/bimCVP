@@ -1,6 +1,6 @@
 ---
 name: linear-ifc-classify
-description: Automatically classify LINEAR-MEP Revit family types for IFC export — sets IfcExportAs[Type] and IfcExportType[Type] on all HKLS/MEP families using LINEAR's own LIN_CLASSIFICATION_LINEAR shared parameter plus a family-name pattern fallback. Use this skill whenever a user mentions LINEAR (linear.eu), Revit MEP, IFC export, IfcExportAs classification, HKLS/TGA/MEP IFC handover, IDS validation prep, openBIM coordination, MEP family classification, or any workflow where Linear-MEP families need to be exported as proper IFC entities (IfcPipeSegment, IfcValve, IfcAirTerminal, IfcChiller, etc.) instead of generic IfcBuildingElementProxy. Even if the user just says "my Revit MEP IFC export is wrong" or "Linear-Familien werden nicht richtig klassifiziert" — trigger this skill. Especially relevant for Italian, DACH, and Swiss BIM workflows where Capitolato Informativo / IDS validation requires correct IFC classification.
+description: Automatically classify LINEAR-MEP Revit family types for IFC export — sets IfcExportAs[Type] and IfcExportType[Type] on all HKLS/MEP families using LINEAR's own LIN_CLASSIFICATION_LINEAR shared parameter plus a family-name pattern fallback. Use this skill whenever a user mentions LINEAR (linear.eu), Revit MEP, IFC export, IfcExportAs classification, HKLS/TGA/MEP IFC handover, IDS validation prep, openBIM coordination, MEP family classification, or any workflow where Linear-MEP families need to be exported as proper IFC entities (IfcPipeSegment, IfcValve, IfcAirTerminal, IfcChiller, etc.) instead of generic IfcBuildingElementProxy. Even if the user just says "my Revit MEP IFC export is wrong" or "Linear families are not classified correctly" — trigger this skill. Especially relevant for Italian, DACH, and Swiss BIM workflows where Capitolato Informativo / IDS validation requires correct IFC classification.
 ---
 
 # linear-ifc-classify — Linear MEP → IFC classification automaton
@@ -13,9 +13,9 @@ The classification uses two layers:
 
 1. **Linear's semantic classification** (`LIN_CLASSIFICATION_LINEAR` shared parameter, GUID `a5d2216e-b9ef-4f2c-947e-ea6104db0e78`). Linear annotates its MEP families with values like `Thermal.Movement.Pump`, `Water.Other.VentAndAirAdmittanceValve`, `AirHandling.Safety.FireDamper`. This skill maps each Linear classification to the matching IFC entity + PredefinedType using `assets/linear-to-ifc-mapping.csv` (~92 mappings, IFC4 + IFC4X3 ADD2 compatible).
 
-2. **Family-name pattern fallback** for families that don't carry the Linear parameter — standard Revit family types like `CHW-WL` (cooling tower), `AHU Lufterwärmer`, `Panel Tempering Circuit` (underfloor heating circuit), `L_Bogen` (Linear duct fitting), `Rohrtypen` (generic pipe type), `Rechteck`/`Rund`/`Oval` (duct type names), and Italian abbreviations `GRI-EST`, `ESP`, `RIP-GRI`. Map in `assets/family-to-ifc-mapping.csv` (~45 patterns).
+2. **Family-name pattern fallback** for families that don't carry the Linear parameter — standard Revit family types like `CHW-WL` (cooling tower), `AHU Lufterwärmer` (AHU air heater), `Panel Tempering Circuit` (underfloor heating circuit), `L_Bogen` (Linear duct elbow fitting), `Rohrtypen` (generic pipe type), `Rechteck`/`Rund`/`Oval` (duct type names), and Italian abbreviations `GRI-EST`, `ESP`, `RIP-GRI`. Map in `assets/family-to-ifc-mapping.csv` (~45 patterns).
 
-Output: every relevant family type in the project gets two parameters set (`Typ in IFC exportieren als` / `IfcExportAs[Type]` and `Typ Vordefinierter IFC-Typ` / `IfcExportType[Type]`), and a CSV log lists every type with classification source (`linear_class`, `family_pattern:<pattern>`, or `NO_MATCH` / `UNMAPPED` for the manual triage cases).
+Output: every relevant family type in the project gets two parameters set (`IfcExportAs[Type]`, shown as `Typ in IFC exportieren als` in the German Revit UI, and `IfcExportType[Type]`, shown as `Typ Vordefinierter IFC-Typ`), and a CSV log lists every type with classification source (`linear_class`, `family_pattern:<pattern>`, or `NO_MATCH` / `UNMAPPED` for the manual triage cases).
 
 Typical results on a real Linear-Revit MEP project: ~95 % of 500+ family types classified automatically in 1–2 minutes. The remaining 5 % are standard-Revit equipment families (chillers, AHUs, FBH circuits) — listed for manual classification.
 
@@ -23,10 +23,10 @@ Typical results on a real Linear-Revit MEP project: ~95 % of 500+ family types c
 
 Trigger this skill when ANY of these appear in the conversation:
 
-- User mentions LINEAR (linear.eu), liNear Building Solutions, Linear-Familien, Linear-MEP, Linear Desktop für Revit/AutoCAD
+- User mentions LINEAR (linear.eu), liNear Building Solutions, Linear families, Linear-MEP, Linear Desktop for Revit/AutoCAD
 - User says their Revit MEP IFC export produces `IfcBuildingElementProxy` instead of proper entities
 - User mentions HKLS/TGA/MEP IFC handover, openBIM coordination, IDS validation, Capitolato Informativo
-- User talks about `IfcExportAs`, `IfcExportType`, `IfcExportAs[Type]`, "Typ in IFC exportieren als", "Vordefinierter IFC-Typ"
+- User talks about `IfcExportAs`, `IfcExportType`, `IfcExportAs[Type]`, or the German Revit UI labels "Typ in IFC exportieren als" / "Vordefinierter IFC-Typ"
 - User mentions Italian Provincial-CDE submission, ACDat, oGI (oggetti generici inventariati), BIM Linee Guida
 - User mentions Bonsai / ifctester / IDS / IDS Audit for a Revit-exported IFC
 - User says the IFC needs to be IDS-compliant or the validator (ACCA / usBIM / BIMcollab / Solibri / Mailand) is rejecting elements
@@ -55,10 +55,10 @@ In Revit: `Manage → Dynamo`. New workspace. Add a `Python Script` node. Switch
 ### Step 3 — Dry-run first
 
 The script defaults to `DRY_RUN = True`. Run once. The Watch node shows counts:
-- `would_apply via Linear-Klass: NNN`
-- `would_apply via Family-Patt: NNN`
-- `kein LIN-Klass / no_match: NNN`
-- `Linear-Klass UNMAPPED: NNN`
+- `would apply via Linear class: NNN`
+- `would apply via family patt.: NNN`
+- `no match: NNN`
+- `Linear class UNMAPPED: NNN`
 - Plus a CSV log at the configured path with every type, its source, and what would be written.
 
 ### Step 4 — Triage and extend
@@ -75,7 +75,7 @@ Flip the constant `DRY_RUN = False` at the top of the script. Run. The script wr
 
 ### Step 6 — Verify and export
 
-Pick a few family types in Revit's Project Browser, open Type Properties — `Typ in IFC exportieren als` and `Typ Vordefinierter IFC-Typ` should be filled. Then proceed with IFC export. The exported IFC should now show specialised entities instead of `IfcBuildingElementProxy`.
+Pick a few family types in Revit's Project Browser, open Type Properties — `IfcExportAs[Type]` and `IfcExportType[Type]` (labelled `Typ in IFC exportieren als` and `Typ Vordefinierter IFC-Typ` in the German Revit UI) should be filled. Then proceed with IFC export. The exported IFC should now show specialised entities instead of `IfcBuildingElementProxy`.
 
 For validation: run `ifctester <ids-file> <ifc-file> -r Html -o report.html` to get an HTML audit. Open in browser to see per-element pass/fail.
 
@@ -112,7 +112,7 @@ For IDS-validation contexts: the classification is a necessary prerequisite. Pse
 
 ## Edge cases worth knowing
 
-- **Revit's UI language affects parameter names.** German UI shows `Typ in IFC exportieren als`, English shows `IfcExportAs[Type]`. The script tries both — works in any language.
+- **Revit's UI language affects parameter names.** The German UI shows `Typ in IFC exportieren als`, the English UI shows `IfcExportAs[Type]`. The script tries both — works in any language.
 - **LINEAR_PT_CON Connector helpers** (Linear's virtual connection points) are classified as `IfcVirtualElement` by default. The IFC exporter often omits them entirely, which is fine. If they appear in the IFC, they have no geometry.
 - **System Family types** (PipeType, DuctType, PipeInsulationType, DuctInsulationType) don't have the LIN_CLASSIFICATION_LINEAR parameter — they fall through to family-name pattern matching (`Rohrtypen`, `Rechteck`, `Rund`, `Rohrdämmung`, etc.).
 - **Italian family-name abbreviations** (`GRI-EST` = Griglia di Espulsione, `ESP` = Espulsione, `RIP-GRI` = Ripresa Griglia) are pre-mapped — extend the family CSV for other regional naming conventions.

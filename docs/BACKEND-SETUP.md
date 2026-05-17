@@ -1,31 +1,31 @@
 # Sovereign AEC — Backend Setup
 
-**Zweck.** Reproduzierbarer Docker-Compose-Stack mit Nostr-Relay (strfry), Blossom-Server, LNbits und Caddy als Reverse-Proxy. Setup für Pilot auf einem Linux-Laptop oder einem kleinen VPS. Ziel: in unter 30 Minuten lauffähig, OpenClaw-automatisierbar.
+**Purpose.** Reproducible Docker Compose stack with a Nostr relay (strfry), Blossom server, LNbits and Caddy as a reverse proxy. Setup for the pilot on a Linux laptop or a small VPS. Goal: running in under 30 minutes, automatable by OpenClaw.
 
-**Adressat.** OpenClaw / Claude Code auf dem Pilot-Laptop. Jeder Schritt ist atomar, mit Verifikation. Bei Verifikations-Fehler stoppen und Logs zurückmelden.
+**Audience.** OpenClaw / Claude Code on the pilot laptop. Every step is atomic, with verification. On a verification failure, stop and report the logs back.
 
-**Prinzipien-Bezug.** Folgt `PRINCIPLES.md`: wir installieren reife OSS-Komponenten, schreiben nur Konfiguration, keine eigene Lightning-/Relay-/Storage-Implementierung.
+**Principles reference.** Follows `PRINCIPLES.md`: we install mature OSS components and only write configuration, no custom Lightning/relay/storage implementation.
 
 ---
 
-## 0. Voraussetzungen prüfen
+## 0. Check prerequisites
 
 ```bash
 docker --version          # >= 24.x
 docker compose version    # v2.x
 openssl version           # any recent
 curl --version            # any recent
-jq --version              # für Tests
+jq --version              # for tests
 ```
 
-Falls einer fehlt:
+If one is missing:
 
 ```bash
 # Debian/Ubuntu
 sudo apt-get update
 sudo apt-get install -y docker.io docker-compose-plugin curl jq openssl
 sudo usermod -aG docker $USER
-# nach usermod neu einloggen
+# log out and back in after usermod
 ```
 
 **Test:**
@@ -34,23 +34,23 @@ sudo usermod -aG docker $USER
 docker run --rm hello-world
 ```
 
-Muss erfolgreich durchlaufen.
+Must complete successfully.
 
 ---
 
-## 1. Repository-Struktur
+## 1. Repository structure
 
 ```bash
 mkdir -p ~/sovereign-aec-backend/{strfry/data,strfry/conf,blossom/data,blossom/config,lnbits/data,caddy/data,caddy/config}
 cd ~/sovereign-aec-backend
 ```
 
-Verzeichnis-Baum nachher:
+Directory tree afterwards:
 
 ```
 sovereign-aec-backend/
 ├── docker-compose.yml
-├── .env                    # secrets, NICHT committen
+├── .env                    # secrets, do NOT commit
 ├── Caddyfile
 ├── strfry/
 │   ├── conf/strfry.conf
@@ -68,23 +68,23 @@ sovereign-aec-backend/
 
 ---
 
-## 2. Globales `.env` erzeugen
+## 2. Create the global `.env`
 
 ```bash
 cat > .env <<'EOF'
-# Sovereign AEC Backend — globale Konfiguration
-# NICHT committen, NICHT teilen.
+# Sovereign AEC Backend — global configuration
+# Do NOT commit, do NOT share.
 
-# Domain (optional — für TLS via Caddy). Leer lassen für localhost-only.
+# Domain (optional — for TLS via Caddy). Leave empty for localhost-only.
 SAEC_DOMAIN=
 
-# Admin-Pubkey (Hex 64 Zeichen). Wird Whitelist-Eintrag in Relay + Blossom + LNbits.
+# Admin pubkey (hex, 64 chars). Becomes the whitelist entry in relay + Blossom + LNbits.
 SAEC_ADMIN_PUBKEY=
 
-# LNbits — wird beim ersten Boot über die UI gesetzt. Leer lassen.
+# LNbits — set on first boot via the UI. Leave empty.
 LNBITS_SUPER_USER_ID=
 
-# Ports — Defaults sind OK
+# Ports — defaults are OK
 STRFRY_PORT=7777
 BLOSSOM_PORT=3000
 LNBITS_PORT=5000
@@ -94,12 +94,12 @@ EOF
 chmod 600 .env
 ```
 
-**Aktion vor weiter:** Felix' Admin-pubkey eintragen. Falls noch nicht da:
+**Action before continuing:** enter Felix' admin pubkey. If it does not exist yet:
 
 ```bash
-# In keys.html (Browser) generieren ODER mit nostril:
+# Generate in keys.html (browser) OR with nostril:
 docker run --rm ghcr.io/jb55/nostril:latest --hex
-# Output kopieren in SAEC_ADMIN_PUBKEY in .env
+# Copy the output into SAEC_ADMIN_PUBKEY in .env
 ```
 
 ---
@@ -166,7 +166,7 @@ EOF
 
 ---
 
-## 4. strfry-Konfiguration
+## 4. strfry configuration
 
 ```bash
 cat > strfry/conf/strfry.conf <<'EOF'
@@ -182,7 +182,7 @@ relay {
 
     info {
         name = "Sovereign AEC Pilot Relay"
-        description = "Pilot-Relay für BCF, IFC, Bautagebuch, Gebäudebuch."
+        description = "Pilot relay for BCF, IFC, construction log, building book."
         pubkey = ""
         contact = ""
         software = "git+https://github.com/hoytech/strfry.git"
@@ -202,7 +202,7 @@ relay {
     maxSubsPerConnection = 20
 
     writePolicy {
-        # plugin = "/etc/whitelist.sh"   # Aktivieren für Pubkey-Whitelist (siehe 8.2)
+        # plugin = "/etc/whitelist.sh"   # Enable for pubkey whitelist (see 8.2)
     }
 
     compression {
@@ -238,11 +238,11 @@ events {
 EOF
 ```
 
-**Notiz:** writePolicy ist initial offen — jeder kann publishen. Sobald Pilot-Phase, Whitelist via Plugin aktivieren (siehe 8.2).
+**Note:** the writePolicy is initially open — anyone can publish. Once the pilot phase starts, enable the whitelist via the plugin (see 8.2).
 
 ---
 
-## 5. Blossom-Konfiguration
+## 5. Blossom configuration
 
 ```bash
 cat > blossom/config/config.yml <<'EOF'
@@ -261,8 +261,8 @@ cache:
 upload:
   enabled: true
   requireAuth: true
-  # leere Liste = jeder authentifizierte Pubkey darf hochladen
-  # für Tightening: liste explizit npub-Hex auf
+  # empty list = any authenticated pubkey may upload
+  # to tighten: list npub hex values explicitly
   allowList: []
   blockList: []
   mimeTypeBlocklist:
@@ -294,14 +294,14 @@ EOF
 
 ---
 
-## 6. LNbits-Konfiguration
+## 6. LNbits configuration
 
 ```bash
 cat > lnbits/.env <<'EOF'
 # LNbits — Sovereign AEC Pilot
-# Doku: https://github.com/lnbits/lnbits
+# Docs: https://github.com/lnbits/lnbits
 
-# Wallet-Backend
+# Wallet backend
 LNBITS_BACKEND_WALLET_CLASS=FakeWallet
 FAKE_WALLET_SECRET=changeme-saec-pilot
 
@@ -310,11 +310,11 @@ LNBITS_SITE_TITLE="Sovereign AEC Treasury"
 LNBITS_SITE_TAGLINE="Pilot Wallet"
 LNBITS_DENOMINATION=sats
 
-# Datenbank (SQLite reicht für Pilot)
+# Database (SQLite is enough for the pilot)
 LNBITS_DATA_FOLDER=/app/data
 LNBITS_DATABASE_URL=sqlite:///app/data/database.sqlite3
 
-# Extensions die wir brauchen
+# Extensions we need
 LNBITS_EXTENSIONS_DEFAULT_INSTALL=invoices,lnurlp,satspay,splitpayments,nostrnwc,cashu
 
 # Theme
@@ -327,19 +327,19 @@ PORT=5000
 
 # Security
 LNBITS_RATE_LIMIT_NO=10/minute
-LNBITS_ALLOWED_USERS=  # wird nach 1. Boot gesetzt
+LNBITS_ALLOWED_USERS=  # set after the 1st boot
 
 EOF
 chmod 600 lnbits/.env
 ```
 
-**Hinweis:** `FakeWallet` für Setup-Test. Switch auf echtes Wallet (Phoenixd / LND) in Schritt 11.
+**Note:** `FakeWallet` is for the setup test. Switch to a real wallet (Phoenixd / LND) in step 11.
 
 ---
 
 ## 7. Caddyfile
 
-**Variante A — lokal nur, ohne Domain:**
+**Variant A — local only, without a domain:**
 
 ```bash
 cat > Caddyfile <<'EOF'
@@ -365,75 +365,75 @@ cat > Caddyfile <<'EOF'
 EOF
 ```
 
-**Variante B — mit eigener Domain (sobald Pilot öffentlich geht):**
+**Variant B — with your own domain (once the pilot goes public):**
 
-Variante A erst, Variante B kommt in Schritt 12.
+Variant A first, Variant B comes in step 12.
 
 ---
 
-## 8. Erster Boot
+## 8. First boot
 
 ```bash
 docker compose pull
 docker compose up -d
 ```
 
-**Verifikation (jeder Punkt muss OK):**
+**Verification (every point must be OK):**
 
 ```bash
-# Container alle laufend?
+# All containers running?
 docker compose ps
-# Erwartete State: Up für strfry, blossom, lnbits, caddy
+# Expected state: Up for strfry, blossom, lnbits, caddy
 
-# Strfry-Relay erreichbar?
+# Strfry relay reachable?
 curl -s -H 'Accept: application/nostr+json' http://localhost:7777 | jq .name
-# Erwartet: "Sovereign AEC Pilot Relay"
+# Expected: "Sovereign AEC Pilot Relay"
 
-# Blossom erreichbar?
+# Blossom reachable?
 curl -s http://localhost:3000/ | head -c 200
-# Erwartet: HTML-Response oder JSON-Status
+# Expected: HTML response or JSON status
 
-# LNbits erreichbar?
+# LNbits reachable?
 curl -s http://localhost:5000/ -o /dev/null -w "%{http_code}\n"
-# Erwartet: 200 oder 307
+# Expected: 200 or 307
 
-# Caddy-Gateway?
+# Caddy gateway?
 curl -s http://localhost:80/ -o /dev/null -w "%{http_code}\n"
-# Erwartet: 200
+# Expected: 200
 ```
 
-Bei Fehler:
+On failure:
 
 ```bash
 docker compose logs --tail=50 <service>
 ```
 
-zeigt die Logs und an OpenClaw zurückmelden.
+shows the logs; report them back to OpenClaw.
 
 ---
 
-## 9. Initial-Provisioning
+## 9. Initial provisioning
 
-### 9.1 LNbits Super-User anlegen
+### 9.1 Create the LNbits super user
 
 ```bash
-# Im Browser öffnen:
+# Open in the browser:
 open http://localhost:5000/wallet
 # (Linux: xdg-open ...)
 ```
 
-Erster Aufruf legt automatisch eine Wallet an. URL-Hash in der Adresszeile enthält die User-ID. Diese ID jetzt sichern:
+The first call automatically creates a wallet. The URL hash in the address bar contains the user ID. Save this ID now:
 
 ```bash
-# User-ID aus Browser kopieren, dann:
-read -p "LNbits User-ID aus URL eingeben: " UID
+# Copy the user ID from the browser, then:
+read -p "Enter the LNbits user ID from the URL: " UID
 sed -i "s|LNBITS_SUPER_USER_ID=.*|LNBITS_SUPER_USER_ID=$UID|" .env
-echo "LNBITS_SUPER_USER_ID gesetzt: $UID"
+echo "LNBITS_SUPER_USER_ID set: $UID"
 ```
 
-Diese User-ID ist dein Admin-Account. Bookmark setzen, nicht verlieren.
+This user ID is your admin account. Bookmark it, do not lose it.
 
-### 9.2 Test-Event in strfry publishen
+### 9.2 Publish a test event to strfry
 
 ```bash
 docker run --rm --network saec ghcr.io/jb55/nostril:latest \
@@ -443,96 +443,96 @@ docker run --rm --network saec ghcr.io/jb55/nostril:latest \
 docker run --rm -i --network saec ghcr.io/jb55/nak:latest event ws://strfry:7777
 ```
 
-Erwartet: keine Fehler. Event landet in strfry-DB.
+Expected: no errors. The event lands in the strfry DB.
 
-### 9.3 Test-Read von strfry
+### 9.3 Test read from strfry
 
 ```bash
 docker run --rm --network saec ghcr.io/jb55/nak:latest req -k 1 --limit 5 ws://strfry:7777
 ```
 
-Erwartet: liefert das eben gepostete Event zurück (eventuell mehr, falls Multi-Tests).
+Expected: returns the event just posted (possibly more, in case of multiple tests).
 
-### 9.4 Test-Upload zu Blossom
+### 9.4 Test upload to Blossom
 
-Aus dem Browser einfacher — mit `keys.html` oder über die LNbits-Wallet-UI mit der Blossom-Extension. CLI-Test:
+Easier from the browser — with `keys.html` or via the LNbits wallet UI using the Blossom extension. CLI test:
 
 ```bash
-# Mit Felix's Admin-nsec (kurz eintippen, danach `history -d $((HISTCMD-1))` zum löschen)
+# With Felix's admin nsec (type it briefly, then `history -d $((HISTCMD-1))` to delete it)
 read -s -p "ADMIN-NSEC: " NSEC
 echo
 
-# Mit blossom-cli oder einem kleinen Python-Snippet — siehe ingest.py
-# Hier nur Connectivity-Test:
+# With blossom-cli or a small Python snippet — see ingest.py
+# Connectivity test only here:
 curl -s http://localhost:3000/list/$(echo $NSEC | xxd -p | head -c 64)
-# (kann leer sein wenn noch nichts hochgeladen)
+# (may be empty if nothing has been uploaded yet)
 ```
 
 ---
 
-## 10. DSFA-Skelett (GDPR Art. 35)
+## 10. DPIA skeleton (GDPR Art. 35)
 
-Pflicht-Doku, wenn personenbezogene Daten verarbeitet werden — also sobald reale Beteiligte mitmachen. Skeleton-Datei anlegen:
+Mandatory documentation when personal data is processed — that is, as soon as real participants take part. Create the skeleton file:
 
 ```bash
 cat > DSFA.md <<'EOF'
-# Datenschutz-Folgenabschätzung — Sovereign AEC Pilot
+# Data Protection Impact Assessment — Sovereign AEC Pilot
 
-## 1. Verantwortlicher
-Felix Hitthaler, [Adresse], hitthaler@bimbeam.at
+## 1. Controller
+Felix Hitthaler, [address], hitthaler@bimbeam.at
 
-## 2. Zweck der Verarbeitung
-Koordinations- und Dokumentationsdaten eines Bauprojekts (Pilot Building).
+## 2. Purpose of processing
+Coordination and documentation data of a construction project (pilot building).
 
-## 3. Datenkategorien
-- pubkey (npub) — pseudonyme Identität, kein Echtname obligat
-- Profile-Metadaten (Name, Funktionsbezeichnung) wenn freiwillig hinterlegt
-- Bau-Koordinations-Inhalte (BCF Topics, Comments, IFC-Modelle)
-- Zahlungsdaten via Lightning (Payment-Hashes, kein Klarname)
-- Tagebucheinträge (Wetter, Lieferungen, Personal-Anwesenheit nur als Anzahl)
+## 3. Data categories
+- pubkey (npub) — pseudonymous identity, no real name mandatory
+- profile metadata (name, role title) if provided voluntarily
+- construction coordination content (BCF topics, comments, IFC models)
+- payment data via Lightning (payment hashes, no clear name)
+- log entries (weather, deliveries, staff attendance only as a count)
 
-## 4. Empfänger / Verarbeiter
-- Selbst-betriebenes strfry-Relay (local)
-- Selbst-betriebener Blossom-Server (local)
-- Selbst-betriebener LNbits-Instanz (local)
-- Bei öffentlichem Pilot: ggf. Hetzner / NOI Techpark als Hosting-Provider mit AVV
+## 4. Recipients / processors
+- self-operated strfry relay (local)
+- self-operated Blossom server (local)
+- self-operated LNbits instance (local)
+- for a public pilot: possibly Hetzner / NOI Techpark as a hosting provider with a data processing agreement
 
-## 5. Aufbewahrungsdauer
-- Projekt-Daten: lebenslang (Audit-/Gewährleistungs-relevant)
-- Test-Daten: 30 Tage nach Pilot-Ende
+## 5. Retention period
+- project data: for life (audit / warranty relevant)
+- test data: 30 days after the pilot ends
 
-## 6. Betroffenenrechte
-- Profil-Löschung: NIP-09 Delete (best-effort über Relays)
-- Auskunft: per Event-Filter aus dem Relay-DB
-- Recht auf Vergessenwerden: Hard-Delete auf eigener Relay-DB möglich
+## 6. Data subject rights
+- profile deletion: NIP-09 delete (best-effort across relays)
+- access: via event filter from the relay DB
+- right to be forgotten: hard delete on the own relay DB is possible
 
-## 7. TOM (Technische und Organisatorische Maßnahmen)
-- TLS für alle Verbindungen
-- Pubkey-Whitelist auf Relay + Blossom
-- Backups verschlüsselt (LUKS)
-- Zugriff auf Server nur über SSH-Key
-- Logs minimal
+## 7. TOM (technical and organisational measures)
+- TLS for all connections
+- pubkey whitelist on relay + Blossom
+- backups encrypted (LUKS)
+- server access only via SSH key
+- minimal logs
 
-## 8. Risiko-Bewertung
-- Re-Identifikation über pubkey: mittel, dadurch dass Beteiligte freiwillig ihren Klarnamen in den Profil-Events öffentlichen
-- Mitigation: Empfehlung an Beteiligte, pseudonyme Profile zu verwenden
+## 8. Risk assessment
+- re-identification via pubkey: medium, because participants voluntarily make their clear name public in the profile events
+- mitigation: recommend participants use pseudonymous profiles
 
-## 9. Konsultation Aufsichtsbehörde
-- Italien: Garante per la protezione dei dati personali
-- Vor öffentlichem Pilot-Start informieren falls > 100 Datensätze
+## 9. Consultation with the supervisory authority
+- Italy: Garante per la protezione dei dati personali
+- inform before a public pilot start if > 100 records
 EOF
 ```
 
-OpenClaw bitte: NICHT veröffentlichen. Wird mit dem Pilotpartner gemeinsam finalisiert.
+OpenClaw, please: do NOT publish. It will be finalised together with the pilot partner.
 
 ---
 
-## 11. Wallet-Backend wechseln (von FakeWallet zu echt)
+## 11. Switch the wallet backend (from FakeWallet to a real one)
 
-**Sobald echte Sats fließen sollen** — am einfachsten Phoenixd:
+**As soon as real sats should flow** — Phoenixd is the easiest:
 
 ```bash
-# Phoenixd in den Stack
+# Phoenixd into the stack
 cat >> docker-compose.yml <<'EOF'
 
   phoenixd:
@@ -545,7 +545,7 @@ cat >> docker-compose.yml <<'EOF'
       - HTTP_BIND_IP=0.0.0.0
 EOF
 
-# LNbits umkonfigurieren:
+# Reconfigure LNbits:
 sed -i "s|LNBITS_BACKEND_WALLET_CLASS=FakeWallet|LNBITS_BACKEND_WALLET_CLASS=PhoenixdWallet|" lnbits/.env
 echo "PHOENIXD_API_ENDPOINT=http://phoenixd:9740" >> lnbits/.env
 echo "PHOENIXD_API_PASSWORD=$(openssl rand -hex 32)" >> lnbits/.env
@@ -553,19 +553,19 @@ echo "PHOENIXD_API_PASSWORD=$(openssl rand -hex 32)" >> lnbits/.env
 docker compose up -d phoenixd lnbits
 ```
 
-**Hinweis:** Phoenixd ohne expliziten Kanal-Setup geht direkt — Acinq managed die Channels. Für Pilot sehr gut, für Hochlast-Anwendungen später eigener LND.
+**Note:** Phoenixd works directly without an explicit channel setup — Acinq manages the channels. Very good for the pilot; for high-load applications use your own LND later.
 
 ---
 
-## 12. Öffentliche Domain einrichten (wenn Pilot extern erreichbar sein muss)
+## 12. Set up a public domain (when the pilot must be reachable externally)
 
-Sobald eine Domain (z. B. `pilot.bimbeam.at`) auf den Server zeigt:
+Once a domain (e.g. `pilot.bimbeam.at`) points to the server:
 
 ```bash
-# DNS A-Record auf Server-IP zeigend, dann:
+# DNS A record pointing to the server IP, then:
 sed -i "s|SAEC_DOMAIN=.*|SAEC_DOMAIN=pilot.bimbeam.at|" .env
 
-# Caddyfile auf Variante B
+# Caddyfile to variant B
 cat > Caddyfile <<EOF
 relay.${SAEC_DOMAIN} {
     reverse_proxy strfry:7777
@@ -588,16 +588,16 @@ EOF
 docker compose restart caddy
 ```
 
-Caddy holt sich automatisch Let's-Encrypt-Zertifikate.
+Caddy automatically obtains Let's Encrypt certificates.
 
 ---
 
 ## 13. Backups
 
-Volumes pro Service unterscheidlich sensibel.
+Volumes are differently sensitive per service.
 
 ```bash
-# Backup-Skript
+# Backup script
 cat > backup.sh <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -615,154 +615,154 @@ EOF
 chmod +x backup.sh
 ```
 
-**Cron-Empfehlung:** täglich um 03:00.
+**Cron recommendation:** daily at 03:00.
 
 ```bash
 crontab -e
-# füge ein:
+# add:
 # 0 3 * * * cd ~/sovereign-aec-backend && ./backup.sh > /var/log/saec-backup.log 2>&1
 ```
 
-**Wichtig:** LNbits-`.env` enthält Wallet-Secrets. Sichere die separat (z. B. auf USB-Stick + Tresor) sobald echte Sats drauf sind.
+**Important:** the LNbits `.env` contains wallet secrets. Back it up separately (e.g. on a USB stick + safe) as soon as real sats are on it.
 
 ---
 
-## 14. Troubleshooting (häufige Fälle)
+## 14. Troubleshooting (common cases)
 
-### Relay verbindet nicht (Client sagt „Connection refused")
-- `docker compose ps` — läuft strfry?
+### Relay does not connect (client says "Connection refused")
+- `docker compose ps` — is strfry running?
 - `docker compose logs strfry --tail=30`
-- Port-Konflikt? `ss -tlnp | grep 7777`
-- Firewall? `sudo ufw status` — Port 7777 frei?
+- Port conflict? `ss -tlnp | grep 7777`
+- Firewall? `sudo ufw status` — is port 7777 open?
 
-### Blossom rejects Upload mit 401
-- Auth-Event vom Client hat falsche Signatur oder ist abgelaufen (>5 min)
-- `requireAuth: false` in config.yml temporär setzen für Test
-- Allow-List leer = jeder Pubkey OK; gefüllt → eigener npub ergänzen
+### Blossom rejects upload with 401
+- The client's auth event has a wrong signature or is expired (>5 min)
+- Set `requireAuth: false` in config.yml temporarily for the test
+- Allow list empty = any pubkey OK; if filled → add your own npub
 
-### LNbits zeigt „connection error" zur Wallet
-- FakeWallet ist standardmäßig OK; wenn Phoenixd: Container läuft?
+### LNbits shows "connection error" to the wallet
+- FakeWallet is OK by default; if Phoenixd: is the container running?
 - `docker compose logs lnbits | grep -i wallet`
 
-### Caddy bekommt kein TLS-Zertifikat
-- DNS noch nicht propagiert? `dig pilot.bimbeam.at`
-- Port 80 + 443 von außen erreichbar? Test via `https://check-your-website.server-daten.de`
-- Caddy-Logs: `docker compose logs caddy --tail=50`
+### Caddy does not obtain a TLS certificate
+- DNS not propagated yet? `dig pilot.bimbeam.at`
+- Are ports 80 + 443 reachable from outside? Test via `https://check-your-website.server-daten.de`
+- Caddy logs: `docker compose logs caddy --tail=50`
 
 ---
 
-## 15. Nächste Schritte (nach erfolgreichem Setup)
+## 15. Next steps (after a successful setup)
 
-OpenClaw soll Felix berichten:
+OpenClaw should report to Felix:
 
-1. **Status-Übersicht** — alle vier Container laufen, Verifikations-Tests grün.
-2. **LNbits-User-ID** — gesichert in `.env`, Bookmark in Browser.
-3. **Admin-pubkey** — eingetragen, kann Events publishen + Blossom-Uploads.
-4. **DSFA.md** — Skeleton vorhanden, Lücken für Pilotpartner markiert.
-5. **Offene Konfig-Punkte** — falls etwas im Setup übersprungen werden musste.
+1. **Status overview** — all four containers are running, verification tests green.
+2. **LNbits user ID** — saved in `.env`, bookmarked in the browser.
+3. **Admin pubkey** — entered, can publish events + Blossom uploads.
+4. **DSFA.md** — skeleton present, gaps marked for the pilot partner.
+5. **Open configuration items** — if something had to be skipped during setup.
 
-Danach kann Felix:
+Afterwards Felix can:
 
-- `character.html` aufrufen, Relay-URL = `ws://localhost:7777`, Blossom-URL = `http://localhost:3000` eintragen
-- `admin.html` öffnen, erstes Projekt anlegen
-- `ingest.py` gegen das eigene Setup laufen lassen für IFC-Hochlade-Test
-- LNbits-Wallet öffnen, erste Test-Invoice generieren
+- open `character.html`, enter relay URL = `ws://localhost:7777`, Blossom URL = `http://localhost:3000`
+- open `admin.html`, create the first project
+- run `ingest.py` against your own setup for an IFC upload test
+- open the LNbits wallet, generate the first test invoice
 
 ---
 
-## 16. Pilot-Zielarchitektur (freigegeben 2026-05)
+## 16. Pilot target architecture (released 2026-05)
 
-Ersetzt das Laptop-+-Tailscale-Setup. Verbindlich ergänzend zu
-`identity-architecture.md`. Laptop/Tailscale entfällt fürs Backend; Tailscale
-bleibt höchstens Admin-Zugang zum VPS.
+Replaces the laptop + Tailscale setup. Binding, complementing
+`identity-architecture.md`. The laptop/Tailscale is dropped for the backend; Tailscale
+remains at most an admin access route to the VPS.
 
-### 16.1 Server & Storage
+### 16.1 Server & storage
 
-- **Hetzner Cloud CX23** (2 vCPU x86, 4 GB RAM, 40 GB, ≈ €4,49/Mon),
-  Ubuntu 24.04 + Docker. EU-Standort (DSGVO/DSFA — Custodial-Keys bleiben in der EU).
-- **Hetzner Volume bei Bedarf** (~€0,044/GB/Mon) für Blossom/IFC-Blobs, erst
-  angehängt wenn das Blob-Wachstum es braucht. Hält große IFC-Daten getrennt von
-  Relay-DB / LNbits / phoenixd — Blob-Wachstum kann die Money-/Key-Box nie
-  volllaufen lassen. Server-Resize (RAM/CPU) später möglich; x86 gewählt, weil
-  ARM↔x86 nicht tauschbar.
+- **Hetzner Cloud CX23** (2 vCPU x86, 4 GB RAM, 40 GB, ≈ €4.49/month),
+  Ubuntu 24.04 + Docker. EU location (GDPR/DPIA — custodial keys stay in the EU).
+- **Hetzner Volume when needed** (~€0.044/GB/month) for Blossom/IFC blobs, only
+  attached when blob growth requires it. Keeps large IFC data separate from
+  relay DB / LNbits / phoenixd — blob growth can never fill the money/key box.
+  Server resize (RAM/CPU) is possible later; x86 chosen because
+  ARM↔x86 are not interchangeable.
 
-### 16.2 DNS (Domains bei World4You; `bimbeam.at` NICHT anfassen — Mail)
+### 16.2 DNS (domains at World4You; do NOT touch `bimbeam.at` — mail)
 
-Domain-Split (deckt sich mit `BRAND.md`): **gemeinwert.com** = Marken-Website
-(DACH, menschliches Publikum). **bimcvp.com** = Protokoll/Identity/Services
-(international, Dev/NIP). Kein 301 — sie cross-linken. Beide via demselben
-Hetzner-Caddy.
+Domain split (matches `BRAND.md`): **gemeinwert.com** = brand website
+(human audience). **bimcvp.com** = protocol/identity/services
+(international, dev/NIP). No 301 — they cross-link. Both via the same
+Hetzner Caddy.
 
-| Record | Ziel |
+| Record | Target |
 |---|---|
-| `gemeinwert.com` @ / `www`  A | VPS-IP (Marken-Website) |
-| `bimcvp.com` @ / `www`  A     | VPS-IP (Protokoll-Hub + NIP-05) |
-| `relay.bimcvp.com`  A         | VPS-IP |
-| `pay.bimcvp.com`    A         | VPS-IP |
-| `blossom.bimcvp.com` A        | VPS-IP |
-| `bunker.bimcvp.com` A         | VPS-IP (Phase 2) |
+| `gemeinwert.com` @ / `www`  A | VPS IP (brand website) |
+| `bimcvp.com` @ / `www`  A     | VPS IP (protocol hub + NIP-05) |
+| `relay.bimcvp.com`  A         | VPS IP |
+| `pay.bimcvp.com`    A         | VPS IP |
+| `blossom.bimcvp.com` A        | VPS IP |
+| `bunker.bimcvp.com` A         | VPS IP (Phase 2) |
 
-NIP-05/Lightning-Address-Handles sind `name@bimcvp.com` (well-known auf dem
-bimcvp.com-Apex via Caddy → LNbits `nostrnip5`). Caddy macht Auto-TLS für alle.
+NIP-05/Lightning address handles are `name@bimcvp.com` (well-known on the
+bimcvp.com apex via Caddy → LNbits `nostrnip5`). Caddy does auto-TLS for all.
 
-### 16.3 Container auf dem VPS
+### 16.3 Containers on the VPS
 
-- `caddy` — Reverse Proxy / TLS; serviert `gemeinwert.com` (statische Site) und
-  `bimcvp.com` (Protokoll-Hub + NIP-05). Kein GitHub Pages.
-- `strfry` **public** → `wss://relay.bimcvp.com`, **Write-Policy-Plugin aktiv**
-  (nur Pilot-Pubkeys bzw. Events mit Projekt-`a`-Tag `30902:<pubkey>:<guid>`;
-  vgl. Abschnitt strfry `writePolicy`). Pflicht bevor öffentlich.
-- `strfry` **private** (optional, anfangs aufschiebbar) — 2. Container, nur
-  localhost/tailnet, eigene DB + Write-Policy. Interner WIP-Layer (PRINCIPLES §4).
-- `lnbits` → `https://pay.bimcvp.com` — **stock, reine Wallet-Engine** (kein Fork).
+- `caddy` — reverse proxy / TLS; serves `gemeinwert.com` (static site) and
+  `bimcvp.com` (protocol hub + NIP-05). No GitHub Pages.
+- `strfry` **public** → `wss://relay.bimcvp.com`, **write-policy plugin active**
+  (only pilot pubkeys, i.e. events with a project `a` tag `30902:<pubkey>:<guid>`;
+  cf. the strfry `writePolicy` section). Mandatory before going public.
+- `strfry` **private** (optional, initially deferrable) — 2nd container, only
+  localhost/tailnet, own DB + write policy. Internal WIP layer (PRINCIPLES §4).
+- `lnbits` → `https://pay.bimcvp.com` — **stock, pure wallet engine** (no fork).
   Backend `LNBITS_BACKEND_WALLET_CLASS=PhoenixdWallet` → `http://phoenixd:9740`.
-  Extensions aktiv: `usermanager`, `nostrnwc`, `lnurlp`, `nostrnip5`
-  (bestehende `invoices, satspay, splitpayments, cashu` bleiben). Nicht
-  aktivierte Extensions sind inert — nichts zu „strippen", kein Fork.
-- `bunker` — NIP-46-Signer → `wss://bunker.bimcvp.com`, custodiert Tier-1-Keys.
-  Pilot: `nak bunker` (fiatjaf `nak`); abstrahiert, damit Knox/nsec.app es ohne
-  Frontend-Änderung ersetzen kann. Bei ~5–10 Usern Ansatz re-validieren.
-- `blossom` → `https://blossom.bimcvp.com` (Blobs ggf. auf Volume).
-- `phoenixd` — LNbits-Funding, nur intern `:9740`. Minimal mit Test-Sats funden.
+  Extensions active: `usermanager`, `nostrnwc`, `lnurlp`, `nostrnip5`
+  (existing `invoices, satspay, splitpayments, cashu` remain). Non-enabled
+  extensions are inert — nothing to "strip", no fork.
+- `bunker` — NIP-46 signer → `wss://bunker.bimcvp.com`, custodies Tier-1 keys.
+  Pilot: `nak bunker` (fiatjaf `nak`); abstracted so Knox/nsec.app can replace it
+  without a frontend change. Re-validate the approach at ~5–10 users.
+- `blossom` → `https://blossom.bimcvp.com` (blobs on a volume if needed).
+- `phoenixd` — LNbits funding, internal only `:9740`. Minimally funded with test sats.
 
-### 16.4 Per-User-Provisioning (Tier 1)
+### 16.4 Per-user provisioning (Tier 1)
 
-Ein dünner server-seitiger `provision`-Glue (einzige Eigenbau-Komponente, **nicht
-im public Web-Repo**) erzeugt in einem Flow: LNbits-User+Wallet (UserManager-API)
-→ Managed Nostr-Key im Bunker → Lightning-Address `name@bimcvp.com`
-(lnurlp+nostrnip5 auf dem bimcvp.com-Apex, dient auch als NIP-05)
-→ NWC-Connection (`nostrnwc`).
-Mapping-Tabelle nur Identity-Plumbing: `lnbits_user_id ↔ npub ↔ bunker_ref ↔
-lightning_address` — keine Rollen, keine BIM-Daten (Projekt-Mitgliedschaft bleibt
-event-definiert in `kind:30902`). Keystore verschlüsselt, Operator-Key offline →
-das ist die Trust-Boundary (siehe `identity-architecture.md`).
+A thin server-side `provision` glue (the only self-built component, **not
+in the public web repo**) creates in one flow: LNbits user+wallet (UserManager API)
+→ managed Nostr key in the bunker → Lightning address `name@bimcvp.com`
+(lnurlp+nostrnip5 on the bimcvp.com apex, also serves as NIP-05)
+→ NWC connection (`nostrnwc`).
+The mapping table is identity plumbing only: `lnbits_user_id ↔ npub ↔ bunker_ref ↔
+lightning_address` — no roles, no BIM data (project membership stays
+event-defined in `kind:30902`). Keystore encrypted, operator key offline →
+that is the trust boundary (see `identity-architecture.md`).
 
-**DSFA — verbindlich ergänzen (Abschnitt 3 Datenkategorien / 4 Verarbeiter):**
-v1 ist umgesetzt (`provision`-Dienst, server-seitige Signatur). Zu erfassen:
-(a) **E-Mail-Adressen** der Mitglieder (PII; Onboarding + Recovery-Kanal),
-(b) **verschlüsselte Nostr-Secret-Keys** (custodial, AES-256-GCM, Master-Key
-offline), (c) `provision`/Operator als **Auftragsverarbeiter** (kann technisch
-für Mitglieder signieren — begrenzt auf den benannten Pilotkreis, Zugriff
-geloggt), (d) Recovery läuft über E-Mail → E-Mail-Kontosicherheit ist Teil des
-Risikomodells; Magic-Links sind einmalig, kurzlebig, signiert. Post-Pilot:
-Export in Self-Custody / NIP-46-Bunker.
+**DPIA — bindingly add (section 3 data categories / 4 processors):**
+v1 is implemented (`provision` service, server-side signature). To record:
+(a) **email addresses** of the members (PII; onboarding + recovery channel),
+(b) **encrypted Nostr secret keys** (custodial, AES-256-GCM, master key
+offline), (c) `provision`/operator as a **data processor** (can technically
+sign for members — limited to the named pilot circle, access logged),
+(d) recovery runs via email → email account security is part of the
+risk model; magic links are single-use, short-lived, signed. Post-pilot:
+export to self-custody / NIP-46 bunker.
 
-**DSFA — Relay-Vertraulichkeit (offene Entscheidung, Abschnitt 3/6 ergänzen):**
-Das öffentliche Relay gated nur Schreiben; **Lesen ist offen** → BCF-Inhalte
-sind im Klartext öffentlich. Für vertrauliche Projektdaten **nicht** zulässig.
-Richtung **entschieden = Increment B** (per-Projekt-Content-Key, custodial,
-server-seitig; A als Stopgap, C/MLS als Endzustand) — Spec in
-`relay-confidentiality.md`, **Bau zurückgestellt** (nach Bozen). Bis B steht:
-keine vertraulichen Projektdaten auf dem öffentlichen Relay; öffentliche Demos
-nur mit fiktiven Daten.
+**DPIA — relay confidentiality (open decision, add to sections 3/6):**
+The public relay only gates writes; **reads are open** → BCF content
+is public in cleartext. **Not** permissible for confidential project data.
+Direction **decided = Increment B** (per-project content key, custodial,
+server-side; A as a stopgap, C/MLS as the end state) — spec in
+`relay-confidentiality.md`, **build deferred** (after Bolzano). Until B is in place:
+no confidential project data on the public relay; public demos
+only with fictional data.
 
-### 16.5 Recovery (Kurzfassung — Details in identity-architecture.md)
+### 16.5 Recovery (short version — details in identity-architecture.md)
 
-Key verloren ≠ Key kompromittiert. Verlust: LNbits-Login → neuer Bunker-Token →
-**gleicher npub**, Admin kann LNbits-Credential resetten (UserManager), Key bleibt.
-Kompromittierung: neuer npub + Admin-Re-Link in `kind:30902` (Path-C-Semantik) —
-dieser Pfad bleibt implementiert und getestet.
+Key lost ≠ key compromised. Loss: LNbits login → new bunker token →
+**same npub**, the admin can reset the LNbits credential (UserManager), the key remains.
+Compromise: new npub + admin re-link in `kind:30902` (Path-C semantics) —
+this path stays implemented and tested.
 
 ---
 
-*Stand: v0.1. Pilot-tauglich. Production-Hardening (Backups offsite, Monitoring, automated Updates) im Phase-2-Plan.*
+*Status: v0.1. Pilot-ready. Production hardening (offsite backups, monitoring, automated updates) in the Phase 2 plan.*

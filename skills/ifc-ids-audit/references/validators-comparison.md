@@ -67,25 +67,25 @@ There are five mainstream IDS-1.0-compatible validators. Different strengths.
 - No batch mode
 
 **Use when:**
-- Sharing audit results with external parties (architect, Auftraggeber, Validator) — official badge
+- Sharing audit results with external parties (architect, client, validator) — official badge
 - Quick one-off check without installing anything
 - Project allows cloud upload
-- Need to convince a skeptical stakeholder ("hier ist das offizielle Tool")
+- Need to convince a skeptical stakeholder ("here is the official tool")
 
 ## usBIM.IDSeditor (ACCA, free)
 
-**What it is:** Visual IDS authoring + validation tool from ACCA software (italienischer BIM-Software-Vendor).
+**What it is:** Visual IDS authoring + validation tool from ACCA software (an Italian BIM software vendor).
 
 **Pro:**
 - Free download
 - Visual IDS author with form-based editing (no XML knowledge needed)
 - Integrated with rest of usBIM ecosystem
-- Good Italian-localised UX for italienische Capitolato-Workflows
+- Good Italian-localised UX for Italian Capitolato workflows
 
 **Con:**
 - ACCA ecosystem lock-in tendency
-- Less Mainstream als Bonsai oder online-Tool
-- Windows-zentriert
+- Less mainstream than Bonsai or the online tool
+- Windows-centric
 
 **Use when:**
 - Italian project context, especially with ACCA usBIM downstream
@@ -103,39 +103,39 @@ There are five mainstream IDS-1.0-compatible validators. Different strengths.
 - Strong support, training, certified workflows
 
 **Con:**
-- Expensive (Lizenz im 4-stelligen Bereich)
+- Expensive (license in the four-figure range)
 - Closed source
-- Overkill für nur IDS-Validation
-- IDS-Implementierung manchmal Solibri-spezifisch erweitert
+- Overkill for IDS validation alone
+- IDS implementation sometimes extended in Solibri-specific ways
 
 **Use when:**
-- Already using Solibri for clash / model checking → IDS als zusätzliche Schicht
-- Großer Konzern / öffentliche Auftraggeber mit Solibri-Lizenz
+- Already using Solibri for clash / model checking → IDS as an additional layer
+- Large corporation / public client with a Solibri license
 - Complex multi-discipline coordination beyond IDS
 
 ## Combinations that work well
 
-**Bimbeam-Standard für Building-artige Projekte:**
-- **ifctester** für Auto-Audit bei jedem Re-Export (5 Sek, in CI)
-- **Bonsai** für visuelle Inspektion einzelner Failures
-- **buildingSMART IDS Audit Tool** für die finale Übergabe-Validierung (Badge im Lieferschein)
+**Bimbeam standard for building-type projects:**
+- **ifctester** for auto-audit on every re-export (5 sec, in CI)
+- **Bonsai** for visual inspection of individual failures
+- **buildingSMART IDS Audit Tool** for the final handover validation (badge on the delivery note)
 
 **Italian Capitolato workflow:**
-- **usBIM.IDSeditor** für IDS-Authoring (italienische UI)
-- **ifctester** für Audit-Loop
-- **buildingSMART** für Capitolato-Compliance-Beleg
+- **usBIM.IDSeditor** for IDS authoring (Italian UI)
+- **ifctester** for the audit loop
+- **buildingSMART** for Capitolato compliance evidence
 
-**DACH-Architekturbüro Standard:**
-- **Bonsai** für alles (free, vollständig, visuell)
-- ifctester nur wenn CI gewünscht
+**DACH architecture-office standard:**
+- **Bonsai** for everything (free, complete, visual)
+- ifctester only if CI is desired
 
 ## Compatibility Notes
 
-Alle fünf Tools nutzen die offizielle IDS 1.0 XSD-Schema-Definition. Eine IDS-Datei die mit dem einen Tool funktioniert sollte mit allen funktionieren.
+All five tools use the official IDS 1.0 XSD schema definition. An IDS file that works with one tool should work with all of them.
 
-Ausnahmen / Edge Cases:
-- usBIM.IDSeditor exportiert manchmal mit kleinen ACCA-Erweiterungen die andere Tools warning-ignorieren
-- Solibri hatte historisch eine eigene "Quality Information" Sprache, IDS-Support ist neuer und manchmal hinkt eine Version hinter
-- ifctester ist immer am aktuellsten Stand der buildingSMART-Spec
+Exceptions / edge cases:
+- usBIM.IDSeditor sometimes exports with small ACCA extensions that other tools ignore with a warning
+- Solibri historically had its own "Quality Information" language; IDS support is newer and sometimes lags a version behind
+- ifctester is always at the latest state of the buildingSMART spec
 
-Bei Übergaben: idealerweise **dieselbe Tool-Kette wie der Validator** verwenden. Wenn die Provinz Solibri verwendet, eigene Validierung auch in Solibri durchführen — auch wenn ifctester "grün" sagt, kann Solibri's Interpretation leicht abweichen.
+For handovers: ideally use **the same tool chain as the validator**. If the province uses Solibri, run your own validation in Solibri as well — even if ifctester says "green", Solibri's interpretation can differ slightly.
