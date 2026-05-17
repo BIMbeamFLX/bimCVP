@@ -133,3 +133,50 @@
   }
   requestAnimationFrame(tick);
 })();
+
+/* gemeinwert — mobile navigation toggle.
+ * Injects a hamburger button into the topbar so the primary nav is reachable
+ * on phones (CSS hides .nav <=900px until .nav--open). No per-page HTML edits.
+ */
+(function () {
+  function initNav() {
+    var inner = document.querySelector('.topbar__inner');
+    var nav = inner && inner.querySelector('.nav');
+    if (!inner || !nav || inner.querySelector('.nav-toggle')) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span></span>';
+
+    var brand = inner.querySelector('.brand');
+    if (brand && brand.nextSibling) inner.insertBefore(btn, brand.nextSibling);
+    else inner.insertBefore(btn, nav);
+
+    function close() {
+      nav.classList.remove('nav--open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+    btn.addEventListener('click', function () {
+      var open = nav.classList.toggle('nav--open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.addEventListener('click', function (e) {
+      if (e.target && e.target.tagName === 'A') close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.keyCode === 27) close();
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900) close();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+})();

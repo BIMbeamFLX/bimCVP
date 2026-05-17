@@ -318,7 +318,6 @@ body.no-pulse .pulse__dot { animation: none; }
 }
 
 @media (max-width: 900px) {
-  .nav { display: none; }
   .topbar__meta .geo { display: none; }
 }
 @media (max-width: 540px) {
@@ -1115,4 +1114,48 @@ body { isolation: isolate; }
   z-index: -1;
   pointer-events: none;
   opacity: 0.55;
+}
+
+/* --- mobile navigation (hamburger; injected by nodebg.js, no per-page HTML) - */
+.nav-toggle { display: none; }
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 42px; height: 42px; margin-left: auto;
+    background: none; border: 1px solid var(--line); border-radius: 8px;
+    color: var(--ink); cursor: pointer; padding: 0; flex: none;
+  }
+  .nav-toggle span,
+  .nav-toggle span::before,
+  .nav-toggle span::after {
+    display: block; width: 18px; height: 2px;
+    background: currentColor; transition: transform .2s, opacity .2s;
+  }
+  .nav-toggle span { position: relative; }
+  .nav-toggle span::before,
+  .nav-toggle span::after { content: ""; position: absolute; left: 0; }
+  .nav-toggle span::before { top: -6px; }
+  .nav-toggle span::after  { top: 6px; }
+  .nav-toggle[aria-expanded="true"] span { background: transparent; }
+  .nav-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span::after  { top: 0; transform: rotate(-45deg); }
+
+  .topbar__inner { flex-wrap: wrap; }
+  .nav {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+    overflow: visible;
+    padding: 4px 0 14px;
+    white-space: normal;
+  }
+  .nav.nav--open { display: flex; }
+  .nav a {
+    padding: 13px 2px;
+    font-size: 15px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav a:last-child { border-bottom: none; }
 }
