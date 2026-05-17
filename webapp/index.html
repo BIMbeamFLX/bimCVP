@@ -54,7 +54,8 @@ for (const [sel, list, def] of [["t-type",TYPES,"Issue"],["t-status",STATUSES,"O
   $(sel).innerHTML = list.map(v => `<option ${v===def?"selected":""}>${v}</option>`).join("");
 }
 
-const projectRef = cfg.getProjectRef();
+const isDemo = !cfg.getProjectRef();
+const projectRef = cfg.getProjectRef() || cfg.DEMO_PROJECT_REF;
 const feed = $("feed"), topics = new Map();
 
 function render() {
@@ -69,27 +70,29 @@ function render() {
 function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function rel(ts){const d=Math.max(0,Date.now()/1000-ts);if(d<3600)return Math.floor(d/60)+"m ago";if(d<86400)return Math.floor(d/3600)+"h ago";return Math.floor(d/86400)+"d ago";}
 
-// Feed: open reads, no sign-in needed.
-if (!projectRef) {
-  $("feed-status").textContent = "No project configured on this device.";
-} else {
-  relay.subscribe(cfg.RELAY_URL, { kinds:[30900], "#a":[projectRef] }, {
-    onEvent: (ev) => {
-      if (!validateTopicEvent(ev).valid) return;
-      const t = parseTopic(ev), cur = topics.get(t.id);
-      if (!cur || ev.created_at >= cur.createdAt) { topics.set(t.id, t); render(); }
-    },
-    onEose: () => { $("feed-status").innerHTML = '<span class="live">live</span> · reading project'; }
-  });
-}
+// Feed: open reads, no sign-in needed. Falls back to the public Citadel demo
+// project so visitors always see real signed BCF events.
+relay.subscribe(cfg.RELAY_URL, { kinds:[30900], "#a":[projectRef] }, {
+  onEvent: (ev) => {
+    if (!validateTopicEvent(ev).valid) return;
+    const t = parseTopic(ev), cur = topics.get(t.id);
+    if (!cur || ev.created_at >= cur.createdAt) { topics.set(t.id, t); render(); }
+  },
+  onEose: () => {
+    $("feed-status").innerHTML = isDemo
+      ? '<span class="live">live</span> · demo project “Citadel” (read-only)'
+      : '<span class="live">live</span> · reading project';
+  }
+});
 
 // Auth: a managed session is present iff login stored a session token + npub.
 const session = sessionStorage.getItem("bimcvp.session");
 const myPub = sessionStorage.getItem("bimcvp.npub") || "";
 const connected = !!(session && /^[0-9a-f]{64}$/.test(myPub));
 $("auth").hidden = connected;
-$("compose").hidden = !connected || !projectRef;
-if (connected && !projectRef) $("compose-status").textContent = "No project configured.";
+$("compose").hidden = !connected || isDemo;
+if (connected && isDemo) $("compose-status").textContent =
+  "Read-only demo project. Configure your own project to post.";
 
 $("t-send").addEventListener("click", async () => {
   const btn = $("t-send"); btn.disabled = true;
