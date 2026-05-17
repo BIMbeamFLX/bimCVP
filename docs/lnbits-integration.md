@@ -9,7 +9,7 @@
 ```
             ┌──────────────────────────────────────┐
             │  Nostr-Client (Browser + NDK)        │
-            │  - BCF UI, plebbim, Gebäudebuch      │
+            │  - BCF UI, bounty board, Gebäudebuch │
             └──────┬─────────────────┬─────────────┘
                    │ Events          │ Pay-Links / NWC
                    v                 v
@@ -31,7 +31,7 @@ LNbits runs on the same pilot laptop as the relay + Blossom. Docker Compose serv
 
 ## Concrete integration points
 
-### 1. plebbim — bounty board on BCF topics
+### 1. Bounty board on BCF topics
 
 **Flow:**
 
@@ -62,10 +62,10 @@ LNbits has the NWC server built in (via an extension). User flow:
 
 1. The user logs into their LNbits wallet (or receives a wallet link from the admin).
 2. In the wallet settings they click "Nostr Wallet Connect" and copy the `nostr+walletconnect://...` URI.
-3. In their Nostr client (Coracle, Amethyst, or our plebbim.html) they paste the URI.
+3. In their Nostr client (Coracle, Amethyst, or our bounty-board UI) they paste the URI.
 4. From now on: every zap request of the client goes via NWC to LNbits, LNbits pays, done.
 
-**Meaning for UX:** the user clicks "Zap 500 sats" in the plebbim UI and it just happens — no wallet-app switch, no Lightning wallet picker. Exactly the bureaucracy-toaster use case.
+**Meaning for UX:** the user clicks "Zap 500 sats" in the bounty-board UI and it just happens — no wallet-app switch, no Lightning wallet picker. Exactly the non-technical construction user use case.
 
 ### 4. Webhook → Nostr bridge
 
@@ -92,7 +92,7 @@ Hosted on the same laptop. Small, replaceable, without pretension.
 
 ### 5. Admin workflow
 
-The bureaucracy-toaster admin (project lead) sees in the UI:
+The non-technical admin (project lead) sees in the UI:
 
 - **"Open project wallet"** → a button that creates a new wallet via the LNbits admin API, sets tags, saves API keys.
 - **"Assign a wallet to a participant"** → a member gets a sub-wallet with their own NWC link.
@@ -188,7 +188,7 @@ LNbits URL: `http://localhost:5000`. Caddy in front for TLS as soon as it is nee
 ## Open Questions
 
 1. **Wallet backend choice** — Phoenixd (self-hosting, simple, automatic channel management) vs. own LND (more control, more effort) vs. Voltage Cloud (hosted, fast, costs)? Recommendation for the pilot: Phoenixd.
-2. **Who hosts LNbits for the pilot?** DECIDED (2026-05): Hetzner Cloud CX23 (≈ €4.49/month, EU/GDPR), together with strfry/bunker/blossom/phoenixd/caddy. The laptop/Tailscale is dropped. Details: `BACKEND-SETUP.md` §16.
+2. **Who hosts LNbits for the pilot?** DECIDED (2026-05): a small EU VPS (low-cost, GDPR region), together with strfry/bunker/blossom/phoenixd/caddy. The laptop/Tailscale is dropped. Details: `BACKEND-SETUP.md` §16.
 3. **Cashu now or later?** A Cashu mint via the LNbits extension is doable with little effort. Use case: anonymous sub-payments in the office, requirements-planning DVM escrow. Recommendation: not in the sprint, but keep it ready as a Phase 2 button.
 4. **DPIA for LNbits?** If only the admin and testers are on it: no personal-data problem. With real participants, the DPIA must state that LN payment metadata is collected.
 

@@ -5,10 +5,13 @@
 #                    wallet, blossom, dev/NIP docs. International, technical.
 #
 # No 301 between them — different surfaces, they cross-link in content.
-# Both are served by this one Caddy on the Hetzner box.
+# Both are served by this one Caddy on the VPS.
 #
-# DNS prerequisite (World4You; Hetzner IPv4 203.0.113.10, IPv6
-# 2001:db8::1). A + AAAA for each:
+# NOTE: gemeinwert.com / bimcvp.com are EXAMPLE domains — replace them
+# (and the ACME email below) with your own when self-hosting.
+#
+# DNS prerequisite (at your DNS provider; IPv4 203.0.113.10, IPv6
+# 2001:db8::1 — placeholders, use your server's real IPs). A + AAAA for each:
 #   gemeinwert.com   @ , www
 #   bimcvp.com       @ , www , relay , pay , blossom , portainer , bunker(Phase 2)
 # Do NOT touch your-mail-domain.tld (your mail).

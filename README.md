@@ -8,6 +8,22 @@ model for mapping openBIM workflows to signed Nostr events. The goal is simple:
 coordination records should be portable, verifiable and independent from one
 software tenant.
 
+## Standing on the shoulders of giants
+
+This project wires together existing open-source work rather than rebuilding it.
+With gratitude to:
+
+- **[LNbits](https://github.com/lnbits/lnbits)** — the Lightning/account engine
+  the managed-identity and payment layer is built on.
+- **[buildingSMART International](https://www.buildingsmart.org/)** — IFC, BCF,
+  IDS and bSDD: the openBIM standards this protocol maps, never replaces.
+- **The Nostr developers** — [`nostr-protocol/nips`](https://github.com/nostr-protocol/nips),
+  [strfry](https://github.com/hoytech/strfry), [nostr-tools](https://github.com/nbd-wtf/nostr-tools),
+  [nak](https://github.com/fiatjaf/nak), [nostr-sdk](https://github.com/rust-nostr/nostr)
+  and everyone shipping the relays, signers and libraries this builds on.
+
+Built by wiring, not reinventing.
+
 ## What This Repository Contains
 
 ```text

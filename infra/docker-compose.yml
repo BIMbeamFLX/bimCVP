@@ -1,5 +1,5 @@
 # Gemeinwert / BIM CVP — pilot backend stack
-# Server: Hetzner Cloud CX23, Ubuntu 24.04 + Docker. EU location (GDPR).
+# Server: a small VPS (~2 vCPU / 4 GB / 40 GB), Ubuntu 24.04 + Docker. EU region (GDPR).
 # THIS FOLDER IS SERVER-SIDE INFRA — never commit to the public web repo.
 # Real secrets live only in lnbits/.env and the (later) bunker keystore on the box.
 

@@ -100,7 +100,7 @@ Standards-compliance vocabulary is kept consistent in English throughout.
 
 ## Voice / tone
 
-- **To PA / bureaucracy toaster**: respectful, clear, no tech jargon, trust-building
+- **To PA / non-technical construction users**: respectful, clear, no tech jargon, trust-building
 - **To architects / planners**: collegial, direct, technical-precise
 - **To devs / Nostr community**: tinker-style, slightly playful, technically deep
 - **To Bitcoin insiders**: concise, factual, no marketing speech

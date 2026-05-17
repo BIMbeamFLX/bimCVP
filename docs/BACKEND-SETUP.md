@@ -479,7 +479,7 @@ cat > DSFA.md <<'EOF'
 # Data Protection Impact Assessment — Sovereign AEC Pilot
 
 ## 1. Controller
-Felix Hitthaler, [address], hitthaler@bimbeam.at
+<controller name>, <controller address>, <controller email>
 
 ## 2. Purpose of processing
 Coordination and documentation data of a construction project (pilot building).
@@ -495,7 +495,7 @@ Coordination and documentation data of a construction project (pilot building).
 - self-operated strfry relay (local)
 - self-operated Blossom server (local)
 - self-operated LNbits instance (local)
-- for a public pilot: possibly Hetzner / NOI Techpark as a hosting provider with a data processing agreement
+- for a public pilot: possibly a VPS / cloud provider as a hosting provider with a data processing agreement
 
 ## 5. Retention period
 - project data: for life (audit / warranty relevant)
@@ -559,11 +559,11 @@ docker compose up -d phoenixd lnbits
 
 ## 12. Set up a public domain (when the pilot must be reachable externally)
 
-Once a domain (e.g. `pilot.bimbeam.at`) points to the server:
+Once a domain (e.g. `pilot.example.com`) points to the server:
 
 ```bash
 # DNS A record pointing to the server IP, then:
-sed -i "s|SAEC_DOMAIN=.*|SAEC_DOMAIN=pilot.bimbeam.at|" .env
+sed -i "s|SAEC_DOMAIN=.*|SAEC_DOMAIN=pilot.example.com|" .env
 
 # Caddyfile to variant B
 cat > Caddyfile <<EOF
@@ -645,7 +645,7 @@ crontab -e
 - `docker compose logs lnbits | grep -i wallet`
 
 ### Caddy does not obtain a TLS certificate
-- DNS not propagated yet? `dig pilot.bimbeam.at`
+- DNS not propagated yet? `dig pilot.example.com`
 - Are ports 80 + 443 reachable from outside? Test via `https://check-your-website.server-daten.de`
 - Caddy logs: `docker compose logs caddy --tail=50`
 
@@ -678,20 +678,20 @@ remains at most an admin access route to the VPS.
 
 ### 16.1 Server & storage
 
-- **Hetzner Cloud CX23** (2 vCPU x86, 4 GB RAM, 40 GB, ≈ €4.49/month),
-  Ubuntu 24.04 + Docker. EU location (GDPR/DPIA — custodial keys stay in the EU).
-- **Hetzner Volume when needed** (~€0.044/GB/month) for Blossom/IFC blobs, only
+- **A small VPS** (≈2 vCPU x86, 4 GB RAM, 40 GB; low-cost small VPS),
+  Ubuntu 24.04 + Docker. An EU region (GDPR/DPIA — custodial keys stay in the EU).
+- **A block volume when needed** (cheap per-GB block storage) for Blossom/IFC blobs, only
   attached when blob growth requires it. Keeps large IFC data separate from
   relay DB / LNbits / phoenixd — blob growth can never fill the money/key box.
   Server resize (RAM/CPU) is possible later; x86 chosen because
   ARM↔x86 are not interchangeable.
 
-### 16.2 DNS (domains at World4You; do NOT touch `bimbeam.at` — mail)
+### 16.2 DNS (domains at your DNS provider; do not touch your existing mail domain)
 
 Domain split (matches `BRAND.md`): **gemeinwert.com** = brand website
 (human audience). **bimcvp.com** = protocol/identity/services
 (international, dev/NIP). No 301 — they cross-link. Both via the same
-Hetzner Caddy.
+VPS Caddy.
 
 | Record | Target |
 |---|---|

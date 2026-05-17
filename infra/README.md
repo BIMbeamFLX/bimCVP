@@ -1,7 +1,8 @@
-> **Sanitised reference.** This is the public, anonymised backend
-> deployment. No secrets, placeholder IPs (RFC5737/3849). The real
-> `.env`, the NIP-46 bunker keystore and the `provision` glue live
-> only on the server and are intentionally NOT in this repo.
+> **Generic self-host template.** Replace the example domains
+> (`gemeinwert.com`, `bimcvp.com`), placeholder IPs (RFC5737/3849) and
+> ACME email with your own before deploying. No secrets are committed:
+> the real `.env`, the NIP-46 bunker keystore and the `provision` glue
+> live only on the server and are intentionally NOT in this repo.
 
 # backend-deploy — Gemeinwert / BIM CVP pilot server
 
@@ -21,12 +22,12 @@ Phase 2: phoenixd (Lightning) + NIP-46 bunker (Tier-1 identity).
 
 ---
 
-## 1. Provision the server (Hetzner)
+## 1. Provision the server (a VPS / cloud provider)
 
-- Hetzner Cloud, project `bimcvp-pilot`, **add SSH key first**.
-- Server: **CX23** (2 vCPU x86 / 4 GB / 40 GB), **Ubuntu 24.04**, location
-  Nürnberg or Falkenstein (EU/GDPR). Enable backups (~+€0.90/mo).
-- **Cloud Firewall** attached: inbound allow **22, 80, 443** only.
+- Any VPS / cloud provider, project `<your-project>`, **add SSH key first**.
+- Server: a small VPS (~2 vCPU x86 / 4 GB / 40 GB), **Ubuntu 24.04**, located in
+  an EU region (GDPR). Enable provider backups if available (low-cost).
+- **Cloud/host firewall** attached: inbound allow **22, 80, 443** only.
 - Note the public IPv4.
 
 ## 2. Base hardening (as root, once)
@@ -42,10 +43,11 @@ systemctl restart ssh
 Continue as `deploy`. Copy this folder to the server (e.g. `scp -r backend-deploy`
 or `git clone` a **private** repo — not the public one).
 
-## 3. DNS — World4You (no domain transfer, just records)
+## 3. DNS — your DNS provider (no domain transfer, just records)
 
-Both domains are fresh `.com` (no mail) → low risk. In the World4You DNS editor.
-Server (Hetzner): IPv4 `203.0.113.10` · IPv6 `2001:db8::1`
+The example domains below (`gemeinwert.com`, `bimcvp.com`) are placeholders —
+replace them with your own. In your DNS provider's editor:
+Server: IPv4 `203.0.113.10` · IPv6 `2001:db8::1`
 (the ::1 of the assigned /64 — verify on the box with `ip -6 addr`).
 Set TTL = 300 during setup. Add A + AAAA (dual-stack) for each name.
 
@@ -163,7 +165,7 @@ with a named circle; do not promise production stability.
 
 ## 8. Storage growth
 
-When Blossom/IFC blobs grow: attach a **Hetzner Volume**, mount it at
+When Blossom/IFC blobs grow: attach a **block/attached volume**, mount it at
 `blossom/data/blobs` (or move the dir there). Keeps big blobs off the main
 disk so the money/key box can never fill up.
 
@@ -174,7 +176,7 @@ disk so the money/key box can never fill up.
   files (`.env`, `whitelist.sh`, `deploy-site.sh`).
 - Update site: `./deploy-site.sh` (no restart needed).
 - Update stack: `docker compose pull && docker compose up -d` (or via Portainer).
-- Backups: Hetzner snapshot + back up `lnbits/data`, `strfry/data`,
+- Backups: provider snapshot + back up `lnbits/data`, `strfry/data`,
   `caddy/data` (and later `bunker/keystore`) off-box.
 - Add a pilot member to the relay: add their pubkey (hex) to
   `strfry/plugin/whitelist.sh`, `docker compose restart strfry`.
