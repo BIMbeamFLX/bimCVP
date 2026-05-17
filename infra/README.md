@@ -129,6 +129,38 @@ The Tier-1 custodial path (`identity-architecture.md`). Built next:
   trust boundary; also extend the DSFA (BACKEND-SETUP §16.4).
 Until then: NIP-07 (Tier 2) and throwaway (Tier 3) work without this box.
 
+## 7b. Private layer — White Noise / MLS (PRINCIPLES §4)
+
+There is **no White Noise server to host**. White Noise is a *client app*
+(desktop/mobile) implementing **MLS-over-Nostr (NIP-EE)**; the encrypted
+messages travel as ordinary Nostr events over the relay you already run. The
+relay only ever sees opaque ciphertext.
+
+Infra readiness (already done in `strfry/plugin/whitelist.sh`): the write
+policy always accepts the private-layer transport kinds **regardless of
+pubkey**, because they use ephemeral / gift-wrap keys a pilot allowlist cannot
+match:
+
+| Kind | Purpose |
+|---|---|
+| 443 | MLS KeyPackage (NIP-EE) — lets new members be invited |
+| 444 | MLS Welcome (NIP-EE) |
+| 445 | MLS Group Message (NIP-EE) — ephemeral per-group key |
+| 1059 | NIP-59 Gift Wrap (Welcome delivery + NIP-17 DM fallback) |
+
+Everything else stays pilot-pubkey-gated. No second relay needed for the pilot.
+
+Team setup: each member installs the White Noise client
+(<https://www.whitenoise.chat/build>) and adds `wss://relay.bimcvp.com`.
+Public ↔ private cross-reference via the `white-noise-group` tag on signed
+events (see `KIND-REGISTRY.md`). The **web UI deliberately does NOT implement
+MLS** — that would mean rebuilding the hardest crypto in the browser
+(violates PRINCIPLES §1) and storing MLS secret state in a tab (security
+regression). Web UI = public signed layer only.
+
+Maturity: Nostr-MLS / White Noise is young (alpha-grade). Pilot-appropriate
+with a named circle; do not promise production stability.
+
 ## 8. Storage growth
 
 When Blossom/IFC blobs grow: attach a **Hetzner Volume**, mount it at
