@@ -138,4 +138,28 @@ spec.
   the relay, decryptable by the operator (custodial PCK) — bounded to the named
   pilot circle, access logged". Same shape as the custodial-key boundary.
 
+### B.6 Node key backup = BIP39 12-word mnemonic (NIP-06)
+
+The substrate for node/operator key custody — **not** an end-user artifact.
+
+- **Boundary (hard):** end users never see a seed. Their recovery stays
+  email-only; the tech stays hidden. The 12 words exist **only** at the
+  node/operator/bunker layer.
+- **Model:** a node's root secret is a **BIP39 12-word mnemonic**. From its
+  seed, derive deterministically (NIP-06, `m/44'/1237'/…`, BIP32):
+  (a) the operator master key that encrypts the keystore, (b) the PCK custody
+  root (B.1). One seed backs up the whole node. `nostr-sdk` already exposes
+  `Keys.from_mnemonic` → no bespoke crypto.
+- **Replaces** the opaque `PROVISION_MASTER_KEY` blob backup with the familiar
+  Bitcoin mental model: 12 words on paper/steel = the node is recoverable.
+- **Backward compatible:** the derived 32-byte key equals today's
+  `PROVISION_MASTER_KEY`. The pilot runs unchanged; the mnemonic is the
+  **post-Bozen** upgrade of *backup*, not a break.
+- **Enables the hardest part:** the seed is the natural basis for multi-bunker
+  custody — SLIP39 / Shamir or FROST-threshold split of the 12 words across
+  offices (one bunker per office), no single point of trust. This is where
+  B.1's north-star plugs in concretely.
+
 Until B is built: confidential data does not go on the public relay (use A).
+The mnemonic/node-backup model is post-pilot; the pilot keeps the current
+`PROVISION_MASTER_KEY` (already backed up in a password manager).
