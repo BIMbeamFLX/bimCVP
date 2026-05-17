@@ -750,8 +750,9 @@ Export in Self-Custody / NIP-46-Bunker.
 **DSFA — Relay-Vertraulichkeit (offene Entscheidung, Abschnitt 3/6 ergänzen):**
 Das öffentliche Relay gated nur Schreiben; **Lesen ist offen** → BCF-Inhalte
 sind im Klartext öffentlich. Für vertrauliche Projektdaten **nicht** zulässig.
-Optionen + Empfehlung (privates Relay → NIP-44 pro Projekt → MLS) sind in
-`relay-confidentiality.md` analysiert; Entscheidung **noch offen**. Bis dahin:
+Richtung **entschieden = Increment B** (per-Projekt-Content-Key, custodial,
+server-seitig; A als Stopgap, C/MLS als Endzustand) — Spec in
+`relay-confidentiality.md`, **Bau zurückgestellt** (nach Bozen). Bis B steht:
 keine vertraulichen Projektdaten auf dem öffentlichen Relay; öffentliche Demos
 nur mit fiktiven Daten.
 
