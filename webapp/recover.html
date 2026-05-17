@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recover access — BIM CVP</title>
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">gemeinwert · BIM <span class="cvp">CVP</span></p>
+  <h1>Recover access</h1>
+  <p class="lede">New device, cleared browser, lost link — no problem. Your
+  identity is managed for you and tied to your email. Recovery keeps the
+  <strong>same identity</strong>; nothing you signed before is lost.</p>
+  <div class="card">
+    <div id="banner"></div>
+    <label>Email you joined with</label>
+    <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+    <button id="go">Email me a recovery link</button>
+    <p class="note">One-time link. Opening it restores access on this device with
+    your original identity. If your email itself is compromised, contact your
+    project admin.</p>
+  </div>
+</div>
+<script type="module">
+import { PROVISION_URL } from "./config.js";
+const $ = (i)=>document.getElementById(i);
+$("go").addEventListener("click", async () => {
+  const email = $("email").value.trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    $("banner").innerHTML = '<div class="banner warn">Enter a valid email.</div>'; return;
+  }
+  $("go").disabled = true;
+  try {
+    const r = await fetch(PROVISION_URL + "/api/recover", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    // Always succeed-looking (don't reveal which emails exist).
+    location.href = "./check-email.html";
+  } catch {
+    $("banner").innerHTML = '<div class="banner warn">Service unreachable. Try again later.</div>';
+    $("go").disabled = false;
+  }
+});
+</script>
+</body>
+</html>

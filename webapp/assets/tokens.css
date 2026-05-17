@@ -1,0 +1,18 @@
+/* tokens.css — point-in-time COPY of site/assets/site.css :root tokens.
+   Decoupled on purpose: the webapp is a separate artifact and must not depend
+   on the site deploy. Resync manually if the site theme changes. */
+:root {
+  --bg:    #0f1419;
+  --panel: #1a2027;
+  --line:  #2a3440;
+  --ink:   #e8e8e8;
+  --muted: #8a9aab;
+  --gold:  #f4c430;
+  --blue:  #5b9bd5;
+  --ok:    #4ade80;
+  --warn:  #f87171;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 10px;
+  --sp: 16px;
+}

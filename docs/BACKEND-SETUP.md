@@ -735,8 +735,26 @@ im public Web-Repo**) erzeugt in einem Flow: LNbits-User+Wallet (UserManager-API
 Mapping-Tabelle nur Identity-Plumbing: `lnbits_user_id ↔ npub ↔ bunker_ref ↔
 lightning_address` — keine Rollen, keine BIM-Daten (Projekt-Mitgliedschaft bleibt
 event-definiert in `kind:30902`). Keystore verschlüsselt, Operator-Key offline →
-das ist die Trust-Boundary (siehe `identity-architecture.md`; DSFA Abschnitt 3
-ergänzen: Datenkategorie „custodial Nostr-Keys", Operator als Verarbeiter).
+das ist die Trust-Boundary (siehe `identity-architecture.md`).
+
+**DSFA — verbindlich ergänzen (Abschnitt 3 Datenkategorien / 4 Verarbeiter):**
+v1 ist umgesetzt (`provision`-Dienst, server-seitige Signatur). Zu erfassen:
+(a) **E-Mail-Adressen** der Mitglieder (PII; Onboarding + Recovery-Kanal),
+(b) **verschlüsselte Nostr-Secret-Keys** (custodial, AES-256-GCM, Master-Key
+offline), (c) `provision`/Operator als **Auftragsverarbeiter** (kann technisch
+für Mitglieder signieren — begrenzt auf den benannten Pilotkreis, Zugriff
+geloggt), (d) Recovery läuft über E-Mail → E-Mail-Kontosicherheit ist Teil des
+Risikomodells; Magic-Links sind einmalig, kurzlebig, signiert. Post-Pilot:
+Export in Self-Custody / NIP-46-Bunker.
+
+**DSFA — Relay-Vertraulichkeit (offene Entscheidung, Abschnitt 3/6 ergänzen):**
+Das öffentliche Relay gated nur Schreiben; **Lesen ist offen** → BCF-Inhalte
+sind im Klartext öffentlich. Für vertrauliche Projektdaten **nicht** zulässig.
+Richtung **entschieden = Increment B** (per-Projekt-Content-Key, custodial,
+server-seitig; A als Stopgap, C/MLS als Endzustand) — Spec in
+`relay-confidentiality.md`, **Bau zurückgestellt** (nach Bozen). Bis B steht:
+keine vertraulichen Projektdaten auf dem öffentlichen Relay; öffentliche Demos
+nur mit fiktiven Daten.
 
 ### 16.5 Recovery (Kurzfassung — Details in identity-architecture.md)
 
