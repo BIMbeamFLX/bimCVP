@@ -75,7 +75,7 @@ This prototype turns the daily entry into a signed Nostr event plus an OpenTimes
 
 ---
 
-### Week 5 — plebbim
+### Week 5 — bounty board
 
 **Lightning bounty board on top of BCF issues.**
 

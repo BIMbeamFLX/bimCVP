@@ -40,9 +40,9 @@ If something is in neither of those two lists — stop. Search whether it alread
 
 ---
 
-## 2. The target is the bureaucracy toaster
+## 2. The target user is non-technical
 
-The dumbest conceivable user. Outside the tech bubble. Has had the same Outlook setup for fifteen years. Thinks "cloud" is a weather phenomenon. Receives a new ACC license reminder every quarter and doesn't know what to do with it.
+A non-technical construction user, outside the tech bubble. Has had the same Outlook setup for fifteen years. Is unfamiliar with cloud concepts. Receives a new ACC license reminder every quarter and is unsure what to do with it.
 
 **Consequences:**
 

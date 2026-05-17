@@ -20,8 +20,8 @@ build. Read together with `PRINCIPLES.md` (§3 amended by this document) and
 
 ## Why this exists
 
-The pilot's real users are non-technical construction people ("bureaucracy
-toaster"). They will lose Nostr keys. The original `PRINCIPLES.md` §3 ("keys
+The pilot's real users are non-technical construction users (non-technical
+site staff). They will lose Nostr keys. The original `PRINCIPLES.md` §3 ("keys
 delegated to a signer; lost key = make a new npub") is unacceptable UX for them.
 This document defines a **deliberate, bounded, documented pilot deviation**:
 managed (custodial) identity with stable npub recovery, while keeping a fully
@@ -75,7 +75,7 @@ Browser (app)
 Domains: gemeinwert.com = brand website (DACH).                     │
          bimcvp.com     = protocol/identity/services (this stack).  │
                                                                     │
-VPS (Hetzner CX23)                                                  │
+VPS (small EU VPS)                                                  │
   ├─ caddy            TLS; serves gemeinwert.com (site) + bimcvp.com │
   ├─ strfry (public)  wss://relay.bimcvp.com  write-policy plugin    │
   ├─ strfry (private) localhost/tailnet only (optional, deferred)   │

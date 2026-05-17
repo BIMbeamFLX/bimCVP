@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# One-time bootstrap on a fresh Hetzner CX23 (Ubuntu 24.04), run as the
-# non-root sudo user from inside the backend-deploy/ folder.
+# One-time bootstrap on a fresh small VPS (~2 vCPU / 4 GB / 40 GB,
+# Ubuntu 24.04), run as the non-root sudo user from inside the
+# backend-deploy/ folder.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -38,7 +39,7 @@ echo "==> 6/6 Deploy static site"
 cat <<'NEXT'
 
 Done. Next:
-  - DNS (World4You) for BOTH domains must point at this server IP (README §3).
+  - DNS (your DNS provider) for BOTH domains must point at this server IP (README §3).
   - Watch TLS issuance:  docker compose logs -f caddy
   - First boot LNbits: open https://pay.bimcvp.com , create superuser,
     put its id in lnbits/.env -> LNBITS_ADMIN_USERS, then:

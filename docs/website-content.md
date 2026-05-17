@@ -57,8 +57,8 @@ A daily site log with cryptographic teeth. Each entry — weather, crew, deliver
 
 **What it proves.** That legally relevant construction records can be made tamper-evident at zero marginal cost, using only public infrastructure.
 
-### Week 5 — Plebbim — Lightning Bounties for BIM Issues
-*plebbim.html*
+### Week 5 — Bounty Board — Lightning Bounties for BIM Issues
+*the bounty-board UI*
 
 A board of open BCF issues from the test tribe, each fundable with Lightning zaps. Want a specific clash resolved this week? Fund it. Want a coordination issue prioritised? Top up the bounty. Resolvers earn sats on completion, automatically and transparently.
 

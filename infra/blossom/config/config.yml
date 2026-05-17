@@ -8,7 +8,7 @@ databasePath: /app/data/sqlite.db
 storage:
   backend: local
   local:
-    # Mount a Hetzner Volume here when IFC/blob growth needs it
+    # Mount a block/attached volume here when IFC/blob growth needs it
     # (keeps large blobs off the box's main disk — see README §8).
     dir: /app/data/blobs
 
