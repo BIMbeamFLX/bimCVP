@@ -13,11 +13,29 @@ The public relay (`relay.bimcvp.com`) gates **writes** only (allowlist plugin).
 every BCF payload is **world-readable cleartext**: topic titles, descriptions,
 site addresses, who coordinates with whom, project structure.
 
-- **Severity: high.** Acceptable for the fictional *Citadel* showcase. **Not**
-  acceptable for confidential client project data.
-- Even if `content` were encrypted, **tags leak metadata**: `s`/`bcf-status`,
-  `bcf-type`, `a` (= `30902:<owner-pubkey>:<guid>`), `p` (participants) → status,
-  activity volume and the social/project graph remain visible.
+- **Severity: high — but scoped to `content`.** What must be confidential is
+  the BCF **payload** (titles, descriptions, addresses, the substance). The
+  exposure is cleartext content on an open relay.
+- **Tags stay public by design.** `s`/`bcf-status`, `bcf-type`,
+  `a`, `p`, timestamps are *intended* to be public: a tamper-evident,
+  independently verifiable record that coordination happened, when, in which
+  project, between which keys. That public activity trail is a **feature
+  (notarized proof)**, not a leak. The only rule: never put substance into tags.
+
+## North star & hard invariant
+
+- **Hard invariant:** cleartext BCF content is **never** posted over a relay —
+  public or private. Encryption of `content` is mandatory, not optional.
+- **Vision:** a planners' coordination *infranet* — every office can
+  **self-host** a bimcvp node (relay + provision). Public, verifiable
+  coordination metadata; confidential content. Federated, no vendor in the
+  middle.
+- **Hardest part (explicit):** custody and **rotation of the per-project
+  content key across multiple bunkers** (threshold / FROST-style, multi-office),
+  so no single host is a single point of trust or failure. This is the project's
+  hardest problem; it extends the post-pilot FROST/Frostr note in `PRINCIPLES.md`
+  and the NIP-46 bunker increment in `identity-architecture.md`. Out of scope
+  for the pilot build; in scope for the architecture.
 
 ## What does *not* solve it (the "it stays centralized" point)
 
@@ -38,13 +56,17 @@ site addresses, who coordinates with whom, project structure.
 | **C** | **MLS / NIP-EE** (White Noise): true E2E, forward secrecy | everyone incl. operator | no (ciphertext only) | large; **the web UI cannot do this** (browser MLS = security regression, PRINCIPLES §1) → White Noise *client* only | alpha |
 
 Notes:
-- **B** still leaks tag metadata unless tags are also encrypted — which then
-  removes server-side filtering (must move to the client). Confidentiality vs.
-  queryability is the core trade-off.
-- **C** is the sovereign end state for the private layer, by design **not** the
-  web BCF UI. The transport kinds (443/444/445/1059) are already accepted
-  unconditionally by the write-policy plugin, so infra is ready when a White
-  Noise–based private layer is exercised.
+- **B** keeps tags public **on purpose** (notarized coordination trail) and
+  encrypts only `content` → server-side `#a`/status filtering is preserved.
+  Simpler and better than tag-minimization; the design just forbids substance
+  in tags.
+- The north-star extension of **B** is per-project key custody/rotation across
+  **multiple self-hosted bunkers** (no single trusted host) — the project's
+  hardest problem, deliberately staged after the pilot.
+- **C** is the sovereign end state for the private *messaging* layer, by design
+  **not** the web BCF UI. Transport kinds (443/444/445/1059) are already
+  accepted unconditionally by the write-policy plugin, so infra is ready when a
+  White Noise–based private layer is exercised.
 
 ## Recommendation (for the decision, when taken)
 
@@ -74,6 +96,12 @@ spec.
   like member secret keys (same table/trust boundary, AES-256-GCM).
 - Scope is **per project** — a PCK leak exposes one project's history only
   (bounded blast radius; this is the point).
+- **North-star (post-pilot):** the PCK is not held by one host but
+  custodied/rotated across **multiple self-hosted bunkers** (threshold /
+  FROST-style, one per office). Pilot = single custodial holder; the data model
+  (versioned PCK, per-event PCK version) is designed so multi-bunker custody
+  drops in without re-encryption of history. This is the hardest part of the
+  project and is tracked here on purpose.
 
 ### B.2 Encrypt / decrypt (server-side)
 - On publish (`/api/sign-publish`): `provision` encrypts the BCF JSON `content`
@@ -84,15 +112,17 @@ spec.
   over TLS. The browser never holds the PCK. Operator readability = the
   already-accepted custodial trust boundary (NOT zero-trust; that is C).
 
-### B.3 Metadata minimization (decide once, up front)
-- Drop owner-identifying / semantic tags from the public event. Replace the
-  routing `a` tag with an **opaque per-project token** (random, not derivable to
-  the owner pubkey or guid) so the feed can still subscribe by one tag.
-- `bcf-status`/`s`/`bcf-type`/`p` move **inside** the encrypted payload;
-  status/type filtering becomes **client-side after decrypt** (acceptable at
-  pilot scale; documented loss of server-side filtering).
-- Net public leakage: event exists, kind, timestamp, opaque project token,
-  author pubkey (managed, not a person's name). No BCF semantics.
+### B.3 Tags stay public — by design
+- Tags are **kept public**: `d`, `a` (`30902:<owner>:<guid>`), `bcf-guid`,
+  `bcf-version`, `s`/`bcf-status`, `bcf-type`, `p`, timestamps. This is the
+  notarized coordination trail (proof that work happened, when, in which
+  project, between which keys) and it preserves server-side `#a`/status
+  filtering — the existing feed query is unchanged.
+- **Only `content` is encrypted.** The single hard rule: **no substance in
+  tags** — titles, descriptions, addresses, names live only inside the
+  encrypted payload, never in a tag value.
+- Net public surface (intended): a verifiable activity ledger with **zero BCF
+  substance**. That public ledger is a feature, not a leak.
 
 ### B.4 Membership change = key rotation (not optional)
 - Removing a member ⇒ generate a **new PCK**, distribute to remaining members,
