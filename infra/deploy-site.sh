@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
-# Pull the static site from the public web repo into ./site-root,
-# which Caddy serves at https://gemeinwert.com .
-# Run on the server after the stack is up, and again whenever the site changes.
+# Pull the static site from the public web repo INTO ./site-root in place.
+# Caddy bind-mounts ./site-root at /srv/site.
+#
+# CRITICAL: never rename/replace ./site-root. A Docker *directory* bind mount
+# is bound to the inode at container start; renaming the host dir makes Caddy
+# keep serving the old (often deleted) directory -> whole site 404 until a
+# Caddy restart. Therefore: rsync IN PLACE. The inode stays stable, the bind
+# mount stays valid, and changes go live immediately with no restart.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -21,11 +26,8 @@ if [ ! -d "$TMP/repo/site" ]; then
 fi
 
 mkdir -p ./site-root
-# atomic-ish swap
-rsync -a --delete "$TMP/repo/site/" ./site-root.new/
-rm -rf ./site-root.old
-[ -d ./site-root ] && mv ./site-root ./site-root.old
-mv ./site-root.new ./site-root
-rm -rf ./site-root.old
+# IN-PLACE sync — NO mv, NO swap. Inode of ./site-root unchanged ->
+# Docker bind mount stays valid -> live immediately, no Caddy restart.
+rsync -a --delete "$TMP/repo/site/" ./site-root/
 
-echo "Site deployed to ./site-root . Caddy serves it live (no restart needed)."
+echo "Site deployed in place to ./site-root . Live immediately (no restart needed)."
