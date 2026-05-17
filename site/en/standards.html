@@ -10,20 +10,6 @@
   <style>
     body::before { display: none; }
 
-    .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; height: 64px; }
-    .topbar__inner { gap: 32px; }
-    .brand__word { font-size: 19px; }
-    .topbar .nav { margin-left: auto; }
-    .topbar .nav a {
-      font-family: var(--font-body);
-      font-size: 15px;
-      letter-spacing: 0;
-      text-transform: none;
-      color: var(--ink-2);
-    }
-    .topbar .nav a:hover { color: var(--gold); }
-    .topbar__meta { display: none; }
-
     .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
     .wrap-narrow { max-width: 760px; margin: 0 auto; padding: 0 24px; }
 
@@ -135,7 +121,7 @@
 <body>
 
 <header class="topbar" data-screen-label="Top bar">
-  <div class="wrap topbar__inner">
+  <div class="shell topbar__inner">
     <a class="brand" href="./" aria-label="gemeinwert">
       <img class="brand__monogram" src="../assets/logo-monogram.svg" alt="" width="30" height="36" />
       <div>
@@ -144,10 +130,9 @@
       </div>
     </a>
     <nav class="nav" aria-label="Primary">
-      <a href="./#what">What it is</a>
-      <a href="./#try">Tools</a>
-      <a href="standards.html" style="color: var(--gold);">Standards</a>
-      <a href="../wiki/" >Wiki</a>
+      <a href="./">Home</a>
+      <a href="standards.html" class="active">Standards</a>
+      <a href="../wiki/">Wiki</a>
       <a href="bim-cvp.html">BIM-CVP</a>
       <a href="about.html">About</a>
     </nav>
