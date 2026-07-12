@@ -24,6 +24,14 @@ With gratitude to:
 
 Built by wiring, not reinventing.
 
+## One primitive, two worlds
+
+BIM-CVP shares its core ownership primitive with the
+[600 Billion project](https://github.com/600-000-000-000/PalaceOfCulture): a signed
+hash-chain — an append-only chain of signed events — developed in that monorepo under
+`packages/ownership`. There it proves ownership of game assets; here, of openBIM
+coordination records.
+
 ## What This Repository Contains
 
 ```text
